@@ -323,33 +323,39 @@
   }
   .rating-stars input { display: none; }
 
-  /* Astuce CSS pour les demi-étoiles */
+  /* Astuce CSS pour les demi-étoiles : calage géométrique strict */
   .rating-stars label { 
       cursor: pointer; 
       font-size: 3.5rem; 
-      width: 0.5em; /* Affiche seulement la moitié du caractère */
+      width: 0.5em; /* Largeur stricte de 50% */
       display: inline-block; 
       position: relative; 
       overflow: hidden; 
-      color: transparent; 
+      color: transparent; /* Masque le texte brut */
+      line-height: 1.1;
       margin: 0;
   }
 
-  /* Espacement entre les "vraies" étoiles */
+  /* Espacement uniquement entre les étoiles complètes */
   .rating-stars label.right-half:not(:first-child) {
-      margin-right: 6px;
+      margin-right: 8px; 
   }
 
+  /* Le pseudo-élément qui dessine la vraie étoile parfaitement centrée */
   .rating-stars label::before { 
       content: '★'; 
       position: absolute; 
       top: 0; 
+      width: 1em; /* L'icône fait exactement la taille de 2 moitiés */
+      text-align: center;
       color: var(--border-hi); 
       transition: color 0.1s; 
+      font-family: Arial, sans-serif; /* Force une police standard sans marges internes bizarres */
   }
 
+  /* Découpage parfait de l'étoile */
   .rating-stars label.left-half::before { left: 0; }
-  .rating-stars label.right-half::before { right: 0; }
+  .rating-stars label.right-half::before { left: -0.5em; } /* Décale exactement de 50% */
 
   /* Changement de couleur au survol et au clic */
   .rating-stars label:hover::before, 
