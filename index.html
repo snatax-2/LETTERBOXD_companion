@@ -315,7 +315,6 @@
   /* ── QUICK RATING (Style Letterboxd) ── */
   .detailed-section { display: block; }
   .quick-section { display: none; padding: 20px 0; }
-  /* La classe "quick-mode" sur le body va masquer le détaillé et afficher le rapide */
   body.quick-mode .detailed-section { display: none; }
   body.quick-mode .quick-section { display: block; }
 
@@ -326,14 +325,12 @@
   .rating-stars label { 
       font-size: 2.5rem; color: var(--border-hi); cursor: pointer; transition: color 0.1s; 
   }
-  /* Logique de survol et de sélection */
   .rating-stars label:hover, 
   .rating-stars label:hover ~ label, 
   .rating-stars input:checked ~ label { 
       color: var(--gold); 
   }
   .rating-stars label.half { width: 1.25rem; overflow: hidden; }
-
 
   /* ── SCORE RESULT ── */
   .score-result {
@@ -571,10 +568,8 @@
 </head>
 <body>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Confirmer</div>
@@ -586,7 +581,6 @@
   </div>
 </div>
 
-<!-- HEADER -->
 <header class="app-header">
   <h1 class="app-title"><em>Letterboxd</em> Rating Companion</h1>
   <div class="header-actions">
@@ -596,15 +590,12 @@
   </div>
 </header>
 
-<!-- MAIN LAYOUT -->
 <div class="layout">
 
-  <!-- ════ COL LEFT ════ -->
   <div class="col-left">
     <div class="card">
       <div class="card-title">Film</div>
 
-      <!-- Search -->
       <div class="search-wrap">
         <div class="search-row">
           <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
@@ -614,7 +605,6 @@
         <div class="suggestions" id="suggestions"></div>
       </div>
 
-      <!-- Film strip (shown after selection) -->
       <div class="film-strip" id="film-strip">
         <img class="film-strip-poster" id="strip-poster" src="" alt="">
         <div class="film-strip-info">
@@ -643,16 +633,13 @@
         <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
       </div>
 
-      <!-- ── MODE TABS ── -->
       <div class="mode-tabs">
         <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
         <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
-      <!-- ── DETAILED MODE ── -->
       <div class="detailed-section">
 
-        <!-- Weights toggle -->
         <div class="weights-toggle" id="weights-toggle" onclick="toggleWeights()">
           ⚙ Personnaliser les pondérations
         </div>
@@ -727,7 +714,6 @@
         </div>
       </div>
 
-      <!-- ── QUICK MODE ── -->
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
           <input type="radio" id="s10" name="rating" value="5"><label for="s10">★</label>
@@ -743,7 +729,6 @@
         </div>
       </div>
 
-      <!-- Score + critique + actions -->
       <div class="score-result">
         <div class="score-main">
           <div class="score-big" id="score-big">5.0</div>
@@ -764,10 +749,8 @@
     </div>
   </div>
 
-  <!-- ════ COL RIGHT ════ -->
   <div class="col-right">
 
-    <!-- Stats -->
     <div class="card">
       <div class="card-title">Statistiques</div>
       <div class="stat-row">
@@ -781,14 +764,12 @@
       <div class="histo" id="histogram"></div>
     </div>
 
-    <!-- History -->
     <div class="card">
       <div class="card-title">
         Historique
         <span class="card-title-badge" id="hist-count-badge">0 film</span>
       </div>
 
-      <!-- Sort -->
       <div class="filter-row" id="filter-row">
         <button class="filter-btn active" data-sort="date">Récents</button>
         <button class="filter-btn" data-sort="score-desc">Mieux notés</button>
@@ -796,7 +777,6 @@
         <button class="filter-btn" data-sort="title">A→Z</button>
       </div>
 
-      <!-- Genre filter -->
       <div class="genre-filter-row" id="genre-filter-row" style="display:none;">
         <span class="genre-filter-label">Genre :</span>
         <div class="genre-chips" id="genre-chips"></div>
@@ -806,9 +786,7 @@
     </div>
 
   </div>
-</div><!-- /layout -->
-
-<script>
+</div><script>
 // ═══════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════
@@ -1006,7 +984,6 @@ document.getElementById('heart-btn').addEventListener('click', () => {
 // ═══════════════════════════════════════════
 function setMode(mode) {
   currentMode = mode;
-  // Ajoute ou retire la classe "quick-mode" au body (gère l'affichage en CSS)
   document.body.classList.toggle('quick-mode', mode === 'quick');
   
   document.getElementById('tab-detail').classList.toggle('active', mode === 'detail');
@@ -1076,10 +1053,10 @@ function calculateScore() {
   let score;
 
   if (currentMode === 'quick') {
-    // Mode Rapide : Les étoiles valent entre 0.5 et 5, on multiplie par 2 pour avoir sur /10
+    // Score sur 10 en interne (2 * étoiles)
     score = quickRating * 2; 
   } else {
-    // Mode Détaillé : Calcul classique avec pondération
+    // Calcul pondéré
     const w = getWeights();
     let weightedSum = 0, totalWeight = 0;
     CRITERIA.forEach(c => {
@@ -1093,15 +1070,24 @@ function calculateScore() {
     score = totalWeight > 0 ? weightedSum / totalWeight : 5;
   }
 
-  // Affichage
+  // ── GESTION DE L'AFFICHAGE DYNAMIQUE (/5 ou /10) ──
   const scoreEl = document.getElementById('score-big');
-  scoreEl.textContent = score.toFixed(1);
+  const denomEl = document.querySelector('.score-denom');
+
+  if (currentMode === 'quick') {
+    scoreEl.textContent = quickRating.toFixed(1);
+    denomEl.textContent = '/5';
+  } else {
+    scoreEl.textContent = score.toFixed(1);
+    denomEl.textContent = '/10';
+  }
+
   scoreEl.className = 'score-big ' + (score >= 7.5 ? 'good' : score >= 5.0 ? 'mid' : 'bad');
 
-  const stars = Math.round((score / 2) * 2) / 2; // Arrondi à 0.5 près
+  const stars = Math.round((score / 2) * 2) / 2;
   document.getElementById('stars-display').textContent = getStarStr(stars);
 
-  return score;
+  return score; // Renvoie toujours la note sur 10 en interne
 }
 
 CRITERIA.forEach(c => {
@@ -1121,13 +1107,18 @@ document.getElementById('copy-btn').addEventListener('click', () => {
   const dateVal  = document.getElementById('view-date').value;
   const dateStr  = dateVal ? new Date(dateVal + 'T12:00:00').toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }) : '';
   const review   = document.getElementById('review-text').value.trim();
-  const score    = calculateScore();
+  const score    = calculateScore(); 
   const stars    = document.getElementById('stars-display').textContent;
   const heartStr = isLiked ? ' ❤️' : '';
 
   let text = `📽 ${title}${heartStr}\n`;
   if (dateStr) text += `🗓 Vu le ${dateStr}\n`;
-  text += `⭐ ${stars} (${score.toFixed(1)}/10)\n`;
+  
+  if (currentMode === 'quick') {
+    text += `⭐ ${stars} (${quickRating.toFixed(1)}/5)\n`;
+  } else {
+    text += `⭐ ${stars} (${score.toFixed(1)}/10)\n`;
+  }
 
   if (currentMode === 'detail') {
     const vals = CRITERIA.reduce((acc, c) => {
@@ -1211,12 +1202,11 @@ function resetForm() {
   document.getElementById('heart-btn').classList.remove('active');
   document.getElementById('view-date').valueAsDate = new Date();
   
-  // Reset modes
   CRITERIA.forEach(c => { document.getElementById(c).value = 5; });
   quickRating = 2.5;
-  const defaultRadio = document.getElementById('s5'); // Sélectionne l'étoile 2.5 par défaut
+  const defaultRadio = document.getElementById('s5'); 
   if(defaultRadio) defaultRadio.checked = true;
-  setMode('detail'); // On revient en mode détaillé par défaut
+  setMode('detail'); 
 }
 
 // ═══════════════════════════════════════════
@@ -1242,13 +1232,12 @@ window.loadItem = function(idx) {
     document.getElementById('strip-poster').style.display = 'block';
   }
 
-  // Reload mode properly (Quick or Detail)
   if (item.mode === 'quick' && item.values?.quick !== undefined) {
     setMode('quick');
     quickRating = parseFloat(item.values.quick);
-    const radioId = 's' + (quickRating * 2); // ex: s10 pour 5 étoiles
+    const radioId = 's' + (quickRating * 2); 
     const radioEl = document.getElementById(radioId);
-    if(radioEl) radioEl.checked = true; // Remet les étoiles visuellement au bon endroit
+    if(radioEl) radioEl.checked = true; 
   } else {
     setMode('detail');
     CRITERIA.forEach(c => {
