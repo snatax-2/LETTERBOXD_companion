@@ -99,6 +99,17 @@
     align-items: center;
     font-family: 'Titillium Web', sans-serif;
   }
+  .card-title-badge {
+    font-size: 0.72rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 8px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    color: var(--text);
+  }
 
   /* ── MOVIE SEARCH ── */
   .search-wrap { position: relative; margin-bottom: 16px; }
@@ -209,6 +220,18 @@
   .strip-rating-src  { color: var(--text); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; }
   .strip-votes       { color: var(--text); font-size: 0.74rem; }
 
+  /* ── TABS: DÉTAILLÉ / RAPIDE ── */
+  .mode-tabs { display: flex; gap: 4px; margin-bottom: 18px; background: var(--bg); border-radius: var(--radius-sm); padding: 4px; }
+  .mode-tab {
+    flex: 1; text-align: center; padding: 7px;
+    border: none; border-radius: 4px; cursor: pointer;
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 0.82rem; font-weight: 700;
+    color: var(--text); background: transparent;
+    transition: all .15s;
+  }
+  .mode-tab.active { background: var(--surface2); color: var(--text-hi); border: 1px solid var(--border); }
+
   /* ── WEIGHTS PANEL ── */
   .weights-toggle {
     display: flex; align-items: center; gap: 6px; justify-content: flex-end;
@@ -288,6 +311,29 @@
     min-height: 32px;
   }
   .criterion-block.affect-block .criterion-desc { border-left-color: var(--blue); }
+
+  /* ── QUICK RATING (Style Letterboxd) ── */
+  .detailed-section { display: block; }
+  .quick-section { display: none; padding: 20px 0; }
+  /* La classe "quick-mode" sur le body va masquer le détaillé et afficher le rapide */
+  body.quick-mode .detailed-section { display: none; }
+  body.quick-mode .quick-section { display: block; }
+
+  .rating-stars { 
+      display: flex; flex-direction: row-reverse; justify-content: center; gap: 2px; 
+  }
+  .rating-stars input { display: none; }
+  .rating-stars label { 
+      font-size: 2.5rem; color: var(--border-hi); cursor: pointer; transition: color 0.1s; 
+  }
+  /* Logique de survol et de sélection */
+  .rating-stars label:hover, 
+  .rating-stars label:hover ~ label, 
+  .rating-stars input:checked ~ label { 
+      color: var(--gold); 
+  }
+  .rating-stars label.half { width: 1.25rem; overflow: hidden; }
+
 
   /* ── SCORE RESULT ── */
   .score-result {
@@ -594,6 +640,13 @@
     <div class="card" style="margin-top:16px;">
       <div class="card-title">
         Notation
+        <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
+      </div>
+
+      <!-- ── MODE TABS ── -->
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
+        <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
       <!-- ── DETAILED MODE ── -->
@@ -671,6 +724,22 @@
             <div class="criterion-desc" id="desc-affect">—</div>
           </div>
 
+        </div>
+      </div>
+
+      <!-- ── QUICK MODE ── -->
+      <div class="quick-section">
+        <div class="rating-stars" id="quick-stars-container">
+          <input type="radio" id="s10" name="rating" value="5"><label for="s10">★</label>
+          <input type="radio" id="s9" name="rating" value="4.5"><label for="s9" class="half">★</label>
+          <input type="radio" id="s8" name="rating" value="4"><label for="s8">★</label>
+          <input type="radio" id="s7" name="rating" value="3.5"><label for="s7" class="half">★</label>
+          <input type="radio" id="s6" name="rating" value="3"><label for="s6">★</label>
+          <input type="radio" id="s5" name="rating" value="2.5" checked><label for="s5" class="half">★</label>
+          <input type="radio" id="s4" name="rating" value="2"><label for="s4">★</label>
+          <input type="radio" id="s3" name="rating" value="1.5"><label for="s3" class="half">★</label>
+          <input type="radio" id="s2" name="rating" value="1"><label for="s2">★</label>
+          <input type="radio" id="s1" name="rating" value="0.5"><label for="s1" class="half">★</label>
         </div>
       </div>
 
@@ -809,11 +878,13 @@ function getDesc(criterion, val) {
 // ═══════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════
-let isLiked    = false;
+let isLiked     = false;
+let currentMode = 'detail'; // 'detail' | 'quick'
+let quickRating = 2.5;      // Note rapide par défaut (en étoiles)
 let sortOrder   = 'date';
-let activeGenre = null; // null = tous
+let activeGenre = null; 
 let weightsOpen = false;
-let pendingAction = null; // pour la modal
+let pendingAction = null; 
 
 // ═══════════════════════════════════════════
 //  STORAGE (localStorage + Claude Storage API)
@@ -826,12 +897,10 @@ function loadHistory() {
 function saveHistory(history) {
   try {
     localStorage.setItem(STORE_KEY, JSON.stringify(history));
-    // Claude Storage API si disponible
     if (window.storage) window.storage.set(STORE_KEY, JSON.stringify(history));
   } catch(e) { console.warn('Storage full', e); }
 }
 
-// Essayer de charger depuis Claude Storage
 (async () => {
   try {
     if (window.storage) {
@@ -839,7 +908,6 @@ function saveHistory(history) {
       if (r && r.value) {
         const cloud = JSON.parse(r.value);
         const local = loadHistory();
-        // Fusionner : prendre le plus récent
         if (cloud.length >= local.length) {
           localStorage.setItem(STORE_KEY, r.value);
         }
@@ -890,10 +958,8 @@ async function selectMovie(m, year) {
   searchEl.value = `${m.title} (${year})`;
   suggestEl.style.display = 'none';
 
-  // Masquer la note le temps du chargement
   document.getElementById('strip-ratings').style.display = 'none';
 
-  // Récupérer genres + note TMDb via l'endpoint details
   try {
    const res = await fetch(`/api/search?id=${m.id}`);
     const data = await res.json();
@@ -902,7 +968,6 @@ async function selectMovie(m, year) {
     document.getElementById('movie-genre').value = genres;
     document.getElementById('strip-genre').textContent = genres + (year ? ` · ${year}` : '');
 
-    // Note TMDb (la même que celle affichée sur IMDb via TMDb, basée sur les votes TMDb)
     const score = data.vote_average;
     const count = data.vote_count;
     if (score && score > 0) {
@@ -915,7 +980,6 @@ async function selectMovie(m, year) {
     document.getElementById('strip-genre').textContent = year || '';
   }
 
-  // Film strip
   const strip = document.getElementById('film-strip');
   strip.classList.add('visible');
   document.getElementById('strip-title').textContent = m.title;
@@ -935,6 +999,29 @@ document.addEventListener('click', e => {
 document.getElementById('heart-btn').addEventListener('click', () => {
   isLiked = !isLiked;
   document.getElementById('heart-btn').classList.toggle('active', isLiked);
+});
+
+// ═══════════════════════════════════════════
+//  MODE (Détaillé / Rapide)
+// ═══════════════════════════════════════════
+function setMode(mode) {
+  currentMode = mode;
+  // Ajoute ou retire la classe "quick-mode" au body (gère l'affichage en CSS)
+  document.body.classList.toggle('quick-mode', mode === 'quick');
+  
+  document.getElementById('tab-detail').classList.toggle('active', mode === 'detail');
+  document.getElementById('tab-quick').classList.toggle('active', mode === 'quick');
+  document.getElementById('mode-badge').textContent = mode === 'detail' ? 'Mode détaillé' : 'Mode rapide';
+  
+  calculateScore();
+}
+
+// ═══════════════════════════════════════════
+//  QUICK STARS RATING
+// ═══════════════════════════════════════════
+document.getElementById('quick-stars-container').addEventListener('change', (e) => {
+    quickRating = parseFloat(e.target.value);
+    calculateScore();
 });
 
 // ═══════════════════════════════════════════
@@ -968,7 +1055,6 @@ function updateWeightBadges() {
   });
 }
 
-// Listen weight changes
 CRITERIA.forEach(c => {
   const el = document.getElementById(`w-${c}`);
   if (el) el.addEventListener('input', () => { updateWeightBadges(); calculateScore(); });
@@ -978,7 +1064,6 @@ CRITERIA.forEach(c => {
 //  SCORE CALCULATION
 // ═══════════════════════════════════════════
 function getStarStr(stars) {
-  // stars: 0.5 to 5
   let s = '';
   const full = Math.floor(stars);
   const half = (stars % 1) !== 0;
@@ -988,23 +1073,32 @@ function getStarStr(stars) {
 }
 
 function calculateScore() {
-  const w = getWeights();
-  let weightedSum = 0, totalWeight = 0;
-  CRITERIA.forEach(c => {
-    const val = parseFloat(document.getElementById(c).value);
-    const wt  = w[c];
-    document.getElementById(`val-${c}`).textContent = val.toFixed(1);
-    document.getElementById(`desc-${c}`).textContent = getDesc(c, val);
-    weightedSum  += val * wt;
-    totalWeight  += wt;
-  });
-  const score = totalWeight > 0 ? weightedSum / totalWeight : 5;
+  let score;
 
+  if (currentMode === 'quick') {
+    // Mode Rapide : Les étoiles valent entre 0.5 et 5, on multiplie par 2 pour avoir sur /10
+    score = quickRating * 2; 
+  } else {
+    // Mode Détaillé : Calcul classique avec pondération
+    const w = getWeights();
+    let weightedSum = 0, totalWeight = 0;
+    CRITERIA.forEach(c => {
+      const val = parseFloat(document.getElementById(c).value);
+      const wt  = w[c];
+      document.getElementById(`val-${c}`).textContent = val.toFixed(1);
+      document.getElementById(`desc-${c}`).textContent = getDesc(c, val);
+      weightedSum  += val * wt;
+      totalWeight  += wt;
+    });
+    score = totalWeight > 0 ? weightedSum / totalWeight : 5;
+  }
+
+  // Affichage
   const scoreEl = document.getElementById('score-big');
   scoreEl.textContent = score.toFixed(1);
   scoreEl.className = 'score-big ' + (score >= 7.5 ? 'good' : score >= 5.0 ? 'mid' : 'bad');
 
-  const stars = Math.round((score / 2) * 2) / 2; // round to nearest 0.5
+  const stars = Math.round((score / 2) * 2) / 2; // Arrondi à 0.5 près
   document.getElementById('stars-display').textContent = getStarStr(stars);
 
   return score;
@@ -1035,11 +1129,13 @@ document.getElementById('copy-btn').addEventListener('click', () => {
   if (dateStr) text += `🗓 Vu le ${dateStr}\n`;
   text += `⭐ ${stars} (${score.toFixed(1)}/10)\n`;
 
-  const vals = CRITERIA.reduce((acc, c) => {
-    acc[c] = parseFloat(document.getElementById(c).value).toFixed(1);
-    return acc;
-  }, {});
-  text += `\nScénario ${vals.scenario} · Réal ${vals.realisation} · Photo ${vals.photo} · Acteurs ${vals.acteurs} · Son ${vals.ambiance} · Affect ${vals.affect}\n`;
+  if (currentMode === 'detail') {
+    const vals = CRITERIA.reduce((acc, c) => {
+      acc[c] = parseFloat(document.getElementById(c).value).toFixed(1);
+      return acc;
+    }, {});
+    text += `\nScénario ${vals.scenario} · Réal ${vals.realisation} · Photo ${vals.photo} · Acteurs ${vals.acteurs} · Son ${vals.ambiance} · Affect ${vals.affect}\n`;
+  }
 
   if (review) text += `\n${review}`;
 
@@ -1072,9 +1168,12 @@ document.getElementById('save-btn').addEventListener('click', () => {
     liked:      isLiked,
     score:      score.toFixed(1),
     stars:      document.getElementById('stars-display').textContent,
+    mode:       currentMode,
     review:     document.getElementById('review-text').value.trim(),
-    values:     CRITERIA.reduce((acc, c) => { acc[c] = document.getElementById(c).value; return acc; }, {}),
-    savedAt:    new Date().toISOString()
+    values: currentMode === 'detail'
+      ? CRITERIA.reduce((acc, c) => { acc[c] = document.getElementById(c).value; return acc; }, {})
+      : { quick: quickRating },
+    savedAt: new Date().toISOString()
   };
 
   if (existing) {
@@ -1111,8 +1210,13 @@ function resetForm() {
   isLiked = false;
   document.getElementById('heart-btn').classList.remove('active');
   document.getElementById('view-date').valueAsDate = new Date();
+  
+  // Reset modes
   CRITERIA.forEach(c => { document.getElementById(c).value = 5; });
-  calculateScore();
+  quickRating = 2.5;
+  const defaultRadio = document.getElementById('s5'); // Sélectionne l'étoile 2.5 par défaut
+  if(defaultRadio) defaultRadio.checked = true;
+  setMode('detail'); // On revient en mode détaillé par défaut
 }
 
 // ═══════════════════════════════════════════
@@ -1129,7 +1233,6 @@ window.loadItem = function(idx) {
   isLiked = item.liked || false;
   document.getElementById('heart-btn').classList.toggle('active', isLiked);
 
-  // Film strip
   const strip = document.getElementById('film-strip');
   strip.classList.add('visible');
   document.getElementById('strip-title').textContent = item.title;
@@ -1139,10 +1242,19 @@ window.loadItem = function(idx) {
     document.getElementById('strip-poster').style.display = 'block';
   }
 
-  // Reload detail mode sliders, fallback to 5 if the item was saved under "quick" mode
-  CRITERIA.forEach(c => {
-    document.getElementById(c).value = item.values && item.values[c] !== undefined ? item.values[c] : 5;
-  });
+  // Reload mode properly (Quick or Detail)
+  if (item.mode === 'quick' && item.values?.quick !== undefined) {
+    setMode('quick');
+    quickRating = parseFloat(item.values.quick);
+    const radioId = 's' + (quickRating * 2); // ex: s10 pour 5 étoiles
+    const radioEl = document.getElementById(radioId);
+    if(radioEl) radioEl.checked = true; // Remet les étoiles visuellement au bon endroit
+  } else {
+    setMode('detail');
+    CRITERIA.forEach(c => {
+      document.getElementById(c).value = item.values && item.values[c] !== undefined ? item.values[c] : 5;
+    });
+  }
 
   calculateScore();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1189,7 +1301,6 @@ function renderGenreChips(history) {
   row.style.display = 'flex';
   chips.innerHTML = '';
 
-  // "Tous" chip
   const allChip = document.createElement('button');
   allChip.className = 'genre-chip all-chip' + (activeGenre === null ? ' active' : '');
   allChip.textContent = 'Tous';
@@ -1210,7 +1321,6 @@ function renderGenreChips(history) {
 }
 
 function getSorted(history) {
-  // Filter by genre first
   let h = activeGenre
     ? history.filter(item => item.genre && item.genre.split(',').map(g => g.trim()).includes(activeGenre))
     : [...history];
@@ -1218,7 +1328,7 @@ function getSorted(history) {
   if (sortOrder === 'score-desc') return h.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
   if (sortOrder === 'score-asc')  return h.sort((a, b) => parseFloat(a.score) - parseFloat(b.score));
   if (sortOrder === 'title')      return h.sort((a, b) => a.title.localeCompare(b.title));
-  return h; // date = original order
+  return h; 
 }
 
 function renderHistory() {
@@ -1226,7 +1336,6 @@ function renderHistory() {
   const sorted    = getSorted(history);
   const container = document.getElementById('history-list');
 
-  // Badge : affiche le compte filtré / total
   const badge = document.getElementById('hist-count-badge');
   if (activeGenre) {
     badge.textContent = `${sorted.length} / ${history.length} film${history.length > 1 ? 's' : ''}`;
@@ -1250,7 +1359,6 @@ function renderHistory() {
 
   container.innerHTML = '';
   sorted.forEach((item, i) => {
-    // Find real index in unsorted history
     const realIdx = history.findIndex(h => h.savedAt === item.savedAt && h.title === item.title);
     const div = document.createElement('div');
     div.className = 'hist-item';
@@ -1302,7 +1410,6 @@ function renderStats() {
   const avg = history.reduce((sum, h) => sum + parseFloat(h.score), 0) / history.length;
   document.getElementById('avg-score').textContent = avg.toFixed(2) + '/10';
 
-  // Distribution
   const dist = { 50:0, 45:0, 40:0, 35:0, 30:0, 25:0, 20:0, 15:0, 10:0, '05':0 };
   history.forEach(item => {
     const stars = Math.round((parseFloat(item.score) / 2) * 2) / 2;
@@ -1339,7 +1446,7 @@ function buildHistogram(dist) {
 
 function renderAll() {
   renderStats();
-  renderHistory(); // renderHistory calls renderGenreChips internally
+  renderHistory();
 }
 
 // ═══════════════════════════════════════════
