@@ -9,28 +9,10 @@
   @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
 
   :root {
-    /* Letterboxd palette exacte */
-    --bg:           #14181c;
-    --surface:      #1f2935;
-    --surface2:     #263240;
-    --border:       #283040;
-    --border-hi:    #445566;
-    --text:         #678;
-    --text-hi:      #fff;
-    --text-mid:     #9ab;
-    --orange:       #ff8000;
-    --orange-dim:   rgba(255,128,0,0.12);
-    --green:        #00e054;
-    --green-dim:    rgba(0,224,84,0.12);
-    --blue:         #40bcf4;
-    --blue-dim:     rgba(64,188,244,0.1);
-    --red:          #ff4040;
-    --red-dim:      rgba(255,64,64,0.1);
-    --gold:         #ff8000;
-    --gold-dim:     rgba(255,128,0,0.15);
-    --radius:       4px;
-    --radius-sm:    3px;
-  }
+    --bg: #14181c; --surface: #1f2935; --surface2: #263240; --border: #283040;
+    --border-hi: #445566; --text: #678; --text-hi: #fff; --text-mid: #9ab;
+    --orange: #ff8000; --gold: #ff8000; --blue: #40bcf4; --red: #ff4040; --green: #00e054;
+    --radius: 4px; --radius-sm: 3px;}
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -331,20 +313,13 @@
   .criterion-block.affect-block .criterion-desc { border-left-color: var(--blue); }
 
   /* ── QUICK RATING (Style Letterboxd) ── */
-.quick-section { display: none; padding: 20px 0; }
-body.quick-mode .quick-section { display: block; }
-
-.rating-stars {
-  display: flex; flex-direction: row-reverse; justify-content: center; gap: 2px;
-}
-.rating-stars input { display: none; }
-.rating-stars label {
-  font-size: 2.5rem; color: var(--border-hi); cursor: pointer; transition: color 0.1s;
-}
-.rating-stars label:hover,
-.rating-stars label:hover ~ label,
-.rating-stars input:checked ~ label { color: var(--gold); }
-.rating-stars label.half { width: 1.25rem; overflow: hidden; }
+..quick-section { display: none; padding: 20px 0; }
+  body.quick-mode .quick-section { display: block; }
+  .rating-stars { display: flex; flex-direction: row-reverse; justify-content: center; gap: 2px; }
+  .rating-stars input { display: none; }
+  .rating-stars label { font-size: 2.5rem; color: var(--border-hi); cursor: pointer; transition: color 0.1s; }
+  .rating-stars label:hover, .rating-stars label:hover ~ label, .rating-stars input:checked ~ label { color: var(--gold); }
+  .rating-stars label.half { width: 1.25rem; overflow: hidden; }
 
   /* Quick star rating via CSS hack */
  document.getElementById('quick-stars-container').addEventListener('change', (e) => {
@@ -838,11 +813,10 @@ body.quick-mode .quick-section { display: block; }
 // ═══════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════
-const TMDB_KEY  = "bb5143d214ad9d9ebff6812f2130c59d";
 const STORE_KEY = "lbx_v2";
-
 const CRITERIA = ['scenario','realisation','photo','acteurs','ambiance','affect'];
-
+let isLiked = false, currentMode = 'detail', quickRating = 2.5, sortOrder = 'date', activeGenre = null, weightsOpen = false;}
+  
 // Descriptions spécifiques par critère ET par palier
 const DESCS = {
   scenario: [
@@ -1597,7 +1571,6 @@ document.getElementById('modal').addEventListener('click', e => {
 // ═══════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════
-buildQuickStars();
 updateWeightBadges();
 calculateScore();
 </script>
