@@ -112,7 +112,7 @@
   }
 
   /* ── MOVIE SEARCH ── */
-  .search-wrap { position: relative; margin-bottom: 16px; }
+  .search-wrap { position: relative; margin-bottom: 12px; }
   .search-row { display: flex; gap: 8px; }
   .search-input {
     flex: 1;
@@ -126,7 +126,7 @@
     outline: none;
     transition: border-color .15s, box-shadow .15s;
   }
-  .search-input:focus { box-shadow: 0 0 0 3px var(--blue-dim); }
+  .search-input:focus { box-shadow: 0 0 0 3px rgba(64, 188, 244, 0.2); }
   .search-input::placeholder { color: var(--text); }
 
   .date-input {
@@ -154,7 +154,24 @@
     transition: all .2s;
     flex-shrink: 0;
   }
-  .heart-btn.active { color: var(--red); border-color: var(--red); background: var(--red-dim); }
+  .heart-btn.active { color: var(--red); border-color: var(--red); background: rgba(255, 64, 64, 0.15); }
+
+  /* ── CONTEXT TAGS ── */
+  .context-row { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .ctx-tag {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'Titillium Web', sans-serif;
+    font-weight: 600;
+  }
+  .ctx-tag:hover { color: var(--text-hi); border-color: var(--border-hi); }
+  .ctx-tag.active { background: rgba(64, 188, 244, 0.15); border-color: var(--blue); color: var(--blue); }
 
   /* Dropdown suggestions */
   .suggestions {
@@ -197,7 +214,7 @@
   .film-strip-poster { width: 44px; height: 66px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
   .film-strip-info { flex: 1; min-width: 0; }
   .film-strip-title { color: var(--text-hi); font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .film-strip-genre { color: var(--text); font-size: 0.78rem; margin-top: 2px; }
+  .film-strip-genre { color: var(--text); font-size: 0.78rem; margin-top: 2px; line-height: 1.4; }
 
   .strip-ratings {
     display: flex;
@@ -323,41 +340,36 @@
   }
   .rating-stars input { display: none; }
 
-  /* Astuce CSS pour les demi-étoiles : calage géométrique strict */
   .rating-stars label { 
       cursor: pointer; 
       font-size: 3.5rem; 
-      width: 0.5em; /* Largeur stricte de 50% */
+      width: 0.5em; 
       display: inline-block; 
       position: relative; 
       overflow: hidden; 
-      color: transparent; /* Masque le texte brut */
+      color: transparent; 
       line-height: 1.1;
       margin: 0;
   }
 
-  /* Espacement uniquement entre les étoiles complètes */
   .rating-stars label.right-half:not(:first-child) {
       margin-right: 8px; 
   }
 
-  /* Le pseudo-élément qui dessine la vraie étoile parfaitement centrée */
   .rating-stars label::before { 
       content: '★'; 
       position: absolute; 
       top: 0; 
-      width: 1em; /* L'icône fait exactement la taille de 2 moitiés */
+      width: 1em; 
       text-align: center;
       color: var(--border-hi); 
       transition: color 0.1s; 
-      font-family: Arial, sans-serif; /* Force une police standard sans marges internes bizarres */
+      font-family: Arial, sans-serif; 
   }
 
-  /* Découpage parfait de l'étoile */
   .rating-stars label.left-half::before { left: 0; }
-  .rating-stars label.right-half::before { left: -0.5em; } /* Décale exactement de 50% */
+  .rating-stars label.right-half::before { left: -0.5em; } 
 
-  /* Changement de couleur au survol et au clic */
   .rating-stars label:hover::before, 
   .rating-stars label:hover ~ label::before, 
   .rating-stars input:checked ~ label::before { 
@@ -479,7 +491,9 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     padding-right: 46px; margin-bottom: 2px;
   }
-  .hist-meta { font-size: 0.74rem; color: var(--text); margin-bottom: 4px; }
+  .hist-meta { font-size: 0.74rem; color: var(--text); margin-bottom: 4px; line-height: 1.4; }
+  .hist-tags-disp { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px; }
+  .h-tag { background: var(--surface2); border: 1px solid var(--border); padding: 2px 6px; border-radius: 10px; font-size: 0.65rem; color: var(--text-mid); }
   .hist-stars { font-size: 0.85rem; color: var(--orange); }
   .hist-score {
     font-family: 'JetBrains Mono', monospace;
@@ -565,8 +579,8 @@
     transition: all .15s;
   }
   .modal-btn:hover { border-color: var(--border-hi); color: var(--text-hi); }
-  .modal-btn.danger { background: var(--red-dim); border-color: var(--red); color: var(--red); }
-  .modal-btn.primary { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
+  .modal-btn.danger { background: rgba(255, 64, 64, 0.15); border-color: var(--red); color: var(--red); }
+  .modal-btn.primary { background: rgba(64, 188, 244, 0.15); border-color: var(--blue); color: var(--blue); }
 
   /* ── WEIGHT INDICATOR ── */
   .weight-badge {
@@ -600,10 +614,8 @@
 </head>
 <body>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Confirmer</div>
@@ -615,7 +627,6 @@
   </div>
 </div>
 
-<!-- HEADER -->
 <header class="app-header">
   <h1 class="app-title"><em>Letterboxd</em> Rating Companion</h1>
   <div class="header-actions">
@@ -625,15 +636,12 @@
   </div>
 </header>
 
-<!-- MAIN LAYOUT -->
 <div class="layout">
 
-  <!-- ════ COL LEFT ════ -->
   <div class="col-left">
     <div class="card">
       <div class="card-title">Film</div>
 
-      <!-- Search -->
       <div class="search-wrap">
         <div class="search-row">
           <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
@@ -643,7 +651,13 @@
         <div class="suggestions" id="suggestions"></div>
       </div>
 
-      <!-- Film strip (shown after selection) -->
+      <div class="context-row" id="context-tags">
+        <button type="button" class="ctx-tag" data-tag="🍿 Cinéma">🍿 Cinéma</button>
+        <button type="button" class="ctx-tag" data-tag="🔄 Re-visionnage">🔄 Re-visionnage</button>
+        <button type="button" class="ctx-tag" data-tag="📝 Analyse / Étude">📝 Analyse / Étude</button>
+        <button type="button" class="ctx-tag" data-tag="🛋️ À la maison">🛋️ À la maison</button>
+      </div>
+
       <div class="film-strip" id="film-strip">
         <img class="film-strip-poster" id="strip-poster" src="" alt="">
         <div class="film-strip-info">
@@ -661,8 +675,11 @@
       </div>
 
       <input type="hidden" id="movie-title">
+      <input type="hidden" id="movie-year">
       <input type="hidden" id="movie-poster">
       <input type="hidden" id="movie-genre">
+      <input type="hidden" id="movie-runtime">
+      <input type="hidden" id="movie-director">
       <input type="hidden" id="movie-tmdb-score">
     </div>
 
@@ -672,16 +689,13 @@
         <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
       </div>
 
-      <!-- ── MODE TABS ── -->
       <div class="mode-tabs">
         <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
         <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
-      <!-- ── DETAILED MODE ── -->
       <div class="detailed-section">
 
-        <!-- Weights toggle -->
         <div class="weights-toggle" id="weights-toggle" onclick="toggleWeights()">
           ⚙ Personnaliser les pondérations
         </div>
@@ -756,7 +770,6 @@
         </div>
       </div>
 
-      <!-- ── QUICK MODE ── -->
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
           <input type="radio" id="s10" name="rating" value="5"><label for="s10" class="right-half">★</label>
@@ -772,7 +785,6 @@
         </div>
       </div>
 
-      <!-- Score + critique + actions -->
       <div class="score-result">
         <div class="score-main">
           <div class="score-big" id="score-big">5.0</div>
@@ -793,10 +805,8 @@
     </div>
   </div>
 
-  <!-- ════ COL RIGHT ════ -->
   <div class="col-right">
 
-    <!-- Stats -->
     <div class="card">
       <div class="card-title">Statistiques</div>
       <div class="stat-row">
@@ -810,14 +820,12 @@
       <div class="histo" id="histogram"></div>
     </div>
 
-    <!-- History -->
     <div class="card">
       <div class="card-title">
         Historique
         <span class="card-title-badge" id="hist-count-badge">0 film</span>
       </div>
 
-      <!-- Sort -->
       <div class="filter-row" id="filter-row">
         <button class="filter-btn active" data-sort="date">Récents</button>
         <button class="filter-btn" data-sort="score-desc">Mieux notés</button>
@@ -825,7 +833,6 @@
         <button class="filter-btn" data-sort="title">A→Z</button>
       </div>
 
-      <!-- Genre filter -->
       <div class="genre-filter-row" id="genre-filter-row" style="display:none;">
         <span class="genre-filter-label">Genre :</span>
         <div class="genre-chips" id="genre-chips"></div>
@@ -835,11 +842,9 @@
     </div>
 
   </div>
-</div><!-- /layout -->
-
-<script>
+</div><script>
 // ═══════════════════════════════════════════
-//  CONFIG (Descriptions expressives SensCritique/Letterboxd)
+//  CONFIG
 // ═══════════════════════════════════════════
 const STORE_KEY = "lbx_v2";
 const CRITERIA = ['scenario','realisation','photo','acteurs','ambiance','affect'];
@@ -913,6 +918,7 @@ let sortOrder   = 'date';
 let activeGenre = null; 
 let weightsOpen = false;
 let pendingAction = null; 
+let activeContextTags = new Set(); // Gestion des tags de contexte
 
 // ═══════════════════════════════════════════
 //  STORAGE 
@@ -944,6 +950,22 @@ function saveHistory(history) {
   } catch {}
   renderAll();
 })();
+
+// ═══════════════════════════════════════════
+//  CONTEXT TAGS
+// ═══════════════════════════════════════════
+document.querySelectorAll('.ctx-tag').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tag = btn.dataset.tag;
+    if (activeContextTags.has(tag)) {
+      activeContextTags.delete(tag);
+      btn.classList.remove('active');
+    } else {
+      activeContextTags.add(tag);
+      btn.classList.add('active');
+    }
+  });
+});
 
 // ═══════════════════════════════════════════
 //  TMDb SEARCH
@@ -982,6 +1004,7 @@ async function fetchSuggestions(q) {
 
 async function selectMovie(m, year) {
   document.getElementById('movie-title').value  = m.title;
+  document.getElementById('movie-year').value   = year;
   document.getElementById('movie-poster').value = m.poster_path ? `https://image.tmdb.org/t/p/w185${m.poster_path}` : '';
   searchEl.value = `${m.title} (${year})`;
   suggestEl.style.display = 'none';
@@ -989,12 +1012,33 @@ async function selectMovie(m, year) {
   document.getElementById('strip-ratings').style.display = 'none';
 
   try {
-   const res = await fetch(`/api/search?id=${m.id}`);
+    // Append_to_response permet de récupérer les crédits (réalisateur) en 1 seul appel si ton proxy le permet
+    const res = await fetch(`/api/search?id=${m.id}&append_to_response=credits`);
     const data = await res.json();
 
     const genres = data.genres?.map(g => g.name).join(', ') || '';
+    const runtime = data.runtime ? `${data.runtime} min` : '';
+    
+    // Récupération du réalisateur
+    let director = '';
+    if (data.credits && data.credits.crew) {
+      const dirObj = data.credits.crew.find(c => c.job === 'Director');
+      if (dirObj) director = dirObj.name;
+    } else if (data.director) {
+      director = data.director; // Fallback au cas où
+    }
+
     document.getElementById('movie-genre').value = genres;
-    document.getElementById('strip-genre').textContent = genres + (year ? ` · ${year}` : '');
+    document.getElementById('movie-runtime').value = runtime;
+    document.getElementById('movie-director').value = director;
+
+    // Construction de la chaîne d'information pour la bande visuelle
+    let stripMeta = genres;
+    if (runtime) stripMeta += ` · ${runtime}`;
+    if (year) stripMeta += ` · ${year}`;
+    if (director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;">Réalisé par <b>${director}</b></span>`;
+    
+    document.getElementById('strip-genre').innerHTML = stripMeta;
 
     const score = data.vote_average;
     const count = data.vote_count;
@@ -1103,10 +1147,8 @@ function calculateScore() {
   let score;
 
   if (currentMode === 'quick') {
-    // Score sur 10 en interne (2 * étoiles)
     score = quickRating * 2; 
   } else {
-    // Calcul pondéré
     const w = getWeights();
     let weightedSum = 0, totalWeight = 0;
     CRITERIA.forEach(c => {
@@ -1120,7 +1162,6 @@ function calculateScore() {
     score = totalWeight > 0 ? weightedSum / totalWeight : 5;
   }
 
-  // ── GESTION DE L'AFFICHAGE DYNAMIQUE (/5 ou /10) ──
   const scoreEl = document.getElementById('score-big');
   const denomEl = document.querySelector('.score-denom');
 
@@ -1137,7 +1178,7 @@ function calculateScore() {
   const stars = Math.round((score / 2) * 2) / 2;
   document.getElementById('stars-display').textContent = getStarStr(stars);
 
-  return score; // Renvoie toujours la note sur 10 en interne
+  return score; 
 }
 
 CRITERIA.forEach(c => {
@@ -1154,6 +1195,8 @@ document.getElementById('view-date').valueAsDate = new Date();
 // ═══════════════════════════════════════════
 document.getElementById('copy-btn').addEventListener('click', () => {
   const title    = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film sans titre';
+  const year     = document.getElementById('movie-year').value;
+  const director = document.getElementById('movie-director').value;
   const dateVal  = document.getElementById('view-date').value;
   const dateStr  = dateVal ? new Date(dateVal + 'T12:00:00').toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }) : '';
   const review   = document.getElementById('review-text').value.trim();
@@ -1161,8 +1204,10 @@ document.getElementById('copy-btn').addEventListener('click', () => {
   const stars    = document.getElementById('stars-display').textContent;
   const heartStr = isLiked ? ' ❤️' : '';
 
-  let text = `📽 ${title}${heartStr}\n`;
+  let text = `📽 ${title} ${year ? '('+year+') ' : ''}${heartStr}\n`;
+  if (director) text += `🎬 Un film de ${director}\n`;
   if (dateStr) text += `🗓 Vu le ${dateStr}\n`;
+  if (activeContextTags.size > 0) text += `🏷 ${Array.from(activeContextTags).join(' · ')}\n`;
   
   if (currentMode === 'quick') {
     text += `⭐ ${stars} (${quickRating.toFixed(1)}/5)\n`;
@@ -1202,11 +1247,15 @@ document.getElementById('save-btn').addEventListener('click', () => {
 
   const movie = {
     title,
+    year:       document.getElementById('movie-year').value,
     poster:     document.getElementById('movie-poster').value,
     genre:      document.getElementById('movie-genre').value,
+    runtime:    document.getElementById('movie-runtime').value,
+    director:   document.getElementById('movie-director').value,
     tmdbScore:  document.getElementById('movie-tmdb-score').value || null,
     date:       document.getElementById('view-date').value,
     liked:      isLiked,
+    contextTags: Array.from(activeContextTags),
     score:      score.toFixed(1),
     stars:      document.getElementById('stars-display').textContent,
     mode:       currentMode,
@@ -1242,16 +1291,23 @@ document.getElementById('save-btn').addEventListener('click', () => {
 function resetForm() {
   searchEl.value = '';
   document.getElementById('movie-title').value     = '';
+  document.getElementById('movie-year').value      = '';
   document.getElementById('movie-poster').value    = '';
   document.getElementById('movie-genre').value     = '';
+  document.getElementById('movie-runtime').value   = '';
+  document.getElementById('movie-director').value  = '';
   document.getElementById('movie-tmdb-score').value = '';
   document.getElementById('review-text').value     = '';
   document.getElementById('strip-ratings').style.display = 'none';
   document.getElementById('film-strip').classList.remove('visible');
+  
   isLiked = false;
   document.getElementById('heart-btn').classList.remove('active');
   document.getElementById('view-date').valueAsDate = new Date();
   
+  activeContextTags.clear();
+  document.querySelectorAll('.ctx-tag').forEach(b => b.classList.remove('active'));
+
   CRITERIA.forEach(c => { document.getElementById(c).value = 5; });
   quickRating = 2.5;
   const defaultRadio = document.getElementById('s5'); 
@@ -1265,18 +1321,36 @@ function resetForm() {
 window.loadItem = function(idx) {
   const history = loadHistory(); const item = history[idx]; if (!item) return;
   document.getElementById('movie-title').value  = item.title;
+  document.getElementById('movie-year').value   = item.year || '';
   document.getElementById('movie-poster').value = item.poster || '';
   document.getElementById('movie-genre').value  = item.genre  || '';
+  document.getElementById('movie-runtime').value = item.runtime || '';
+  document.getElementById('movie-director').value = item.director || '';
+  
   searchEl.value = item.title;
   document.getElementById('view-date').value     = item.date  || '';
   document.getElementById('review-text').value   = item.review || '';
   isLiked = item.liked || false;
   document.getElementById('heart-btn').classList.toggle('active', isLiked);
 
+  // Restore context tags
+  activeContextTags = new Set(item.contextTags || []);
+  document.querySelectorAll('.ctx-tag').forEach(b => {
+    if (activeContextTags.has(b.dataset.tag)) b.classList.add('active');
+    else b.classList.remove('active');
+  });
+
+  // Visuel du Strip
   const strip = document.getElementById('film-strip');
   strip.classList.add('visible');
   document.getElementById('strip-title').textContent = item.title;
-  document.getElementById('strip-genre').textContent = item.genre || '';
+  
+  let stripMeta = item.genre || '';
+  if (item.runtime) stripMeta += ` · ${item.runtime}`;
+  if (item.year) stripMeta += ` · ${item.year}`;
+  if (item.director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;">Réalisé par <b>${item.director}</b></span>`;
+  document.getElementById('strip-genre').innerHTML = stripMeta;
+
   if (item.poster) {
     document.getElementById('strip-poster').src = item.poster;
     document.getElementById('strip-poster').style.display = 'block';
@@ -1417,11 +1491,26 @@ function renderHistory() {
       ? `<span class="hist-tmdb">★ ${item.tmdbScore} TMDb</span>`
       : '';
 
+    // Construction visuelle de la ligne Meta avec Réal et Durée
+    let metaHTML = '';
+    if (item.year) metaHTML += item.year + ' · ';
+    if (item.runtime) metaHTML += item.runtime + ' · ';
+    metaHTML += item.genre || '';
+    if (item.director) metaHTML += `<br><span style="color:var(--text-mid)">Réalisé par <b>${item.director}</b></span>`;
+
+    // Construction visuelle des Tags
+    let tagsHTML = '';
+    if (item.contextTags && item.contextTags.length > 0) {
+      tagsHTML = `<div class="hist-tags-disp">${item.contextTags.map(t => `<span class="h-tag">${t}</span>`).join('')}</div>`;
+    }
+
     div.innerHTML = `
       ${imgHtml}
       <div class="hist-body">
         <div class="hist-title">${item.title}${item.liked ? ' ❤️' : ''}</div>
-        <div class="hist-meta">${dateStr ? dateStr + ' · ' : ''}${item.genre ? item.genre + ' · ' : ''}<span style="color:${scoreColor};font-weight:700;">${item.score}/10</span>${tmdbHtml}</div>
+        <div class="hist-meta">${metaHTML}</div>
+        ${tagsHTML}
+        <div style="margin-bottom:4px;"><span style="color:${scoreColor};font-weight:700;">${item.score}/10</span>${tmdbHtml}</div>
         <div class="hist-stars">${item.stars}<span class="hist-score"></span></div>
         ${item.review ? `<div style="font-size:0.74rem;color:var(--text);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">"${item.review}"</div>` : ''}
       </div>
