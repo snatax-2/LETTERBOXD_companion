@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="default">
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="favicon.png">
@@ -8,22 +8,78 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  /* Importation de toutes les polices pour les différents thèmes */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Oswald:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Righteous&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&family=VT323&display=swap');
 
+  /* ── VARIABLES GLOBALES ET THÈMES ── */
   :root {
+    /* 1. L'Original (Letterboxd) */
     --bg: #14181c; --surface: #1f2935; --surface2: #263240; --border: #283040;
     --border-hi: #445566; --text: #678; --text-hi: #fff; --text-mid: #9ab;
     --orange: #ff8000; --gold: #ff8000; --blue: #40bcf4; --red: #ff4040; --green: #00e054;
-    --radius: 4px; --radius-sm: 3px;}
+    --radius: 4px; --radius-sm: 3px;
+    --font-heading: 'Titillium Web', sans-serif;
+    --font-body: 'Titillium Web', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  [data-theme="scuderia"] {
+    /* 2. Scuderia (Agressif, Sport) */
+    --bg: #0a0a0a; --surface: #141414; --surface2: #1e1e1e; --border: #2a2a2a;
+    --border-hi: #444; --text: #888; --text-hi: #fff; --text-mid: #aaa;
+    --orange: #e32636; --gold: #e32636; --blue: #ffffff; --red: #cc0000; --green: #00cc00;
+    --radius: 0px; --radius-sm: 0px;
+    --font-heading: 'Oswald', sans-serif;
+    --font-body: 'Source Sans 3', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  [data-theme="auteur"] {
+    /* 3. Auteur (Élégant, Académique) */
+    --bg: #050505; --surface: #121212; --surface2: #1f1f1f; --border: #333333;
+    --border-hi: #555; --text: #777; --text-hi: #f4f4f0; --text-mid: #b0b0b0;
+    --orange: #d4af37; --gold: #d4af37; --blue: #800020; --red: #8b0000; --green: #556b2f;
+    --radius: 0px; --radius-sm: 0px;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Source Sans 3', sans-serif;
+    --font-mono: 'Playfair Display', serif;
+  }
+
+  [data-theme="ludex"] {
+    /* 4. Ludex Studio (Tech, Dashboard) */
+    --bg: #0f172a; --surface: #1e293b; --surface2: #334155; --border: #475569;
+    --border-hi: #94a3b8; --text: #64748b; --text-hi: #f8fafc; --text-mid: #cbd5e1;
+    --orange: #38bdf8; --gold: #fbbf24; --blue: #818cf8; --red: #f87171; --green: #34d399;
+    --radius: 12px; --radius-sm: 8px;
+    --font-heading: 'Inter', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  [data-theme="vintage"] {
+    /* 5. Synthwave 80s (Retro Néon) */
+    --bg: #1a0b2e; --surface: #2a1b42; --surface2: #3d2c5a; --border: #f72585;
+    --border-hi: #4cc9f0; --text: #9b8ab3; --text-hi: #fff; --text-mid: #cbbbe3;
+    --orange: #f72585; --gold: #fee440; --blue: #4cc9f0; --red: #ff003c; --green: #00f5d4;
+    --radius: 0px; --radius-sm: 0px;
+    --font-heading: 'Righteous', cursive;
+    --font-body: 'Source Sans 3', sans-serif;
+    --font-mono: 'VT323', monospace;
+  }
+
+  /* Effets spéciaux pour Vintage */
+  [data-theme="vintage"] .app-title, [data-theme="vintage"] .score-big { text-shadow: 0px 0px 8px rgba(247, 37, 133, 0.5); }
+  [data-theme="vintage"] .search-input:focus { box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.4); }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Titillium Web', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: var(--font-body);
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     padding: 24px 16px 60px;
+    transition: background 0.3s, color 0.3s;
   }
 
   /* ── HEADER ── */
@@ -36,7 +92,7 @@
     gap: 12px;
   }
   .app-title {
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font-heading);
     font-size: 1.4rem;
     font-weight: 700;
     color: var(--text-hi);
@@ -55,7 +111,7 @@
     color: var(--text);
     padding: 8px 12px;
     font-size: 0.82rem;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font-heading);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -86,6 +142,7 @@
     border-radius: var(--radius);
     padding: 20px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    transition: background 0.3s, border-color 0.3s, border-radius 0.3s;
   }
   .card-title {
     font-size: 0.72rem;
@@ -99,7 +156,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font-heading);
   }
   .card-title-badge {
     font-size: 0.72rem;
@@ -116,7 +173,7 @@
     background: transparent; border: 1px solid var(--border-hi);
     color: var(--text-hi); padding: 3px 8px; border-radius: 12px;
     font-size: 0.65rem; cursor: pointer; transition: all 0.2s;
-    font-family: 'Titillium Web', sans-serif; font-weight: 600;
+    font-family: var(--font-heading); font-weight: 600;
     text-transform: uppercase; letter-spacing: 0.05em;
   }
   .btn-new-review:hover { background: var(--surface2); color: var(--blue); border-color: var(--blue); }
@@ -131,7 +188,7 @@
     border-radius: var(--radius-sm);
     color: var(--text-hi);
     padding: 10px 14px;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font-heading);
     font-size: 0.9rem;
     outline: none;
     transition: border-color .15s, box-shadow .15s;
@@ -145,7 +202,7 @@
     border-radius: var(--radius-sm);
     color: var(--text-mid);
     padding: 10px 12px;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font-heading);
     font-size: 0.85rem;
     outline: none;
     width: 150px;
@@ -182,7 +239,7 @@
     color: var(--text-mid);
     cursor: pointer;
     transition: all .15s;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font-heading);
     font-weight: 600;
   }
   .ctx-tag:hover { color: var(--text-hi); border-color: var(--border-hi); }
@@ -244,11 +301,11 @@
     gap: 4px;
     background: rgba(255,128,0,0.12);
     border: 1px solid rgba(255,128,0,0.35);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     padding: 3px 8px;
   }
   .strip-rating-icon { color: var(--orange); font-size: 0.82rem; }
-  .strip-rating-val  { color: var(--text-hi); font-weight: 700; font-size: 0.88rem; font-family: 'Titillium Web', sans-serif; }
+  .strip-rating-val  { color: var(--text-hi); font-weight: 700; font-size: 0.88rem; font-family: var(--font-heading); }
   .strip-rating-src  { color: var(--text); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; }
   .strip-votes       { color: var(--text); font-size: 0.74rem; }
 
@@ -256,8 +313,8 @@
   .mode-tabs { display: flex; gap: 4px; margin-bottom: 18px; background: var(--bg); border-radius: var(--radius-sm); padding: 4px; }
   .mode-tab {
     flex: 1; text-align: center; padding: 7px;
-    border: none; border-radius: 4px; cursor: pointer;
-    font-family: 'Titillium Web', sans-serif;
+    border: none; border-radius: var(--radius-sm); cursor: pointer;
+    font-family: var(--font-heading);
     font-size: 0.82rem; font-weight: 700;
     color: var(--text); background: transparent;
     transition: all .15s;
@@ -286,15 +343,15 @@
     width: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     color: var(--text-hi);
     padding: 6px 10px;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font-heading);
     font-size: 0.85rem;
     outline: none;
   }
   .weight-item input:focus { border-color: var(--orange); }
-  .weight-reset { margin-top: 10px; font-size: 0.78rem; color: var(--orange); background: none; border: none; cursor: pointer; font-family: 'Titillium Web', sans-serif; padding: 0; font-weight: 600; }
+  .weight-reset { margin-top: 10px; font-size: 0.78rem; color: var(--orange); background: none; border: none; cursor: pointer; font-family: var(--font-heading); padding: 0; font-weight: 600; }
   .weight-reset:hover { text-decoration: underline; }
 
   /* ── CRITERIA ── */
@@ -305,11 +362,11 @@
     display: flex; justify-content: space-between; align-items: baseline;
     margin-bottom: 6px;
   }
-  .criterion-label { font-size: 0.82rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.06em; }
+  .criterion-label { font-size: 0.82rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.06em; font-family: var(--font-heading);}
   .criterion-label.affect-label { color: var(--blue); }
   .criterion-val {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.92rem; font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: 1rem; font-weight: 600;
     color: var(--text-hi);
   }
   .criterion-val.affect-val { color: var(--blue); }
@@ -334,11 +391,11 @@
 
   .criterion-desc {
     font-size: 0.8rem;
-    color: #566;
+    color: var(--text);
     background: var(--surface2);
     border-left: 2px solid var(--border-hi);
     padding: 7px 10px;
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     line-height: 1.45;
     min-height: 32px;
   }
@@ -402,7 +459,7 @@
     gap: 10px; margin-bottom: 6px;
   }
   .score-big {
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font-heading);
     font-size: 3.5rem; font-weight: 700;
     line-height: 1; color: var(--text-hi);
     transition: color .3s;
@@ -411,7 +468,7 @@
   .score-big.good { color: var(--green); }
   .score-big.mid  { color: var(--gold); }
   .score-big.bad  { color: var(--red); }
-  .score-denom { font-size: 1rem; color: var(--text); margin-bottom: 10px; }
+  .score-denom { font-size: 1rem; color: var(--text); margin-bottom: 10px; font-family: var(--font-mono); }
 
   .stars-display {
     text-align: center;
@@ -423,15 +480,15 @@
 
   /* ── REVIEW TEXTAREA ── */
   .review-wrap { margin-bottom: 16px; }
-  .review-wrap label { display: block; font-size: 0.72rem; color: var(--text); margin-bottom: 6px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'Titillium Web', sans-serif; }
+  .review-wrap label { display: block; font-size: 0.72rem; color: var(--text); margin-bottom: 6px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--font-heading); }
   .review-textarea {
     width: 100%;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    color: var(--text-mid);
+    color: var(--text-hi);
     padding: 10px 12px;
-    font-family: 'Source Sans 3', 'Titillium Web', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.88rem;
     line-height: 1.6;
     resize: vertical;
@@ -440,20 +497,20 @@
     transition: border-color .15s;
   }
   .review-textarea:focus { border-color: var(--border-hi); }
-  .review-textarea::placeholder { color: #455; }
+  .review-textarea::placeholder { color: var(--text-mid); opacity: 0.5;}
 
   /* ── ACTION BUTTONS ── */
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .btn {
     border: none; border-radius: var(--radius-sm);
-    padding: 11px 16px; font-family: 'Titillium Web', sans-serif;
+    padding: 11px 16px; font-family: var(--font-heading);
     font-size: 0.85rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
     cursor: pointer; transition: opacity .15s, background .15s;
     display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1;
     min-width: 120px;
   }
   .btn:hover { opacity: 0.88; }
-  .btn-copy { background: #333; color: #fff; border: 1px solid var(--border-hi); }
+  .btn-copy { background: var(--surface2); color: var(--text-hi); border: 1px solid var(--border-hi); }
   .btn-copy.copied { background: var(--green); color: #0d1117; border-color: var(--green); }
   .btn-image { background: var(--green); color: #0d1117; }
   .btn-save { background: var(--blue); color: #0d1117; }
@@ -465,9 +522,10 @@
     border: 1px solid var(--border); margin-bottom: 10px;
   }
   .stat-row span:first-child { font-size: 0.82rem; }
-  .stat-num { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 600; color: var(--text-hi); }
+  .stat-num { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 600; color: var(--text-hi); }
   
   .stat-group-title {
+    font-family: var(--font-heading);
     font-size: 0.65rem; font-weight: 700; color: var(--text-mid); 
     text-transform: uppercase; letter-spacing: 0.1em; 
     margin: 20px 0 10px 0; padding-bottom: 6px; border-bottom: 1px solid var(--border);
@@ -479,22 +537,22 @@
   .histo-label { width: 40px; color: var(--text); text-align: right; flex-shrink: 0; }
   .histo-track { flex: 1; height: 10px; background: var(--bg); border-radius: 3px; overflow: hidden; }
   .histo-bar { height: 100%; width: 0%; background: var(--orange); border-radius: 3px; transition: width .4s ease; }
-  .histo-count { width: 18px; text-align: right; font-family: 'JetBrains Mono', monospace; color: var(--text-hi); font-size: 0.74rem; }
+  .histo-count { width: 18px; text-align: right; font-family: var(--font-mono); color: var(--text-hi); font-size: 0.74rem; }
 
   /* Top Genres */
   .top-genre-row {
     display: flex; justify-content: space-between; align-items: center;
-    background: var(--bg); padding: 8px 12px; border-radius: 4px; margin-bottom: 6px;
+    background: var(--bg); padding: 8px 12px; border-radius: var(--radius-sm); margin-bottom: 6px;
     border: 1px solid var(--border);
   }
-  .top-genre-name { font-weight: 600; color: var(--text-hi); font-size: 0.85rem; }
+  .top-genre-name { font-family: var(--font-heading); font-weight: 600; color: var(--text-hi); font-size: 0.85rem; }
   .top-genre-meta { font-size: 0.75rem; color: var(--text); display: flex; gap: 8px; align-items: center; }
-  .top-genre-avg { font-family: 'JetBrains Mono', monospace; color: var(--gold); font-weight: 600; }
+  .top-genre-avg { font-family: var(--font-mono); color: var(--gold); font-weight: 600; }
 
   /* Avg Criteria */
   .avg-crit-row { margin-bottom: 8px; }
   .avg-crit-head { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px; color: var(--text); }
-  .avg-crit-val { font-family: 'JetBrains Mono', monospace; color: var(--text-hi); font-weight: bold; }
+  .avg-crit-val { font-family: var(--font-mono); color: var(--text-hi); font-weight: bold; }
   .avg-crit-track { height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
   .avg-crit-bar { height: 100%; background: var(--blue); border-radius: 3px; }
 
@@ -504,7 +562,7 @@
     background: var(--bg); border: 1px solid var(--border);
     border-radius: 20px; padding: 4px 10px;
     font-size: 0.74rem; color: var(--text); cursor: pointer;
-    transition: all .15s; font-family: 'Titillium Web', sans-serif;
+    transition: all .15s; font-family: var(--font-heading);
     font-weight: 600; letter-spacing: 0.04em;
   }
   .filter-btn:hover { border-color: var(--border-hi); color: var(--text-hi); }
@@ -529,7 +587,7 @@
   .hist-poster-ph { width: 36px; height: 54px; background: var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; }
   .hist-body { flex: 1; min-width: 0; }
   .hist-title {
-    color: var(--text-hi); font-weight: 700; font-size: 0.88rem;
+    color: var(--text-hi); font-weight: 700; font-size: 0.88rem; font-family: var(--font-heading);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     padding-right: 46px; margin-bottom: 2px;
   }
@@ -538,11 +596,10 @@
   .h-tag { background: var(--surface2); border: 1px solid var(--border); padding: 2px 6px; border-radius: 10px; font-size: 0.65rem; color: var(--text-mid); }
   .hist-stars { font-size: 0.85rem; color: var(--orange); }
   .hist-score {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.74rem; color: var(--text); margin-left: 6px;
   }
   
-  /* Nouveau style pour la lecture étendue de la critique */
   .hist-review {
     background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm);
     padding: 8px 10px; margin-top: 8px; cursor: pointer; transition: all 0.2s;
@@ -550,13 +607,13 @@
   .hist-review:hover { border-color: var(--border-hi); }
   .hist-review-content {
     font-size: 0.8rem; color: var(--text-mid); line-height: 1.5;
-    font-family: 'Source Sans 3', sans-serif;
+    font-family: var(--font-body);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   .hist-review.expanded .hist-review-content { -webkit-line-clamp: unset; color: var(--text-hi); }
   .hist-review-toggle {
     display: block; font-size: 0.65rem; color: var(--blue); margin-top: 4px; 
-    text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;
+    text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; font-family: var(--font-heading);
   }
   .hist-review.expanded .hist-review-toggle::after { content: "Réduire"; }
   .hist-review:not(.expanded) .hist-review-toggle::after { content: "Lire la critique"; }
@@ -564,7 +621,7 @@
   .hist-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 4px; }
   .hist-action-btn {
     background: none; border: none; cursor: pointer;
-    font-size: 0.82rem; padding: 3px 5px; border-radius: 4px;
+    font-size: 0.82rem; padding: 3px 5px; border-radius: var(--radius-sm);
     color: var(--text); transition: background .1s;
   }
   .hist-action-btn:hover { background: var(--surface2); }
@@ -594,7 +651,7 @@
     border-radius: 20px;
     padding: 3px 10px;
     font-size: 0.73rem;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font-heading);
     font-weight: 600;
     color: var(--text);
     cursor: pointer;
@@ -602,10 +659,10 @@
     white-space: nowrap;
   }
   .genre-chip:hover { border-color: var(--border-hi); color: var(--text-hi); }
-  .genre-chip.active { background: var(--orange-dim); border-color: var(--orange); color: var(--orange); }
+  .genre-chip.active { background: rgba(255,128,0,0.15); border-color: var(--orange); color: var(--orange); }
   .genre-chip.all-chip.active { background: var(--surface2); border-color: var(--border-hi); color: var(--text-hi); }
 
-  .empty-state { text-align: center; padding: 30px 20px; color: var(--text); font-size: 0.85rem; }
+  .empty-state { text-align: center; padding: 30px 20px; color: var(--text); font-size: 0.85rem; font-family: var(--font-body); }
   .empty-state-icon { font-size: 2rem; margin-bottom: 8px; }
 
   /* ── TOAST ── */
@@ -613,56 +670,97 @@
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
     background: var(--surface2); border: 1px solid var(--border-hi);
     border-radius: var(--radius-sm); padding: 10px 20px;
-    font-size: 0.85rem; color: var(--text-hi);
+    font-size: 0.85rem; color: var(--text-hi); font-family: var(--font-body);
     opacity: 0; transition: all .25s; z-index: 9999;
     pointer-events: none; white-space: nowrap;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* ── CONFIRM MODAL ── */
+  /* ── MODALS (CONFIRM & SETTINGS) ── */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8);
     z-index: 10000; display: flex; align-items: center; justify-content: center;
     opacity: 0; pointer-events: none; transition: opacity .2s;
   }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
   .modal-box {
     background: var(--surface); border: 1px solid var(--border-hi);
-    border-radius: var(--radius); padding: 24px; max-width: 360px; width: 90%;
+    border-radius: var(--radius); padding: 24px; max-width: 380px; width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   }
-  .modal-title { color: var(--text-hi); font-weight: 700; margin-bottom: 8px; }
-  .modal-body { font-size: 0.88rem; margin-bottom: 20px; line-height: 1.5; }
+  .modal-title { color: var(--text-hi); font-weight: 700; margin-bottom: 12px; font-family: var(--font-heading); font-size: 1.2rem;}
+  .modal-body { font-size: 0.9rem; margin-bottom: 24px; line-height: 1.5; font-family: var(--font-body);}
   .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
   .modal-btn {
     border: 1px solid var(--border); border-radius: var(--radius-sm);
-    padding: 8px 16px; font-family: 'Titillium Web', sans-serif;
+    padding: 8px 16px; font-family: var(--font-heading);
     font-size: 0.85rem; cursor: pointer; background: var(--bg); color: var(--text);
     font-weight: 600; letter-spacing: 0.04em;
     transition: all .15s;
   }
   .modal-btn:hover { border-color: var(--border-hi); color: var(--text-hi); }
   .modal-btn.danger { background: rgba(255, 64, 64, 0.15); border-color: var(--red); color: var(--red); }
-  .modal-btn.primary { background: rgba(64, 188, 244, 0.15); border-color: var(--blue); color: var(--blue); }
+  .modal-btn.primary { background: var(--blue); border-color: var(--blue); color: #000; }
+  
+  /* Settings specific */
+  .settings-label { display: block; margin-bottom: 6px; font-size: 0.8rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--font-heading); }
+  .settings-input, .settings-select {
+    width: 100%; padding: 10px; margin-bottom: 16px; background: var(--bg); 
+    border: 1px solid var(--border-hi); color: var(--text-hi); 
+    border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.9rem;
+    outline: none;
+  }
+  .settings-input:focus, .settings-select:focus { border-color: var(--blue); }
 
+  /* ── WEIGHT INDICATOR ── */
+  .weight-badge {
+    font-size: 0.7rem; color: var(--text); background: var(--bg);
+    border: 1px solid var(--border); border-radius: 20px; padding: 1px 6px;
+    margin-left: 6px; font-family: var(--font-mono);
+  }
+
+  /* ── TMDB / IMDB RATING BADGES ── */
+  .strip-ratings {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 5px; flex-wrap: wrap;
+  }
+  .strip-tmdb-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #01b4e4; border-radius: 3px;
+    padding: 2px 7px; font-size: 0.75rem; font-weight: 700;
+    color: #fff; letter-spacing: 0.02em; font-family: sans-serif;
+  }
+  .strip-rating-icon { font-size: 0.75rem; color: #fff; }
+  .strip-rating-src  { font-size: 0.68rem; opacity: 0.85; font-weight: 400; color: #fff;}
+  .strip-votes { font-size: 0.74rem; color: var(--text); }
+  .hist-tmdb {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: #01b4e4; border-radius: 3px;
+    padding: 1px 5px; font-size: 0.68rem; font-weight: 700;
+    color: #fff; margin-left: 6px; vertical-align: middle; font-family: sans-serif;
+  }
 </style>
 </head>
 <body>
 
-<div id="export-card" style="position: absolute; top: -9999px; left: -9999px; width: 680px; background: #14181c; padding: 32px; box-sizing: border-box; display: flex; gap: 28px; font-family: 'Titillium Web', sans-serif; border: 1px solid #283040; border-radius: 8px;">
+<!-- GABARIT CACHÉ POUR L'EXPORT IMAGE -->
+<div id="export-card" style="position: absolute; top: -9999px; left: -9999px; width: 680px; box-sizing: border-box; display: flex; gap: 28px; border-radius: 8px;">
   <img id="export-poster" src="" crossorigin="anonymous" style="width: 170px; height: 255px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-     <h2 id="export-title" style="margin: 0 0 6px 0; font-size: 2.1rem; color: #fff; line-height: 1.1;"></h2>
-     <div id="export-meta" style="color: #9ab; font-size: 1rem; margin-bottom: 20px;"></div>
+     <h2 id="export-title" style="margin: 0 0 6px 0; font-size: 2.1rem; line-height: 1.1;"></h2>
+     <div id="export-meta" style="font-size: 1rem; margin-bottom: 20px;"></div>
      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
         <span id="export-score" style="font-size: 3rem; font-weight: bold; line-height: 1;"></span>
-        <span id="export-stars" style="font-size: 1.8rem; color: #ff8000; letter-spacing: 2px;"></span>
+        <span id="export-stars" style="font-size: 1.8rem; letter-spacing: 2px;"></span>
      </div>
      <div id="export-criteria" style="display: flex; flex-direction: column; gap: 10px;"></div>
   </div>
 </div>
 
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- MODAL CONFIRMATION -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Confirmer</div>
@@ -674,17 +772,46 @@
   </div>
 </div>
 
+<!-- MODAL PARAMÈTRES (NOUVEAU) -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal-box">
+    <div class="modal-title">🎨 Personnalisation</div>
+    <div class="modal-body">
+      <label class="settings-label">Nom de l'application</label>
+      <input type="text" id="setting-app-name" class="settings-input" placeholder="Ex: Dario's Film Journal">
+
+      <label class="settings-label">Thème visuel</label>
+      <select id="setting-theme" class="settings-select">
+        <option value="default">Letterboxd (L'Original)</option>
+        <option value="scuderia">Scuderia (Sport & Agressif)</option>
+        <option value="auteur">Auteur (Prestige & Académique)</option>
+        <option value="ludex">Ludex Studio (Data & Minimaliste)</option>
+        <option value="vintage">Synthwave 80s (Retro & Néon)</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn" id="settings-cancel">Annuler</button>
+      <button class="modal-btn primary" id="settings-save">Appliquer</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
 <header class="app-header">
-  <h1 class="app-title"><em>Letterboxd</em> Rating Companion</h1>
+  <h1 class="app-title" id="main-app-title"><em>Letterboxd</em> Rating Companion</h1>
   <div class="header-actions">
-    <button class="icon-btn" id="export-btn">↑ Exporter</button>
-    <button class="icon-btn" id="import-trigger">↓ Importer</button>
+    <!-- Bouton Paramètres -->
+    <button class="icon-btn" id="settings-btn" title="Personnaliser">⚙️</button>
+    <button class="icon-btn" id="export-btn" title="Sauvegarder les données">↑ Exporter</button>
+    <button class="icon-btn" id="import-trigger" title="Restaurer les données">↓ Importer</button>
     <input type="file" id="import-file" accept=".json" style="display:none">
   </div>
 </header>
 
+<!-- MAIN LAYOUT -->
 <div class="layout">
 
+  <!-- ════ COL LEFT ════ -->
   <div class="col-left">
     <div class="card">
       <div class="card-title">
@@ -692,16 +819,19 @@
         <button class="btn-new-review" id="new-btn">➕ Nouvelle critique</button>
       </div>
 
+      <!-- Search & Meta -->
       <div class="search-wrap">
         <div class="search-row">
           <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
           <input type="date" class="date-input" id="view-date">
           <button class="heart-btn" id="heart-btn" title="Aimer ce film">♥</button>
         </div>
+        <!-- Feedback de recherche -->
         <div class="search-status" id="search-status"></div>
         <div class="suggestions" id="suggestions"></div>
       </div>
 
+      <!-- Context Tags -->
       <div class="context-row" id="context-tags">
         <button type="button" class="ctx-tag" data-tag="🍿 Cinéma">🍿 Cinéma</button>
         <button type="button" class="ctx-tag" data-tag="🔄 Re-visionnage">🔄 Re-visionnage</button>
@@ -709,6 +839,7 @@
         <button type="button" class="ctx-tag" data-tag="🛋️ À la maison">🛋️ À la maison</button>
       </div>
 
+      <!-- Film strip (shown after selection) -->
       <div class="film-strip" id="film-strip">
         <img class="film-strip-poster" id="strip-poster" src="" alt="">
         <div class="film-strip-info">
@@ -741,13 +872,16 @@
         <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
       </div>
 
+      <!-- ── MODE TABS ── -->
       <div class="mode-tabs">
         <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
         <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
+      <!-- ── DETAILED MODE ── -->
       <div class="detailed-section">
 
+        <!-- Weights toggle -->
         <div class="weights-toggle" id="weights-toggle" onclick="toggleWeights()">
           ⚙ Personnaliser les pondérations
         </div>
@@ -822,6 +956,7 @@
         </div>
       </div>
 
+      <!-- ── QUICK MODE ── -->
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
           <input type="radio" id="s10" name="rating" value="5"><label for="s10" class="right-half">★</label>
@@ -837,6 +972,7 @@
         </div>
       </div>
 
+      <!-- Score + critique + actions -->
       <div class="score-result">
         <div class="score-main">
           <div class="score-big" id="score-big">5.0</div>
@@ -858,47 +994,58 @@
     </div>
   </div>
 
+  <!-- ════ COL RIGHT ════ -->
   <div class="col-right">
 
+    <!-- Stats -->
     <div class="card" id="stats-card">
       <div class="card-title">Statistiques</div>
       
+      <!-- Ligne 1 : Films Totaux -->
       <div class="stat-row">
         <span>Films notés</span>
         <span class="stat-num" id="total-count">0</span>
       </div>
       
+      <!-- Ligne 2 : Moyenne Globale -->
       <div class="stat-row">
         <span>Moyenne globale</span>
         <span class="stat-num" id="avg-score">—</span>
       </div>
       
+      <!-- Ligne 3 : Compteur Annuel -->
       <div class="stat-row" style="margin-bottom: 20px;">
         <span>Vus en <span id="current-year-label"></span></span>
         <span class="stat-num" style="color: var(--blue);" id="year-count">0</span>
       </div>
 
+      <!-- Distribution Histogram -->
       <div class="stat-group-title">Distribution des notes</div>
       <div class="histo" id="histogram"></div>
 
+      <!-- Top Genres -->
       <div class="stat-group-title" style="margin-top: 24px;">Top 3 Genres favoris</div>
       <div id="stats-genres"></div>
 
+      <!-- Moyennes par critère -->
       <div class="stat-group-title" style="margin-top: 24px;">L'ADN de tes notes</div>
       <div id="stats-criteria"></div>
 
     </div>
 
+    <!-- History -->
     <div class="card">
       <div class="card-title">
         Historique
         <span class="card-title-badge" id="hist-count-badge">0 film</span>
       </div>
 
+      <!-- Barre de recherche pour l'historique -->
       <div class="search-wrap" style="margin-bottom: 14px;">
         <input type="text" class="search-input" id="history-search" placeholder="Rechercher (titre, réal, acteur...)" autocomplete="off">
       </div>
 
+      <!-- Sort -->
       <div class="filter-row" id="filter-row">
         <button class="filter-btn active" data-sort="date">Récents</button>
         <button class="filter-btn" data-sort="score-desc">Mieux notés</button>
@@ -906,6 +1053,7 @@
         <button class="filter-btn" data-sort="title">A→Z</button>
       </div>
 
+      <!-- Genre filter -->
       <div class="genre-filter-row" id="genre-filter-row" style="display:none;">
         <span class="genre-filter-label">Genre :</span>
         <div class="genre-chips" id="genre-chips"></div>
@@ -915,13 +1063,69 @@
     </div>
 
   </div>
-</div><script>
+</div><!-- /layout -->
+
+<script>
+// ═══════════════════════════════════════════
+//  THEMING & SETTINGS (NOUVEAU)
+// ═══════════════════════════════════════════
+function loadSettings() {
+  const defaultSettings = { appName: "<em>Letterboxd</em> Rating Companion", theme: "default" };
+  try {
+    const saved = JSON.parse(localStorage.getItem('lbx_settings')) || defaultSettings;
+    applySettings(saved);
+  } catch (e) {
+    applySettings(defaultSettings);
+  }
+}
+
+function applySettings(settings) {
+  document.getElementById('main-app-title').innerHTML = settings.appName || "<em>Letterboxd</em> Rating Companion";
+  document.documentElement.setAttribute('data-theme', settings.theme || "default");
+  
+  // Met à jour les valeurs dans la modal pour la prochaine ouverture
+  document.getElementById('setting-app-name').value = (settings.appName || "").replace(/<\/?em>/g, '');
+  document.getElementById('setting-theme').value = settings.theme || "default";
+}
+
+document.getElementById('settings-btn').addEventListener('click', () => {
+  document.getElementById('settings-modal').classList.add('open');
+});
+
+document.getElementById('settings-cancel').addEventListener('click', () => {
+  document.getElementById('settings-modal').classList.remove('open');
+});
+
+document.getElementById('settings-save').addEventListener('click', () => {
+  let rawName = document.getElementById('setting-app-name').value.trim();
+  if(!rawName) rawName = "Letterboxd Rating Companion";
+  // Si le mot Letterboxd est présent, on le met en emphase pour garder le style par défaut si on veut
+  const formattedName = rawName.replace(/Letterboxd/gi, "<em>Letterboxd</em>");
+  
+  const newSettings = {
+    appName: formattedName,
+    theme: document.getElementById('setting-theme').value
+  };
+  
+  localStorage.setItem('lbx_settings', JSON.stringify(newSettings));
+  applySettings(newSettings);
+  document.getElementById('settings-modal').classList.remove('open');
+});
+
+// Appliquer au chargement
+loadSettings();
+
+// Helper pour récupérer une variable CSS du thème actuel (Utile pour le Canvas)
+function getThemeVar(varName) {
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+}
+
 // ═══════════════════════════════════════════
 //  GESTION DE LA DATE LOCALE
 // ═══════════════════════════════════════════
 function setTodayDate() {
   const today = new Date();
-  const offset = today.getTimezoneOffset() * 60000; // Décalage en millisecondes
+  const offset = today.getTimezoneOffset() * 60000;
   const localISOTime = (new Date(today - offset)).toISOString().slice(0, -1);
   document.getElementById('view-date').value = localISOTime.split('T')[0];
 }
@@ -930,7 +1134,6 @@ function setTodayDate() {
 //  CONFIG
 // ═══════════════════════════════════════════
 const STORE_KEY = "lbx_v2";
-
 const CRITERIA = ['scenario','realisation','photo','acteurs','ambiance','affect'];
 
 const DESCS = {
@@ -1127,7 +1330,7 @@ function loadDraft() {
     }
   } catch {}
   renderAll();
-  loadDraft(); // Restaure le brouillon au chargement de la page
+  loadDraft();
 })();
 
 // ═══════════════════════════════════════════
@@ -1233,8 +1436,8 @@ async function selectMovie(m, year) {
     let stripMeta = genres;
     if (runtime) stripMeta += ` · ${runtime}`;
     if (year) stripMeta += ` · ${year}`;
-    if (director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;">Réalisé par <b>${director}</b></span>`;
-    if (actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;">Avec <b>${actors}</b></span>`;
+    if (director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body);">Réalisé par <b>${director}</b></span>`;
+    if (actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body);">Avec <b>${actors}</b></span>`;
     
     document.getElementById('strip-genre').innerHTML = stripMeta;
 
@@ -1396,7 +1599,6 @@ CRITERIA.forEach(c => {
   });
 });
 
-
 // ═══════════════════════════════════════════
 //  NOUVELLE CRITIQUE (RESET)
 // ═══════════════════════════════════════════
@@ -1455,7 +1657,7 @@ document.getElementById('copy-btn').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════
-//  EXPORT IMAGE
+//  EXPORT IMAGE AVEC THÈMES 
 // ═══════════════════════════════════════════
 document.getElementById('share-img-btn').addEventListener('click', async (e) => {
   const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film sans titre';
@@ -1464,7 +1666,6 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
     return;
   }
 
-  // Visual Feedback (Bouton désactivé)
   const imgBtn = e.target;
   const originalText = imgBtn.innerHTML;
   imgBtn.innerHTML = '⏳ Création...';
@@ -1478,6 +1679,16 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
   const exportScore = document.getElementById('export-score');
   const exportStars = document.getElementById('export-stars');
   const exportCriteria = document.getElementById('export-criteria');
+
+  // Application dynamique des styles du Thème pour html2canvas
+  exportCard.style.background = getThemeVar('--bg');
+  exportCard.style.border = `1px solid ${getThemeVar('--border')}`;
+  exportTitle.style.fontFamily = getThemeVar('--font-heading');
+  exportTitle.style.color = getThemeVar('--text-hi');
+  exportMeta.style.fontFamily = getThemeVar('--font-body');
+  exportMeta.style.color = getThemeVar('--text-mid');
+  exportScore.style.fontFamily = getThemeVar('--font-heading');
+  exportStars.style.color = getThemeVar('--gold');
 
   exportPoster.src = document.getElementById('movie-poster').value || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
   exportTitle.textContent = title + (isLiked ? ' ❤️' : '');
@@ -1493,13 +1704,20 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
   exportScore.textContent = document.getElementById('score-big').textContent + (currentMode === 'quick' ? '/5' : '/10');
   exportStars.textContent = document.getElementById('stars-display').textContent;
 
+  // Calcul de la couleur d'accentuation
   const scoreNum = parseFloat(document.getElementById('score-big').textContent);
-  let color = '#ff8000'; 
-  if(currentMode === 'detail' && scoreNum >= 7.5) color = '#00e054';
-  if(currentMode === 'detail' && scoreNum < 5.0) color = '#ff4040';
-  if(currentMode === 'quick' && scoreNum >= 4) color = '#00e054';
-  if(currentMode === 'quick' && scoreNum < 2.5) color = '#ff4040';
-  exportScore.style.color = color;
+  let colorVarName = '--orange'; 
+  if(currentMode === 'detail' && scoreNum >= 7.5) colorVarName = '--green';
+  if(currentMode === 'detail' && scoreNum < 5.0) colorVarName = '--red';
+  if(currentMode === 'quick' && scoreNum >= 4) colorVarName = '--green';
+  if(currentMode === 'quick' && scoreNum < 2.5) colorVarName = '--red';
+  
+  const accentColor = getThemeVar(colorVarName);
+  const surface2Color = getThemeVar('--surface2');
+  const fontBody = getThemeVar('--font-body');
+  const fontMono = getThemeVar('--font-mono');
+
+  exportScore.style.color = accentColor;
 
   exportCriteria.innerHTML = '';
   if (currentMode === 'detail') {
@@ -1508,12 +1726,12 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
        const realLabel = document.querySelector(`#desc-${c}`).previousElementSibling.previousElementSibling.querySelector('.criterion-label').innerText.split(' ×')[0];
 
        exportCriteria.innerHTML += `
-         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.9rem; color:#fff;">
-           <span style="width: 170px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${realLabel}</span>
-           <div style="flex:1; height:8px; background:#283040; border-radius:4px; margin:0 14px; overflow:hidden;">
-             <div style="width:${val*10}%; height:100%; background:${color}; border-radius:4px;"></div>
+         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.9rem; color:#fff; font-family:${fontBody}">
+           <span style="width: 170px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight: 600;">${realLabel}</span>
+           <div style="flex:1; height:8px; background:${surface2Color}; border-radius:4px; margin:0 14px; overflow:hidden;">
+             <div style="width:${val*10}%; height:100%; background:${accentColor}; border-radius:4px;"></div>
            </div>
-           <span style="font-family:monospace; font-weight:bold; width:30px; text-align:right;">${val.toFixed(1)}</span>
+           <span style="font-family:${fontMono}; font-weight:bold; width:30px; text-align:right;">${val.toFixed(1)}</span>
          </div>
        `;
     });
@@ -1522,7 +1740,7 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
   setTimeout(async () => {
     try {
       const canvas = await html2canvas(exportCard, { 
-        backgroundColor: '#14181c', 
+        backgroundColor: getThemeVar('--bg'), 
         scale: 2, 
         useCORS: true
       });
@@ -1580,11 +1798,10 @@ document.getElementById('save-btn').addEventListener('click', () => {
       `"${title}" est déjà dans votre historique avec ${existing.score}/10.\nVoulez-vous écraser cette note ?`,
       () => {
         const idx = history.findIndex(h => h.title.toLowerCase() === title.toLowerCase());
-        // On le retire et on le remet en haut de l'historique
         history.splice(idx, 1);
         history.unshift(movie);
         saveHistory(history);
-        localStorage.removeItem('lbx_draft'); // Nettoie le brouillon
+        localStorage.removeItem('lbx_draft');
         resetForm();
         renderAll();
         showToast(`"${title}" mis à jour`);
@@ -1593,7 +1810,7 @@ document.getElementById('save-btn').addEventListener('click', () => {
   } else {
     history.unshift(movie);
     saveHistory(history);
-    localStorage.removeItem('lbx_draft'); // Nettoie le brouillon
+    localStorage.removeItem('lbx_draft'); 
     resetForm();
     renderAll();
     showToast(`"${title}" enregistré`);
@@ -1660,8 +1877,8 @@ window.loadItem = function(idx) {
   let stripMeta = item.genre || '';
   if (item.runtime) stripMeta += ` · ${item.runtime}`;
   if (item.year) stripMeta += ` · ${item.year}`;
-  if (item.director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;">Réalisé par <b>${item.director}</b></span>`;
-  if (item.actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;">Avec <b>${item.actors}</b></span>`;
+  if (item.director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Réalisé par <b>${item.director}</b></span>`;
+  if (item.actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Avec <b>${item.actors}</b></span>`;
   document.getElementById('strip-genre').innerHTML = stripMeta;
 
   if (item.poster) {
@@ -1683,12 +1900,12 @@ window.loadItem = function(idx) {
   }
 
   calculateScore();
-  saveDraft(); // Le chargement écrase le brouillon avec le film en cours d'édition
+  saveDraft(); 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 // ═══════════════════════════════════════════
-//  DELETE (AVEC ANIMATION)
+//  DELETE
 // ═══════════════════════════════════════════
 window.deleteItem = function(idx, btnEl) {
   const history = loadHistory();
@@ -1784,7 +2001,6 @@ function getSorted(history) {
     });
   }
 
-  // --- CORRECTION DU TRI PAR DATE ---
   if (sortOrder === 'date') {
     return h.sort((a, b) => {
       const dateA = a.date || a.savedAt || "";
@@ -1851,8 +2067,8 @@ function renderHistory() {
     if (item.year) metaHTML += item.year + ' · ';
     if (item.runtime) metaHTML += item.runtime + ' · ';
     metaHTML += item.genre || '';
-    if (item.director) metaHTML += `<br><span style="color:var(--text-mid)">Réalisé par <b>${item.director}</b></span>`;
-    if (item.actors) metaHTML += `<br><span style="color:var(--text-mid)">Avec <b>${item.actors}</b></span>`;
+    if (item.director) metaHTML += `<br><span style="color:var(--text-mid); font-family:var(--font-body)">Réalisé par <b>${item.director}</b></span>`;
+    if (item.actors) metaHTML += `<br><span style="color:var(--text-mid); font-family:var(--font-body)">Avec <b>${item.actors}</b></span>`;
 
     let tagsHTML = '';
     if (item.contextTags && item.contextTags.length > 0) {
@@ -1975,7 +2191,7 @@ function renderStats() {
       criteriaContainer.innerHTML += `
         <div class="avg-crit-row">
           <div class="avg-crit-head">
-            <span>${critLabels[c]}</span>
+            <span style="font-family:var(--font-heading)">${critLabels[c]}</span>
             <span class="avg-crit-val">${avgCrit.toFixed(1)}</span>
           </div>
           <div class="avg-crit-track">
@@ -2090,7 +2306,7 @@ function showToast(msg) {
 }
 
 // ═══════════════════════════════════════════
-//  MODAL
+//  MODAL DE CONFIRMATION
 // ═══════════════════════════════════════════
 function openModal(title, body, onConfirm, danger = false) {
   document.getElementById('modal-title').textContent = title;
@@ -2110,11 +2326,15 @@ document.getElementById('modal-cancel').addEventListener('click', () => {
   pendingAction = null;
   document.getElementById('modal').classList.remove('open');
 });
-document.getElementById('modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('modal')) {
-    pendingAction = null;
-    document.getElementById('modal').classList.remove('open');
-  }
+
+// Fermer les modales au clic en dehors
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+  modal.addEventListener('click', e => {
+    if (e.target === modal) {
+      modal.classList.remove('open');
+      if (modal.id === 'modal') pendingAction = null;
+    }
+  });
 });
 
 // ═══════════════════════════════════════════
