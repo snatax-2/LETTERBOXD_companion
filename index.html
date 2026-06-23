@@ -614,10 +614,8 @@
 </head>
 <body>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Confirmer</div>
@@ -629,7 +627,6 @@
   </div>
 </div>
 
-<!-- HEADER -->
 <header class="app-header">
   <h1 class="app-title"><em>Letterboxd</em> Rating Companion</h1>
   <div class="header-actions">
@@ -639,15 +636,12 @@
   </div>
 </header>
 
-<!-- MAIN LAYOUT -->
 <div class="layout">
 
-  <!-- ════ COL LEFT ════ -->
   <div class="col-left">
     <div class="card">
       <div class="card-title">Film</div>
 
-      <!-- Search & Meta -->
       <div class="search-wrap">
         <div class="search-row">
           <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
@@ -657,7 +651,6 @@
         <div class="suggestions" id="suggestions"></div>
       </div>
 
-      <!-- Context Tags -->
       <div class="context-row" id="context-tags">
         <button type="button" class="ctx-tag" data-tag="🍿 Cinéma">🍿 Cinéma</button>
         <button type="button" class="ctx-tag" data-tag="🔄 Re-visionnage">🔄 Re-visionnage</button>
@@ -665,7 +658,6 @@
         <button type="button" class="ctx-tag" data-tag="🛋️ À la maison">🛋️ À la maison</button>
       </div>
 
-      <!-- Film strip (shown after selection) -->
       <div class="film-strip" id="film-strip">
         <img class="film-strip-poster" id="strip-poster" src="" alt="">
         <div class="film-strip-info">
@@ -697,16 +689,13 @@
         <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
       </div>
 
-      <!-- ── MODE TABS ── -->
       <div class="mode-tabs">
         <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
         <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
-      <!-- ── DETAILED MODE ── -->
       <div class="detailed-section">
 
-        <!-- Weights toggle -->
         <div class="weights-toggle" id="weights-toggle" onclick="toggleWeights()">
           ⚙ Personnaliser les pondérations
         </div>
@@ -781,7 +770,6 @@
         </div>
       </div>
 
-      <!-- ── QUICK MODE ── -->
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
           <input type="radio" id="s10" name="rating" value="5"><label for="s10" class="right-half">★</label>
@@ -797,7 +785,6 @@
         </div>
       </div>
 
-      <!-- Score + critique + actions -->
       <div class="score-result">
         <div class="score-main">
           <div class="score-big" id="score-big">5.0</div>
@@ -818,10 +805,8 @@
     </div>
   </div>
 
-  <!-- ════ COL RIGHT ════ -->
   <div class="col-right">
 
-    <!-- Stats -->
     <div class="card">
       <div class="card-title">Statistiques</div>
       <div class="stat-row">
@@ -835,14 +820,12 @@
       <div class="histo" id="histogram"></div>
     </div>
 
-    <!-- History -->
     <div class="card">
       <div class="card-title">
         Historique
         <span class="card-title-badge" id="hist-count-badge">0 film</span>
       </div>
 
-      <!-- Sort -->
       <div class="filter-row" id="filter-row">
         <button class="filter-btn active" data-sort="date">Récents</button>
         <button class="filter-btn" data-sort="score-desc">Mieux notés</button>
@@ -850,7 +833,6 @@
         <button class="filter-btn" data-sort="title">A→Z</button>
       </div>
 
-      <!-- Genre filter -->
       <div class="genre-filter-row" id="genre-filter-row" style="display:none;">
         <span class="genre-filter-label">Genre :</span>
         <div class="genre-chips" id="genre-chips"></div>
@@ -860,19 +842,11 @@
     </div>
 
   </div>
-</div><!-- /layout -->
-
-<script>
+</div><script>
 // ═══════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════
 const STORE_KEY = "lbx_v2";
-
-// ⚠️ IMPORTANT : Si tu possèdes une clé API TMDb gratuite, colle-la ici entre les guillemets.
-// Cela permettra à l'application de récupérer le nom du réalisateur en direct.
-// Ex: const TMDB_API_KEY = "abc123def456...";
-const TMDB_API_KEY = ""; 
-
 const CRITERIA = ['scenario','realisation','photo','acteurs','ambiance','affect'];
 
 const DESCS = {
@@ -994,7 +968,7 @@ document.querySelectorAll('.ctx-tag').forEach(btn => {
 });
 
 // ═══════════════════════════════════════════
-//  TMDb SEARCH
+//  TMDb SEARCH VIA TON PROXY VERCEL
 // ═══════════════════════════════════════════
 const searchEl  = document.getElementById('movie-search');
 const suggestEl = document.getElementById('suggestions');
@@ -1038,7 +1012,7 @@ async function selectMovie(m, year) {
   document.getElementById('strip-ratings').style.display = 'none';
 
   try {
-    // 1. On utilise l'URL simple pour ne pas crasher ton proxy (la durée fonctionnera)
+    // 1. On interroge uniquement ton proxy Vercel
     const res = await fetch(`/api/search?id=${m.id}`);
     const data = await res.json();
 
@@ -1046,23 +1020,12 @@ async function selectMovie(m, year) {
     const runtime = data.runtime ? `${data.runtime} min` : '';
     
     let director = '';
-    
-    // Si jamais ton proxy renvoie tout de même le réal
+    // 2. Si tu modifies ton backend Vercel pour inclure 'credits', ces lignes récupéreront le réalisateur :
     if (data.credits && data.credits.crew) {
       const dirObj = data.credits.crew.find(c => c.job === 'Director');
       if (dirObj) director = dirObj.name;
     } else if (data.director) {
       director = data.director;
-    }
-
-    // 2. Si on a pas de réal MAIS que tu as inséré une clé API, on va chercher à la source !
-    if (!director && TMDB_API_KEY) {
-      try {
-        const credRes = await fetch(`https://api.themoviedb.org/3/movie/${m.id}/credits?api_key=${TMDB_API_KEY}`);
-        const credData = await credRes.json();
-        const dirObj = credData.crew?.find(c => c.job === 'Director');
-        if (dirObj) director = dirObj.name;
-      } catch(e) { console.log("Erreur lors de la récupération du réalisateur"); }
     }
 
     document.getElementById('movie-genre').value = genres;
@@ -1527,14 +1490,12 @@ function renderHistory() {
       ? `<span class="hist-tmdb">★ ${item.tmdbScore} TMDb</span>`
       : '';
 
-    // Construction visuelle de la ligne Meta avec Réal et Durée
     let metaHTML = '';
     if (item.year) metaHTML += item.year + ' · ';
     if (item.runtime) metaHTML += item.runtime + ' · ';
     metaHTML += item.genre || '';
     if (item.director) metaHTML += `<br><span style="color:var(--text-mid)">Réalisé par <b>${item.director}</b></span>`;
 
-    // Construction visuelle des Tags
     let tagsHTML = '';
     if (item.contextTags && item.contextTags.length > 0) {
       tagsHTML = `<div class="hist-tags-disp">${item.contextTags.map(t => `<span class="h-tag">${t}</span>`).join('')}</div>`;
