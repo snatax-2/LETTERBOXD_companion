@@ -648,7 +648,6 @@
 </head>
 <body>
 
-<!-- GABARIT CACHÉ POUR L'EXPORT IMAGE -->
 <div id="export-card" style="position: absolute; top: -9999px; left: -9999px; width: 680px; background: #14181c; padding: 32px; box-sizing: border-box; display: flex; gap: 28px; font-family: 'Titillium Web', sans-serif; border: 1px solid #283040; border-radius: 8px;">
   <img id="export-poster" src="" crossorigin="anonymous" style="width: 170px; height: 255px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
@@ -662,10 +661,8 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Confirmer</div>
@@ -677,7 +674,6 @@
   </div>
 </div>
 
-<!-- HEADER -->
 <header class="app-header">
   <h1 class="app-title"><em>Letterboxd</em> Rating Companion</h1>
   <div class="header-actions">
@@ -687,10 +683,8 @@
   </div>
 </header>
 
-<!-- MAIN LAYOUT -->
 <div class="layout">
 
-  <!-- ════ COL LEFT ════ -->
   <div class="col-left">
     <div class="card">
       <div class="card-title">
@@ -698,19 +692,16 @@
         <button class="btn-new-review" id="new-btn">➕ Nouvelle critique</button>
       </div>
 
-      <!-- Search & Meta -->
       <div class="search-wrap">
         <div class="search-row">
           <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
           <input type="date" class="date-input" id="view-date">
           <button class="heart-btn" id="heart-btn" title="Aimer ce film">♥</button>
         </div>
-        <!-- Feedback de recherche -->
         <div class="search-status" id="search-status"></div>
         <div class="suggestions" id="suggestions"></div>
       </div>
 
-      <!-- Context Tags -->
       <div class="context-row" id="context-tags">
         <button type="button" class="ctx-tag" data-tag="🍿 Cinéma">🍿 Cinéma</button>
         <button type="button" class="ctx-tag" data-tag="🔄 Re-visionnage">🔄 Re-visionnage</button>
@@ -718,7 +709,6 @@
         <button type="button" class="ctx-tag" data-tag="🛋️ À la maison">🛋️ À la maison</button>
       </div>
 
-      <!-- Film strip (shown after selection) -->
       <div class="film-strip" id="film-strip">
         <img class="film-strip-poster" id="strip-poster" src="" alt="">
         <div class="film-strip-info">
@@ -751,16 +741,13 @@
         <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
       </div>
 
-      <!-- ── MODE TABS ── -->
       <div class="mode-tabs">
         <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
         <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
-      <!-- ── DETAILED MODE ── -->
       <div class="detailed-section">
 
-        <!-- Weights toggle -->
         <div class="weights-toggle" id="weights-toggle" onclick="toggleWeights()">
           ⚙ Personnaliser les pondérations
         </div>
@@ -835,7 +822,6 @@
         </div>
       </div>
 
-      <!-- ── QUICK MODE ── -->
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
           <input type="radio" id="s10" name="rating" value="5"><label for="s10" class="right-half">★</label>
@@ -851,7 +837,6 @@
         </div>
       </div>
 
-      <!-- Score + critique + actions -->
       <div class="score-result">
         <div class="score-main">
           <div class="score-big" id="score-big">5.0</div>
@@ -873,58 +858,47 @@
     </div>
   </div>
 
-  <!-- ════ COL RIGHT ════ -->
   <div class="col-right">
 
-    <!-- Stats -->
     <div class="card" id="stats-card">
       <div class="card-title">Statistiques</div>
       
-      <!-- Ligne 1 : Films Totaux -->
       <div class="stat-row">
         <span>Films notés</span>
         <span class="stat-num" id="total-count">0</span>
       </div>
       
-      <!-- Ligne 2 : Moyenne Globale -->
       <div class="stat-row">
         <span>Moyenne globale</span>
         <span class="stat-num" id="avg-score">—</span>
       </div>
       
-      <!-- Ligne 3 : Compteur Annuel -->
       <div class="stat-row" style="margin-bottom: 20px;">
         <span>Vus en <span id="current-year-label"></span></span>
         <span class="stat-num" style="color: var(--blue);" id="year-count">0</span>
       </div>
 
-      <!-- Distribution Histogram -->
       <div class="stat-group-title">Distribution des notes</div>
       <div class="histo" id="histogram"></div>
 
-      <!-- Top Genres -->
       <div class="stat-group-title" style="margin-top: 24px;">Top 3 Genres favoris</div>
       <div id="stats-genres"></div>
 
-      <!-- Moyennes par critère -->
       <div class="stat-group-title" style="margin-top: 24px;">L'ADN de tes notes</div>
       <div id="stats-criteria"></div>
 
     </div>
 
-    <!-- History -->
     <div class="card">
       <div class="card-title">
         Historique
         <span class="card-title-badge" id="hist-count-badge">0 film</span>
       </div>
 
-      <!-- Barre de recherche pour l'historique -->
       <div class="search-wrap" style="margin-bottom: 14px;">
         <input type="text" class="search-input" id="history-search" placeholder="Rechercher (titre, réal, acteur...)" autocomplete="off">
       </div>
 
-      <!-- Sort -->
       <div class="filter-row" id="filter-row">
         <button class="filter-btn active" data-sort="date">Récents</button>
         <button class="filter-btn" data-sort="score-desc">Mieux notés</button>
@@ -932,7 +906,6 @@
         <button class="filter-btn" data-sort="title">A→Z</button>
       </div>
 
-      <!-- Genre filter -->
       <div class="genre-filter-row" id="genre-filter-row" style="display:none;">
         <span class="genre-filter-label">Genre :</span>
         <div class="genre-chips" id="genre-chips"></div>
@@ -942,9 +915,17 @@
     </div>
 
   </div>
-</div><!-- /layout -->
+</div><script>
+// ═══════════════════════════════════════════
+//  GESTION DE LA DATE LOCALE
+// ═══════════════════════════════════════════
+function setTodayDate() {
+  const today = new Date();
+  const offset = today.getTimezoneOffset() * 60000; // Décalage en millisecondes
+  const localISOTime = (new Date(today - offset)).toISOString().slice(0, -1);
+  document.getElementById('view-date').value = localISOTime.split('T')[0];
+}
 
-<script>
 // ═══════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════
@@ -1062,7 +1043,10 @@ function saveDraft() {
 function loadDraft() {
   try {
     const draftStr = localStorage.getItem('lbx_draft');
-    if (!draftStr) return;
+    if (!draftStr) {
+      setTodayDate();
+      return;
+    }
     const draft = JSON.parse(draftStr);
     
     if (draft.title) {
@@ -1095,7 +1079,12 @@ function loadDraft() {
       }
     }
 
-    if (draft.date) document.getElementById('view-date').value = draft.date;
+    if (draft.date) {
+      document.getElementById('view-date').value = draft.date;
+    } else {
+      setTodayDate();
+    }
+
     if (draft.review) document.getElementById('review-text').value = draft.review;
     
     isLiked = draft.liked || false;
@@ -1407,7 +1396,6 @@ CRITERIA.forEach(c => {
   });
 });
 
-document.getElementById('view-date').valueAsDate = new Date();
 
 // ═══════════════════════════════════════════
 //  NOUVELLE CRITIQUE (RESET)
@@ -1583,7 +1571,7 @@ document.getElementById('save-btn').addEventListener('click', () => {
     values: currentMode === 'detail'
       ? CRITERIA.reduce((acc, c) => { acc[c] = document.getElementById(c).value; return acc; }, {})
       : { quick: quickRating },
-    savedAt: new Date().toISOString()
+    savedAt: existing && existing.savedAt ? existing.savedAt : new Date().toISOString()
   };
 
   if (existing) {
@@ -1592,7 +1580,9 @@ document.getElementById('save-btn').addEventListener('click', () => {
       `"${title}" est déjà dans votre historique avec ${existing.score}/10.\nVoulez-vous écraser cette note ?`,
       () => {
         const idx = history.findIndex(h => h.title.toLowerCase() === title.toLowerCase());
-        history[idx] = movie;
+        // On le retire et on le remet en haut de l'historique
+        history.splice(idx, 1);
+        history.unshift(movie);
         saveHistory(history);
         localStorage.removeItem('lbx_draft'); // Nettoie le brouillon
         resetForm();
@@ -1626,7 +1616,7 @@ function resetForm() {
   
   isLiked = false;
   document.getElementById('heart-btn').classList.remove('active');
-  document.getElementById('view-date').valueAsDate = new Date();
+  setTodayDate();
   
   activeContextTags.clear();
   document.querySelectorAll('.ctx-tag').forEach(b => b.classList.remove('active'));
@@ -1794,6 +1784,15 @@ function getSorted(history) {
     });
   }
 
+  // --- CORRECTION DU TRI PAR DATE ---
+  if (sortOrder === 'date') {
+    return h.sort((a, b) => {
+      const dateA = a.date || a.savedAt || "";
+      const dateB = b.date || b.savedAt || "";
+      return dateB.localeCompare(dateA); 
+    });
+  }
+
   if (sortOrder === 'score-desc') return h.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
   if (sortOrder === 'score-asc')  return h.sort((a, b) => parseFloat(a.score) - parseFloat(b.score));
   if (sortOrder === 'title')      return h.sort((a, b) => a.title.localeCompare(b.title));
@@ -1860,7 +1859,6 @@ function renderHistory() {
       tagsHTML = `<div class="hist-tags-disp">${item.contextTags.map(t => `<span class="h-tag">${t}</span>`).join('')}</div>`;
     }
 
-    // Gestion de la critique extensible (Accordéon)
     let reviewHTML = '';
     if (item.review) {
       reviewHTML = `
