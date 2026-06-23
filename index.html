@@ -313,13 +313,21 @@
   .criterion-block.affect-block .criterion-desc { border-left-color: var(--blue); }
 
   /* ── QUICK RATING (Style Letterboxd) ── */
-..quick-section { display: none; padding: 20px 0; }
-  body.quick-mode .quick-section { display: block; }
-  .rating-stars { display: flex; flex-direction: row-reverse; justify-content: center; gap: 2px; }
-  .rating-stars input { display: none; }
-  .rating-stars label { font-size: 2.5rem; color: var(--border-hi); cursor: pointer; transition: color 0.1s; }
-  .rating-stars label:hover, .rating-stars label:hover ~ label, .rating-stars input:checked ~ label { color: var(--gold); }
-  .rating-stars label.half { width: 1.25rem; overflow: hidden; }
+.quick-section { display: none; padding: 20px 0; }
+body.quick-mode .quick-section { display: block; }
+
+.rating-stars { display: flex; flex-direction: row-reverse; justify-content: center; gap: 2px; }
+.rating-stars input { display: none; }
+.rating-stars label { 
+    font-size: 2.5rem; color: var(--border-hi); cursor: pointer; transition: color 0.1s; 
+}
+/* Logique de survol et de sélection (le sélecteur ~ est la clé) */
+.rating-stars label:hover, 
+.rating-stars label:hover ~ label, 
+.rating-stars input:checked ~ label { 
+    color: var(--gold); 
+}
+.rating-stars label.half { width: 1.25rem; overflow: hidden; }
 
   /* Quick star rating via CSS hack */
  document.getElementById('quick-stars-container').addEventListener('change', (e) => {
@@ -536,9 +544,21 @@
 
   /* ── DETAILED MODE TOGGLE ── */
   .detailed-section { }
-  .quick-section { display: none; }
-  body.quick-mode .detailed-section { display: none; }
-  body.quick-mode .quick-section { display: block; }
+  <!-- ── QUICK MODE (Corrigé et optimisé) ── -->
+<div class="quick-section">
+  <div class="rating-stars" id="quick-stars-container">
+    <input type="radio" id="s10" name="rating" value="5"><label for="s10">★</label>
+    <input type="radio" id="s9" name="rating" value="4.5"><label for="s9" class="half">★</label>
+    <input type="radio" id="s8" name="rating" value="4"><label for="s8">★</label>
+    <input type="radio" id="s7" name="rating" value="3.5"><label for="s7" class="half">★</label>
+    <input type="radio" id="s6" name="rating" value="3"><label for="s6">★</label>
+    <input type="radio" id="s5" name="rating" value="2.5"><label for="s5" class="half">★</label>
+    <input type="radio" id="s4" name="rating" value="2"><label for="s4">★</label>
+    <input type="radio" id="s3" name="rating" value="1.5"><label for="s3" class="half">★</label>
+    <input type="radio" id="s2" name="rating" value="1"><label for="s2">★</label>
+    <input type="radio" id="s1" name="rating" value="0.5"><label for="s1" class="half">★</label>
+  </div>
+</div>
 
   /* ── WEIGHT INDICATOR ── */
   .weight-badge {
@@ -1037,15 +1057,15 @@ document.getElementById('quick-stars-container').addEventListener('change', (e) 
 // ═══════════════════════════════════════════
 //  QUICK STARS (Logique Letterboxd)
 // ═══════════════════════════════════════════
+// ═══════════════════════════════════════════
+//  LOGIQUE QUICK RATING
+// ═══════════════════════════════════════════
 document.getElementById('quick-stars-container').addEventListener('change', (e) => {
     quickRating = parseFloat(e.target.value);
     calculateScore();
 });
 
-function updateQuickStars() {
-    // Cette fonction est désormais vide car le CSS gère l'affichage des étoiles.
-    // On la garde vide pour éviter les erreurs de "function not defined".
-}
+// Note : pas besoin de updateQuickStars() ici car le CSS gère l'état 'checked' automatiquement.
 
 // ═══════════════════════════════════════════
 //  WEIGHTS
