@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="8" fill="#14181c"/>
+  
+  <path d="M12 36 L32 36 L52 16" fill="none" stroke="#ff8000" stroke-width="6" stroke-linecap="round"/>
+  <path d="M12 48 L32 48 L52 28" fill="none" stroke="#00e054" stroke-width="6" stroke-linecap="round"/>
+  
+  <text x="16" y="24" font-family="Impact, sans-serif" font-size="20" fill="#f0ead6">L</text>
+</svg>
