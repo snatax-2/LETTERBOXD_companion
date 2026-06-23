@@ -272,6 +272,8 @@
   .suggestion-info { min-width: 0; }
   .suggestion-title { color: var(--text-hi); font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .suggestion-year { color: var(--text); font-size: 0.78rem; }
+  .suggestion-manual { border-top: 1px solid var(--border-hi) !important; background: rgba(64,188,244,0.04); }
+  .suggestion-manual:hover { background: rgba(64,188,244,0.1) !important; }
 
   /* ── FILM INFO STRIP ── */
   .film-strip {
@@ -410,7 +412,9 @@
   body.quick-mode .quick-section { display: block; }
 
   .rating-stars { 
-      display: flex; flex-direction: row-reverse; justify-content: center; 
+      display: flex; flex-direction: row-reverse; justify-content: center;
+      gap: 4px;
+      padding: 8px 0;
   }
   .rating-stars input { display: none; }
 
@@ -424,6 +428,9 @@
       color: transparent; 
       line-height: 1.1;
       margin: 0;
+      /* Zone de tap minimum 44px pour mobile */
+      min-height: 44px;
+      touch-action: manipulation;
   }
 
   .rating-stars label.right-half:not(:first-child) {
@@ -448,6 +455,22 @@
   .rating-stars label:hover ~ label::before, 
   .rating-stars input:checked ~ label::before { 
       color: var(--gold); 
+  }
+
+  /* Affichage de la note sélectionnée sous les étoiles */
+  .quick-rating-label {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text-mid);
+    margin-top: 6px;
+    min-height: 1.2em;
+  }
+  .quick-rating-label span { color: var(--gold); font-weight: 700; }
+
+  @media (max-width: 500px) {
+    .rating-stars label { font-size: 4.5rem; }
+    .quick-section { padding: 10px 0; }
   }
 
   /* ── SCORE RESULT ── */
@@ -535,11 +558,16 @@
 
   /* Histogram */
   .histo { display: flex; flex-direction: column; gap: 7px; }
-  .histo-row { display: flex; align-items: center; gap: 8px; font-size: 0.76rem; }
+  .histo-row { display: flex; align-items: center; gap: 8px; font-size: 0.76rem; cursor: pointer; border-radius: var(--radius-sm); padding: 2px 4px; transition: background .12s; }
+  .histo-row:hover { background: var(--surface2); }
+  .histo-row.active { background: rgba(255,128,0,0.12); outline: 1px solid rgba(255,128,0,0.35); }
   .histo-label { width: 40px; color: var(--text); text-align: right; flex-shrink: 0; }
   .histo-track { flex: 1; height: 10px; background: var(--bg); border-radius: 3px; overflow: hidden; }
   .histo-bar { height: 100%; width: 0%; background: var(--orange); border-radius: 3px; transition: width .4s ease; }
   .histo-count { width: 18px; text-align: right; font-family: var(--font-mono); color: var(--text-hi); font-size: 0.74rem; }
+  .top-genre-row { cursor: pointer; transition: background .12s, border-color .12s; }
+  .top-genre-row:hover { border-color: var(--border-hi) !important; background: var(--surface2) !important; }
+  .top-genre-row.active { background: rgba(255,128,0,0.1) !important; border-color: var(--orange) !important; }
 
   /* Top Genres */
   .top-genre-row {
@@ -666,6 +694,47 @@
 
   .empty-state { text-align: center; padding: 30px 20px; color: var(--text); font-size: 0.85rem; font-family: var(--font-body); }
   .empty-state-icon { font-size: 2rem; margin-bottom: 8px; }
+
+  /* ── WATCHLIST ── */
+  .watchlist-item {
+    display: flex; gap: 10px; align-items: center;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 6px;
+    transition: border-color .15s;
+  }
+  .watchlist-item:hover { border-color: var(--border-hi); }
+  .watchlist-item-title { flex: 1; font-weight: 700; color: var(--text-hi); font-family: var(--font-heading); font-size: 0.88rem; }
+  .watchlist-item-year { font-size: 0.78rem; color: var(--text); }
+  .watchlist-add-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .watchlist-add-input {
+    flex: 1; background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text-hi); padding: 8px 12px;
+    font-family: var(--font-heading); font-size: 0.85rem; outline: none;
+    transition: border-color .15s;
+  }
+  .watchlist-add-input:focus { border-color: var(--blue); }
+  .watchlist-add-btn {
+    background: var(--blue); border: none; border-radius: var(--radius-sm);
+    color: #0d1117; padding: 8px 14px; font-family: var(--font-heading);
+    font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: opacity .15s;
+    white-space: nowrap;
+  }
+  .watchlist-add-btn:hover { opacity: 0.85; }
+  .watchlist-rate-btn {
+    background: var(--green); border: none; border-radius: var(--radius-sm);
+    color: #0d1117; padding: 4px 9px; font-size: 0.72rem; font-weight: 700;
+    cursor: pointer; font-family: var(--font-heading); transition: opacity .15s;
+    white-space: nowrap;
+  }
+  .watchlist-rate-btn:hover { opacity: 0.85; }
+  .watchlist-del-btn {
+    background: none; border: none; color: var(--text); cursor: pointer;
+    font-size: 0.9rem; padding: 2px 4px; border-radius: 3px; transition: color .1s;
+  }
+  .watchlist-del-btn:hover { color: var(--red); }
+  .watchlist-scroller { max-height: 340px; overflow-y: auto; }
+  .watchlist-scroller::-webkit-scrollbar { width: 4px; }
+  .watchlist-scroller::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
 
   /* ── TOAST ── */
   .toast {
@@ -972,6 +1041,7 @@
           <input type="radio" id="s2" name="rating" value="1"><label for="s2" class="right-half">★</label>
           <input type="radio" id="s1" name="rating" value="0.5"><label for="s1" class="left-half">★</label>
         </div>
+        <div class="quick-rating-label" id="quick-rating-label"><span>★★½</span> — 5.0/10</div>
       </div>
 
       <!-- Score + critique + actions -->
@@ -1065,6 +1135,21 @@
     </div>
 
   </div>
+    <!-- Watchlist -->
+    <div class="card" id="watchlist-card">
+      <div class="card-title">
+        À voir
+        <span class="card-title-badge" id="watchlist-count-badge">0 film</span>
+      </div>
+      <div class="watchlist-add-row">
+        <input type="text" class="watchlist-add-input" id="watchlist-input" placeholder="Ajouter un film à voir...">
+        <button class="watchlist-add-btn" id="watchlist-add-btn">+ Ajouter</button>
+      </div>
+      <div class="watchlist-scroller" id="watchlist-list">
+        <div class="empty-state"><div class="empty-state-icon">🎯</div>Aucun film dans la liste.</div>
+      </div>
+    </div>
+
 </div><!-- /layout -->
 
 <script>
@@ -1225,6 +1310,7 @@ let pendingAction = null;
 let activeContextTags = new Set(); 
 let historySearchQuery = ''; 
 let isFetchingMovie = false; // bloque saveDraft pendant un fetch TMDb
+let activeScoreFilter = null; // clé histo active ex: '50', '45'...
 
 // ═══════════════════════════════════════════
 //  STORAGE & DRAFT (BROUILLON)
@@ -1389,6 +1475,38 @@ searchEl.addEventListener('input', () => {
   searchTimer = setTimeout(() => fetchSuggestions(q), 280);
 });
 
+// Enter = saisie manuelle si aucune suggestion sélectionnée
+searchEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const q = searchEl.value.trim();
+    if (!q) return;
+    suggestEl.style.display = 'none';
+    searchStatus.style.display = 'none';
+    clearTimeout(searchTimer);
+    selectManual(q);
+  }
+});
+
+function selectManual(title) {
+  document.getElementById('movie-title').value  = title;
+  document.getElementById('movie-year').value   = '';
+  document.getElementById('movie-poster').value = '';
+  document.getElementById('movie-genre').value  = '';
+  document.getElementById('movie-runtime').value = '';
+  document.getElementById('movie-director').value = '';
+  document.getElementById('movie-actors').value  = '';
+  document.getElementById('movie-tmdb-score').value = '';
+  document.getElementById('strip-ratings').style.display = 'none';
+
+  const strip = document.getElementById('film-strip');
+  strip.classList.add('visible');
+  document.getElementById('strip-title').textContent = title;
+  document.getElementById('strip-genre').innerHTML = '<span style="color:var(--text);font-size:0.75rem;">Film ajouté manuellement</span>';
+  document.getElementById('strip-poster').style.display = 'none';
+  saveDraft();
+}
+
 async function fetchSuggestions(q) {
   try {
     const res = await fetch(`/api/search?query=${encodeURIComponent(q)}`);
@@ -1408,6 +1526,12 @@ async function fetchSuggestions(q) {
       item.addEventListener('click', () => selectMovie(m, year));
       suggestEl.appendChild(item);
     });
+    // Option saisie manuelle toujours disponible en bas
+    const manualItem = document.createElement('div');
+    manualItem.className = 'suggestion-item suggestion-manual';
+    manualItem.innerHTML = `<div class="suggestion-poster-placeholder" style="font-size:1rem;">✏️</div><div class="suggestion-info"><div class="suggestion-title" style="color:var(--text-mid);">Utiliser "${q}" sans TMDb</div><div class="suggestion-year">Saisie manuelle</div></div>`;
+    manualItem.addEventListener('click', () => { suggestEl.style.display = 'none'; selectManual(q); });
+    suggestEl.appendChild(manualItem);
   } catch { 
     searchStatus.style.display = 'none'; 
     suggestEl.style.display = 'none'; 
@@ -1518,8 +1642,17 @@ function setMode(mode) {
 document.getElementById('quick-stars-container').addEventListener('change', (e) => {
     quickRating = parseFloat(e.target.value);
     calculateScore();
+    updateQuickLabel();
     saveDraft();
 });
+
+function updateQuickLabel() {
+  const label = document.getElementById('quick-rating-label');
+  if (!label) return;
+  const score = quickRating * 2;
+  const stars = getStarStr(Math.round((score / 2) * 2) / 2);
+  label.innerHTML = `<span>${stars}</span> — ${score.toFixed(1)}/10`;
+}
 
 // ═══════════════════════════════════════════
 //  WEIGHTS
@@ -2009,7 +2142,7 @@ function renderGenreChips(history) {
   const allChip = document.createElement('button');
   allChip.className = 'genre-chip all-chip' + (activeGenre === null ? ' active' : '');
   allChip.textContent = 'Tous';
-  allChip.addEventListener('click', () => { activeGenre = null; renderGenreChips(history); renderHistory(); });
+  allChip.addEventListener('click', () => { activeGenre = null; activeScoreFilter = null; renderGenreChips(history); renderHistory(); });
   chips.appendChild(allChip);
 
   genres.forEach(g => {
@@ -2030,6 +2163,18 @@ function getSorted(history) {
 
   if (activeGenre) {
     h = h.filter(item => item.genre && item.genre.split(',').map(g => g.trim()).includes(activeGenre));
+  }
+
+  if (activeScoreFilter !== null) {
+    const scoreRanges = {
+      '50': [9,10], '45': [8.5,9], '40': [7.5,8.5], '35': [6.5,7.5], '30': [5.5,6.5],
+      '25': [4.5,5.5], '20': [3.5,4.5], '15': [2.5,3.5], '10': [1.5,2.5], '05': [0,1.5]
+    };
+    const [lo, hi] = scoreRanges[activeScoreFilter] || [0,10];
+    h = h.filter(item => {
+      const s = parseFloat(item.score);
+      return s >= lo && (activeScoreFilter === '50' ? s <= hi : s < hi);
+    });
   }
 
   if (historySearchQuery) {
@@ -2062,7 +2207,7 @@ function renderHistory() {
   const container = document.getElementById('history-list');
 
   const badge = document.getElementById('hist-count-badge');
-  if (activeGenre || historySearchQuery) {
+  if (activeGenre || historySearchQuery || activeScoreFilter) {
     badge.textContent = `${sorted.length} / ${history.length} film${history.length > 1 ? 's' : ''}`;
     badge.style.color = 'var(--orange)';
   } else {
@@ -2199,15 +2344,22 @@ function renderStats() {
   genresContainer.innerHTML = '';
   if (topGenres.length > 0) {
     topGenres.forEach(g => {
-      genresContainer.innerHTML += `
-        <div class="top-genre-row">
-          <div class="top-genre-name">${g.name}</div>
-          <div class="top-genre-meta">
-            <span>${g.count} films</span>
-            <span class="top-genre-avg">${g.avg.toFixed(1)}/10</span>
-          </div>
-        </div>
-      `;
+      const el = document.createElement('div');
+      el.className = 'top-genre-row' + (activeGenre === g.name ? ' active' : '');
+      el.title = `Filtrer par ${g.name}`;
+      el.innerHTML = `
+        <div class="top-genre-name">${g.name}</div>
+        <div class="top-genre-meta">
+          <span>${g.count} film${g.count > 1 ? 's' : ''}</span>
+          <span class="top-genre-avg">${g.avg.toFixed(1)}/10</span>
+        </div>`;
+      el.addEventListener('click', () => {
+        activeGenre = (activeGenre === g.name) ? null : g.name;
+        activeScoreFilter = null;
+        renderAll();
+        document.querySelector('.history-scroller')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      genresContainer.appendChild(el);
     });
   } else {
     genresContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Pas assez de données.</div>';
@@ -2259,15 +2411,35 @@ function buildHistogram(dist) {
 
   const maxVal = Math.max(...Object.values(dist), 1);
 
+  const scoreRanges = {
+    50: [9,10], 45: [8.5,9], 40: [7.5,8.5], 35: [6.5,7.5], 30: [5.5,6.5],
+    25: [4.5,5.5], 20: [3.5,4.5], 15: [2.5,3.5], 10: [1.5,2.5], '05': [0,1.5]
+  };
+
   order.forEach(key => {
     const count   = dist[key] || 0;
     const pct     = (count / maxVal) * 100;
     const row     = document.createElement('div');
-    row.className = 'histo-row';
+    const isActive = activeScoreFilter === String(key);
+    row.className = 'histo-row' + (isActive ? ' active' : '');
+    row.title = count > 0 ? `Filtrer par ${labels[key]}` : '';
     row.innerHTML = `
       <span class="histo-label">${labels[key]}</span>
       <div class="histo-track"><div class="histo-bar" style="width:${pct}%"></div></div>
       <span class="histo-count">${count}</span>`;
+    if (count > 0) {
+      row.addEventListener('click', () => {
+        if (activeScoreFilter === String(key)) {
+          activeScoreFilter = null;
+        } else {
+          activeScoreFilter = String(key);
+          activeGenre = null; // désactiver le filtre genre concurrent
+        }
+        renderAll();
+        // Scroller vers l'historique
+        document.querySelector('.history-scroller')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
     container.appendChild(row);
   });
 }
@@ -2334,6 +2506,97 @@ document.getElementById('import-file').addEventListener('change', e => {
   };
   reader.readAsText(file);
 });
+
+// ═══════════════════════════════════════════
+//  WATCHLIST
+// ═══════════════════════════════════════════
+const WATCHLIST_KEY = 'lbx_watchlist';
+
+function loadWatchlist() {
+  try { return JSON.parse(localStorage.getItem(WATCHLIST_KEY)) || []; } catch { return []; }
+}
+function saveWatchlist(list) {
+  localStorage.setItem(WATCHLIST_KEY, JSON.stringify(list));
+}
+
+function renderWatchlist() {
+  const list = loadWatchlist();
+  const container = document.getElementById('watchlist-list');
+  const badge = document.getElementById('watchlist-count-badge');
+  badge.textContent = list.length + ' film' + (list.length > 1 ? 's' : '');
+
+  if (list.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎯</div>Aucun film dans la liste.</div>';
+    return;
+  }
+
+  container.innerHTML = '';
+  list.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'watchlist-item';
+    div.innerHTML = `
+      <div style="min-width:0;flex:1;">
+        <div class="watchlist-item-title">${item.title}</div>
+        ${item.year ? `<div class="watchlist-item-year">${item.year}</div>` : ''}
+      </div>
+      <button class="watchlist-rate-btn" onclick="watchlistToForm(${i})" title="Noter ce film">⭐ Noter</button>
+      <button class="watchlist-del-btn" onclick="removeWatchlist(${i})" title="Retirer">✕</button>`;
+    container.appendChild(div);
+  });
+}
+
+function addToWatchlist(title) {
+  if (!title.trim()) return;
+  const list = loadWatchlist();
+  if (list.find(i => i.title.toLowerCase() === title.trim().toLowerCase())) {
+    showToast('Déjà dans la liste.');
+    return;
+  }
+  list.unshift({ title: title.trim(), year: '', addedAt: new Date().toISOString() });
+  saveWatchlist(list);
+  renderWatchlist();
+  showToast(`"${title.trim()}" ajouté à la liste`);
+}
+
+window.removeWatchlist = function(idx) {
+  const list = loadWatchlist();
+  const title = list[idx]?.title;
+  list.splice(idx, 1);
+  saveWatchlist(list);
+  renderWatchlist();
+  if (title) showToast(`"${title}" retiré`);
+};
+
+window.watchlistToForm = function(idx) {
+  const list = loadWatchlist();
+  const item = list[idx];
+  if (!item) return;
+  // Pré-remplir la recherche et laisser l'utilisateur choisir dans TMDb
+  searchEl.value = item.title;
+  searchEl.dispatchEvent(new Event('input'));
+  // Retirer de la watchlist automatiquement après notation
+  list.splice(idx, 1);
+  saveWatchlist(list);
+  renderWatchlist();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast(`Recherche lancée pour "${item.title}"`);
+};
+
+document.getElementById('watchlist-add-btn').addEventListener('click', () => {
+  const input = document.getElementById('watchlist-input');
+  addToWatchlist(input.value);
+  input.value = '';
+});
+
+document.getElementById('watchlist-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const input = document.getElementById('watchlist-input');
+    addToWatchlist(input.value);
+    input.value = '';
+  }
+});
+
+renderWatchlist();
 
 // ═══════════════════════════════════════════
 //  TOAST
