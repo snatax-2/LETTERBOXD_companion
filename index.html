@@ -600,8 +600,10 @@
 </head>
 <body>
 
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Confirmer</div>
@@ -613,6 +615,7 @@
   </div>
 </div>
 
+<!-- HEADER -->
 <header class="app-header">
   <h1 class="app-title"><em>Letterboxd</em> Rating Companion</h1>
   <div class="header-actions">
@@ -622,12 +625,15 @@
   </div>
 </header>
 
+<!-- MAIN LAYOUT -->
 <div class="layout">
 
+  <!-- ════ COL LEFT ════ -->
   <div class="col-left">
     <div class="card">
       <div class="card-title">Film</div>
 
+      <!-- Search -->
       <div class="search-wrap">
         <div class="search-row">
           <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
@@ -637,6 +643,7 @@
         <div class="suggestions" id="suggestions"></div>
       </div>
 
+      <!-- Film strip (shown after selection) -->
       <div class="film-strip" id="film-strip">
         <img class="film-strip-poster" id="strip-poster" src="" alt="">
         <div class="film-strip-info">
@@ -665,13 +672,16 @@
         <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
       </div>
 
+      <!-- ── MODE TABS ── -->
       <div class="mode-tabs">
         <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
         <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
+      <!-- ── DETAILED MODE ── -->
       <div class="detailed-section">
 
+        <!-- Weights toggle -->
         <div class="weights-toggle" id="weights-toggle" onclick="toggleWeights()">
           ⚙ Personnaliser les pondérations
         </div>
@@ -746,6 +756,7 @@
         </div>
       </div>
 
+      <!-- ── QUICK MODE ── -->
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
           <input type="radio" id="s10" name="rating" value="5"><label for="s10" class="right-half">★</label>
@@ -761,6 +772,7 @@
         </div>
       </div>
 
+      <!-- Score + critique + actions -->
       <div class="score-result">
         <div class="score-main">
           <div class="score-big" id="score-big">5.0</div>
@@ -781,8 +793,10 @@
     </div>
   </div>
 
+  <!-- ════ COL RIGHT ════ -->
   <div class="col-right">
 
+    <!-- Stats -->
     <div class="card">
       <div class="card-title">Statistiques</div>
       <div class="stat-row">
@@ -796,12 +810,14 @@
       <div class="histo" id="histogram"></div>
     </div>
 
+    <!-- History -->
     <div class="card">
       <div class="card-title">
         Historique
         <span class="card-title-badge" id="hist-count-badge">0 film</span>
       </div>
 
+      <!-- Sort -->
       <div class="filter-row" id="filter-row">
         <button class="filter-btn active" data-sort="date">Récents</button>
         <button class="filter-btn" data-sort="score-desc">Mieux notés</button>
@@ -809,6 +825,7 @@
         <button class="filter-btn" data-sort="title">A→Z</button>
       </div>
 
+      <!-- Genre filter -->
       <div class="genre-filter-row" id="genre-filter-row" style="display:none;">
         <span class="genre-filter-label">Genre :</span>
         <div class="genre-chips" id="genre-chips"></div>
@@ -818,62 +835,63 @@
     </div>
 
   </div>
-</div><script>
+</div><!-- /layout -->
+
+<script>
 // ═══════════════════════════════════════════
-//  CONFIG
+//  CONFIG (Descriptions expressives SensCritique/Letterboxd)
 // ═══════════════════════════════════════════
 const STORE_KEY = "lbx_v2";
 const CRITERIA = ['scenario','realisation','photo','acteurs','ambiance','affect'];
 
-// Descriptions spécifiques par critère ET par palier
 const DESCS = {
   scenario: [
-    [9,  "Écriture irréprochable — dialogues, structure et thèmes forment un tout cohérent et mémorable."],
-    [7.5,"Scénario solide, bien construit, quelques idées originales qui élèvent le film."],
-    [5.5,"Correct mais sans surprise. La narration tient la route sans se démarquer."],
-    [4.5,"Scénario bancal — incohérences ou clichés qui plombent l'immersion."],
-    [2.5,"Écriture paresseuse, plot holes évidents, dialogues creux."],
-    [0,  "Scénario inexistant ou catastrophique. Le film perd le spectateur dès l'acte 1."]
+    [9,  "Un chef-d'œuvre narratif. Écriture brillante, dialogues ciselés, structure parfaite et thèmes profonds qui hantent longtemps après le visionnage."],
+    [7.5,"Excellent scénario. Récit captivant, personnages bien écrits et rebondissements intelligents qui maintiennent un fort engagement."],
+    [5.5,"Une histoire classique et fonctionnelle. Fait le travail correctement, mais suit des sentiers battus ou manque d'une vraie prise de risque."],
+    [4.5,"Des maladresses évidentes. Rythme inconstant, facilités scénaristiques ou dialogues un peu artificiels qui sortent du récit."],
+    [2.5,"Récit laborieux. De graves incohérences, des intrigues secondaires inutiles ou des personnages aux réactions incompréhensibles."],
+    [0,  "Un naufrage scénaristique total. Dénué de sens, ennuyeux à mourir ou insultant pour l'intelligence du spectateur."]
   ],
   realisation: [
-    [9,  "Mise en scène visionnaire — chaque plan a une intention, le style est inimitable."],
-    [7.5,"Réalisation maîtrisée, découpage fluide, le réalisateur sait où poser sa caméra."],
-    [5.5,"Mise en scène fonctionnelle. Ça tourne bien sans prendre de risques."],
-    [4.5,"Quelques maladresses — montage décousu ou mise en scène télévisuelle."],
-    [2.5,"Réalisation terne, sans dynamisme. Peu d'efforts artistiques visibles."],
-    [0,  "Mise en scène amateure ou indifférente. Le film ressemble à un rush."]
+    [9,  "Une masterclass de mise en scène. Une vision d'auteur absolue où chaque plan respire l'intelligence, la maîtrise et l'audace visuelle."],
+    [7.5,"Réalisation forte et inspirée. Le réalisateur a un vrai point de vue, avec une caméra dynamique qui sublime le propos du film."],
+    [5.5,"Mise en scène artisanale et propre. Efficace, lisible, mais qui s'efface souvent derrière son sujet sans fulgurance visuelle."],
+    [4.5,"Une réalisation impersonnelle. Ressemble plus à un produit de commande ou à un téléfilm manquant cruellement de caractère."],
+    [2.5,"Mise en scène paresseuse ou confuse. Découpage hasardeux, absence de rythme ou tics visuels qui fatiguent l'œil."],
+    [0,  "Catastrophique. Incompétence technique crasse, montage épileptique ou plans littéralement illisibles."]
   ],
   photo: [
-    [9,  "Photographie d'exception — lumière, cadre et couleurs créent une esthétique unique."],
-    [7.5,"Belle image, soignée et cohérente avec l'univers du film."],
-    [5.5,"Photographie correcte, propre mais sans ambition particulière."],
-    [4.5,"Image quelconque ou inconstante. Quelques plans bâclés."],
-    [2.5,"Photographie faible — mauvaise lumière, cadrage approximatif."],
-    [0,  "Image indigne du grand écran. Techniquement insuffisant."]
+    [9,  "Une claque visuelle absolue. Chaque plan est un tableau. Gestion de la lumière, colorimétrie et cadrages atteignent le sublime."],
+    [7.5,"Superbe photographie. Une identité visuelle très marquée qui participe activement à l'ambiance et flatte constamment la rétine."],
+    [5.5,"Esthétique soignée mais standardisée. L'image est belle et propre, mais reste académique ou familière."],
+    [4.5,"Visuellement terne ou inégal. Éclairages plats, étalonnage douteux (trop gris/sombre) ou effets spéciaux qui jurent."],
+    [2.5,"Laideur visuelle manifeste. Cadrages ratés, image numérique sans texture, ou filtres appliqués sans aucune cohérence artistique."],
+    [0,  "Une agression oculaire. Illisible, bouillie de pixels ou éclairage d'une pauvreté affligeante."]
   ],
   acteurs: [
-    [9,  "Interprétations marquantes — le casting porte le film à lui seul."],
-    [7.5,"Très bon jeu d'ensemble, au moins un rôle mémorable."],
-    [5.5,"Acteurs efficaces, convaincants dans l'ensemble."],
-    [4.5,"Performances inégales — certains rôles tirent le film vers le bas."],
-    [2.5,"Jeu d'acteur faible ou mal dirigé, les émotions ne passent pas."],
-    [0,  "Casting catastrophique. Aucune crédibilité, sur-jeu permanent."]
+    [9,  "Des performances magistrales et habitées. Des acteurs en état de grâce qui transcendent leurs personnages et crèvent l'écran."],
+    [7.5,"Un casting redoutable. Des interprétations justes, intenses et nuancées qui portent le film avec un grand charisme."],
+    [5.5,"Jeu solide et convaincant. Les acteurs font le job honnêtement, sans pour autant livrer la performance de leur carrière."],
+    [4.5,"Interprétations inégales. Certains tirent leur épingle du jeu, mais d'autres surjouent ou manquent cruellement d'alchimie."],
+    [2.5,"Casting en roue libre. Mauvaise direction d'acteurs, expressions forcées, ou têtes d'affiche visiblement venues pour le chèque."],
+    [0,  "Un festival de jeu monolithique ou d'hystérie ridicule. Impossible de croire une seule seconde aux personnages."]
   ],
   ambiance: [
-    [9,  "Bande son et design sonore subliment chaque scène — inoubliable."],
-    [7.5,"Musique et sons très bien intégrés, participent activement à l'immersion."],
-    [5.5,"Ambiance sonore correcte, fonctionnelle, sans fausse note."],
-    [4.5,"Quelques maladresses sonores ou musique trop générique."],
-    [2.5,"Son envahissant ou absent là où il devrait exister. Immersion cassée."],
-    [0,  "Design sonore raté. Bruitages hors sujet ou silence inexplicable."]
+    [9,  "Une immersion sensorielle totale. Bande originale mythique et sound design viscéral qui prennent littéralement aux tripes."],
+    [7.5,"Excellente atmosphère. La musique et les effets sonores enveloppent le spectateur et renforcent magistralement l'impact émotionnel."],
+    [5.5,"Ambiance réussie. Accompagnement sonore fonctionnel et agréable, qui soutient l'action sans pour autant marquer les esprits."],
+    [4.5,"Sonorité générique. Musique d'ascenseur, thèmes oubliables ou mixage sonore parfois douteux en retrait."],
+    [2.5,"Bande-son envahissante ou hors sujet. Musique omniprésente qui dicte les émotions, ou sound design artificiel qui brise l'immersion."],
+    [0,  "Supplice auditif. Bruitages ratés, doublages asynchrones, ou bande originale qui ruine littéralement les scènes clés."]
   ],
   affect: [
-    [9,  "Film qui laisse une marque durable. Émotion intense, ressenti profond."],
-    [7.5,"Forte résonance personnelle — ce film a compté, touché quelque chose."],
-    [5.5,"Agréable à voir, quelques moments émouvants ou marquants."],
-    [4.5,"Film correct mais qui ne restera pas longtemps en mémoire."],
-    [2.5,"Peu d'effet émotionnel ou de connexion personnelle."],
-    [0,  "Film laissé totalement indifférent ou vécu comme une corvée."]
+    [9,  "Coup de foudre absolu. Un film qui bouleverse, obsède, et trouve une place immédiate dans mon panthéon personnel."],
+    [7.5,"Énorme coup de cœur. Une œuvre marquante qui m'a fait vibrer, rire ou pleurer, et que je reverrai avec grand plaisir."],
+    [5.5,"Un très bon moment de cinéma. J'ai pris du plaisir devant ce film, même s'il ne me laissera pas un souvenir impérissable."],
+    [4.5,"Sentiment mitigé. Pas désagréable, mais je reste totalement sur ma faim. Vite vu, assez vite oublié."],
+    [2.5,"Ennui ou agacement profond. Une expérience pénible, où le temps a semblé particulièrement long. Très peu d'accroche."],
+    [0,  "Rejet viscéral. Une perte de temps absolue, un film que j'ai détesté de bout en bout et que je veux effacer de ma mémoire."]
   ]
 };
 
