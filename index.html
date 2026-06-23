@@ -5,7 +5,6 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Letterboxd Rating Companion</title>
-<!-- Ajout de la librairie html2canvas pour la génération d'image -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
@@ -450,10 +449,16 @@
   .stat-row {
     display: flex; justify-content: space-between; align-items: center;
     background: var(--bg); border-radius: var(--radius-sm); padding: 10px 14px;
-    border: 1px solid var(--border); margin-bottom: 14px;
+    border: 1px solid var(--border); margin-bottom: 10px;
   }
   .stat-row span:first-child { font-size: 0.82rem; }
   .stat-num { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 600; color: var(--text-hi); }
+  
+  .stat-group-title {
+    font-size: 0.65rem; font-weight: 700; color: var(--text-mid); 
+    text-transform: uppercase; letter-spacing: 0.1em; 
+    margin: 20px 0 10px 0; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+  }
 
   /* Histogram */
   .histo { display: flex; flex-direction: column; gap: 7px; }
@@ -462,6 +467,23 @@
   .histo-track { flex: 1; height: 10px; background: var(--bg); border-radius: 3px; overflow: hidden; }
   .histo-bar { height: 100%; width: 0%; background: var(--orange); border-radius: 3px; transition: width .4s ease; }
   .histo-count { width: 18px; text-align: right; font-family: 'JetBrains Mono', monospace; color: var(--text-hi); font-size: 0.74rem; }
+
+  /* Top Genres */
+  .top-genre-row {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--bg); padding: 8px 12px; border-radius: 4px; margin-bottom: 6px;
+    border: 1px solid var(--border);
+  }
+  .top-genre-name { font-weight: 600; color: var(--text-hi); font-size: 0.85rem; }
+  .top-genre-meta { font-size: 0.75rem; color: var(--text); display: flex; gap: 8px; align-items: center; }
+  .top-genre-avg { font-family: 'JetBrains Mono', monospace; color: var(--gold); font-weight: 600; }
+
+  /* Avg Criteria */
+  .avg-crit-row { margin-bottom: 8px; }
+  .avg-crit-head { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px; color: var(--text); }
+  .avg-crit-val { font-family: 'JetBrains Mono', monospace; color: var(--text-hi); font-weight: bold; }
+  .avg-crit-track { height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+  .avg-crit-bar { height: 100%; background: var(--blue); border-radius: 3px; }
 
   /* Filter row */
   .filter-row { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
@@ -476,7 +498,7 @@
   .filter-btn.active { background: var(--orange-dim); border-color: var(--orange); color: var(--orange); }
 
   /* ── HISTORY ── */
-  .history-scroller { max-height: 420px; overflow-y: auto; overflow-x: hidden;}
+  .history-scroller { max-height: 550px; overflow-y: auto; overflow-x: hidden;}
   .history-scroller::-webkit-scrollbar { width: 4px; }
   .history-scroller::-webkit-scrollbar-track { background: transparent; }
   .history-scroller::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
@@ -486,9 +508,9 @@
     background: var(--bg); border: 1px solid var(--border);
     border-radius: var(--radius-sm); padding: 10px; margin-bottom: 8px;
     position: relative; 
-    transition: border-color .1s, opacity 0.3s ease, transform 0.3s ease; /* Ajout transition pour la suppression */
+    transition: border-color .1s, opacity 0.3s ease, transform 0.3s ease; 
   }
-  .hist-item.deleting { opacity: 0; transform: translateX(-30px); } /* État d'animation de suppression */
+  .hist-item.deleting { opacity: 0; transform: translateX(-30px); } 
   .hist-item:hover { border-color: var(--border-hi); }
   .hist-poster { width: 36px; height: 54px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
   .hist-poster-ph { width: 36px; height: 54px; background: var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; }
@@ -589,11 +611,38 @@
   .modal-btn.danger { background: rgba(255, 64, 64, 0.15); border-color: var(--red); color: var(--red); }
   .modal-btn.primary { background: rgba(64, 188, 244, 0.15); border-color: var(--blue); color: var(--blue); }
 
+  /* ── WEIGHT INDICATOR ── */
+  .weight-badge {
+    font-size: 0.7rem; color: var(--text); background: var(--bg);
+    border: 1px solid var(--border); border-radius: 20px; padding: 1px 6px;
+    margin-left: 6px; font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── TMDB / IMDB RATING BADGES ── */
+  .strip-ratings {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 5px; flex-wrap: wrap;
+  }
+  .strip-tmdb-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #01b4e4; border-radius: 3px;
+    padding: 2px 7px; font-size: 0.75rem; font-weight: 700;
+    color: #fff; letter-spacing: 0.02em;
+  }
+  .strip-rating-icon { font-size: 0.75rem; }
+  .strip-rating-src  { font-size: 0.68rem; opacity: 0.85; font-weight: 400; }
+  .strip-votes { font-size: 0.74rem; color: var(--text); }
+
+  .hist-tmdb {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: #01b4e4; border-radius: 3px;
+    padding: 1px 5px; font-size: 0.68rem; font-weight: 700;
+    color: #fff; margin-left: 6px; vertical-align: middle;
+  }
 </style>
 </head>
 <body>
 
-<!-- GABARIT CACHÉ POUR L'EXPORT IMAGE -->
 <div id="export-card" style="position: absolute; top: -9999px; left: -9999px; width: 680px; background: #14181c; padding: 32px; box-sizing: border-box; display: flex; gap: 28px; font-family: 'Titillium Web', sans-serif; border: 1px solid #283040; border-radius: 8px;">
   <img id="export-poster" src="" crossorigin="anonymous" style="width: 170px; height: 255px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
@@ -607,10 +656,8 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Confirmer</div>
@@ -622,7 +669,6 @@
   </div>
 </div>
 
-<!-- HEADER -->
 <header class="app-header">
   <h1 class="app-title"><em>Letterboxd</em> Rating Companion</h1>
   <div class="header-actions">
@@ -632,15 +678,12 @@
   </div>
 </header>
 
-<!-- MAIN LAYOUT -->
 <div class="layout">
 
-  <!-- ════ COL LEFT ════ -->
   <div class="col-left">
     <div class="card">
       <div class="card-title">Film</div>
 
-      <!-- Search & Meta -->
       <div class="search-wrap">
         <div class="search-row">
           <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
@@ -650,7 +693,6 @@
         <div class="suggestions" id="suggestions"></div>
       </div>
 
-      <!-- Context Tags -->
       <div class="context-row" id="context-tags">
         <button type="button" class="ctx-tag" data-tag="🍿 Cinéma">🍿 Cinéma</button>
         <button type="button" class="ctx-tag" data-tag="🔄 Re-visionnage">🔄 Re-visionnage</button>
@@ -658,7 +700,6 @@
         <button type="button" class="ctx-tag" data-tag="🛋️ À la maison">🛋️ À la maison</button>
       </div>
 
-      <!-- Film strip (shown after selection) -->
       <div class="film-strip" id="film-strip">
         <img class="film-strip-poster" id="strip-poster" src="" alt="">
         <div class="film-strip-info">
@@ -690,16 +731,13 @@
         <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
       </div>
 
-      <!-- ── MODE TABS ── -->
       <div class="mode-tabs">
         <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
         <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
-      <!-- ── DETAILED MODE ── -->
       <div class="detailed-section">
 
-        <!-- Weights toggle -->
         <div class="weights-toggle" id="weights-toggle" onclick="toggleWeights()">
           ⚙ Personnaliser les pondérations
         </div>
@@ -774,7 +812,6 @@
         </div>
       </div>
 
-      <!-- ── QUICK MODE ── -->
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
           <input type="radio" id="s10" name="rating" value="5"><label for="s10" class="right-half">★</label>
@@ -790,7 +827,6 @@
         </div>
       </div>
 
-      <!-- Score + critique + actions -->
       <div class="score-result">
         <div class="score-main">
           <div class="score-big" id="score-big">5.0</div>
@@ -805,7 +841,6 @@
 
         <div class="btn-row">
           <button class="btn btn-copy" id="copy-btn">📋 Texte</button>
-          <!-- Nouveau bouton de partage Image -->
           <button class="btn btn-image" id="share-img-btn">📸 Image</button>
           <button class="btn btn-save" id="save-btn">💾 Sauver</button>
         </div>
@@ -813,31 +848,43 @@
     </div>
   </div>
 
-  <!-- ════ COL RIGHT ════ -->
   <div class="col-right">
 
-    <!-- Stats -->
-    <div class="card">
+    <div class="card" id="stats-card">
       <div class="card-title">Statistiques</div>
+      
       <div class="stat-row">
         <span>Films notés</span>
         <span class="stat-num" id="total-count">0</span>
       </div>
+      
       <div class="stat-row">
-        <span>Moyenne</span>
+        <span>Moyenne globale</span>
         <span class="stat-num" id="avg-score">—</span>
       </div>
+      
+      <div class="stat-row" style="margin-bottom: 20px;">
+        <span>Vus en <span id="current-year-label"></span></span>
+        <span class="stat-num" style="color: var(--blue);" id="year-count">0</span>
+      </div>
+
+      <div class="stat-group-title">Distribution des notes</div>
       <div class="histo" id="histogram"></div>
+
+      <div class="stat-group-title" style="margin-top: 24px;">Top 3 Genres favoris</div>
+      <div id="stats-genres"></div>
+
+      <div class="stat-group-title" style="margin-top: 24px;">L'ADN de tes notes</div>
+      <div id="stats-criteria"></div>
+
     </div>
 
-    <!-- History -->
     <div class="card">
       <div class="card-title">
         Historique
         <span class="card-title-badge" id="hist-count-badge">0 film</span>
       </div>
 
-      <!-- Sort -->
       <div class="filter-row" id="filter-row">
         <button class="filter-btn active" data-sort="date">Récents</button>
         <button class="filter-btn" data-sort="score-desc">Mieux notés</button>
@@ -845,7 +892,6 @@
         <button class="filter-btn" data-sort="title">A→Z</button>
       </div>
 
-      <!-- Genre filter -->
       <div class="genre-filter-row" id="genre-filter-row" style="display:none;">
         <span class="genre-filter-label">Genre :</span>
         <div class="genre-chips" id="genre-chips"></div>
@@ -855,9 +901,7 @@
     </div>
 
   </div>
-</div><!-- /layout -->
-
-<script>
+</div><script>
 // ═══════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════
@@ -1259,7 +1303,6 @@ document.getElementById('share-img-btn').addEventListener('click', async () => {
 
   showToast("Génération de l'image en cours...");
 
-  // Récupération des éléments du gabarit caché
   const exportCard = document.getElementById('export-card');
   const exportPoster = document.getElementById('export-poster');
   const exportTitle = document.getElementById('export-title');
@@ -1268,7 +1311,6 @@ document.getElementById('share-img-btn').addEventListener('click', async () => {
   const exportStars = document.getElementById('export-stars');
   const exportCriteria = document.getElementById('export-criteria');
 
-  // Peuplement des données
   exportPoster.src = document.getElementById('movie-poster').value || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
   exportTitle.textContent = title + (isLiked ? ' ❤️' : '');
   
@@ -1280,21 +1322,18 @@ document.getElementById('share-img-btn').addEventListener('click', async () => {
   exportScore.textContent = document.getElementById('score-big').textContent + (currentMode === 'quick' ? '/5' : '/10');
   exportStars.textContent = document.getElementById('stars-display').textContent;
 
-  // Définition de la couleur principale en fonction de la note
   const scoreNum = parseFloat(document.getElementById('score-big').textContent);
-  let color = '#ff8000'; // Gold par défaut
+  let color = '#ff8000'; 
   if(currentMode === 'detail' && scoreNum >= 7.5) color = '#00e054';
   if(currentMode === 'detail' && scoreNum < 5.0) color = '#ff4040';
   if(currentMode === 'quick' && scoreNum >= 4) color = '#00e054';
   if(currentMode === 'quick' && scoreNum < 2.5) color = '#ff4040';
   exportScore.style.color = color;
 
-  // Remplissage des jauges de critères (uniquement si mode détaillé)
   exportCriteria.innerHTML = '';
   if (currentMode === 'detail') {
     CRITERIA.forEach(c => {
        const val = parseFloat(document.getElementById(c).value);
-       // Récupérer le label textuel propre
        const realLabel = document.querySelector(`#desc-${c}`).previousElementSibling.previousElementSibling.querySelector('.criterion-label').innerText.split(' ×')[0];
 
        exportCriteria.innerHTML += `
@@ -1309,16 +1348,15 @@ document.getElementById('share-img-btn').addEventListener('click', async () => {
     });
   }
 
-  // Lancement de html2canvas (petite pause pour laisser l'image se charger dans le DOM caché)
   setTimeout(async () => {
     try {
       const canvas = await html2canvas(exportCard, { 
         backgroundColor: '#14181c', 
         scale: 2, 
-        useCORS: true // Essentiel pour charger l'affiche TMDb
+        useCORS: true
       });
       const link = document.createElement('a');
-      link.download = `Critique_${title.replace(/\s+/g, '_')}.png`;
+      link.download = `Critique_${title.replace(/\\s+/g, '_')}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch (e) {
@@ -1363,7 +1401,7 @@ document.getElementById('save-btn').addEventListener('click', () => {
   if (existing) {
     openModal(
       'Film déjà noté',
-      `"${title}" est déjà dans votre historique avec ${existing.score}/10.\nVoulez-vous écraser cette note ?`,
+      `"${title}" est déjà dans votre historique avec ${existing.score}/10.\\nVoulez-vous écraser cette note ?`,
       () => {
         const idx = history.findIndex(h => h.title.toLowerCase() === title.toLowerCase());
         history[idx] = movie;
@@ -1427,14 +1465,12 @@ window.loadItem = function(idx) {
   isLiked = item.liked || false;
   document.getElementById('heart-btn').classList.toggle('active', isLiked);
 
-  // Restore context tags
   activeContextTags = new Set(item.contextTags || []);
   document.querySelectorAll('.ctx-tag').forEach(b => {
     if (activeContextTags.has(b.dataset.tag)) b.classList.add('active');
     else b.classList.remove('active');
   });
 
-  // Visuel du Strip
   const strip = document.getElementById('film-strip');
   strip.classList.add('visible');
   document.getElementById('strip-title').textContent = item.title;
@@ -1470,7 +1506,6 @@ window.loadItem = function(idx) {
 // ═══════════════════════════════════════════
 //  DELETE (AVEC ANIMATION)
 // ═══════════════════════════════════════════
-// On passe désormais le bouton `btnEl` cliqué pour cibler précisément la ligne à animer
 window.deleteItem = function(idx, btnEl) {
   const history = loadHistory();
   const item    = history[idx];
@@ -1480,11 +1515,9 @@ window.deleteItem = function(idx, btnEl) {
     `Supprimer "${item?.title}" de l'historique ? Cette action est irréversible.`,
     () => {
       if (btnEl) {
-        // Ajoute la classe CSS pour déclencher l'animation de sortie
         const cardToAnimate = btnEl.closest('.hist-item');
         cardToAnimate.classList.add('deleting');
         
-        // Attends 300ms (la durée de l'animation CSS) avant de supprimer la donnée et re-rendre
         setTimeout(() => {
           history.splice(idx, 1);
           saveHistory(history);
@@ -1492,7 +1525,6 @@ window.deleteItem = function(idx, btnEl) {
           showToast('Film supprimé');
         }, 300);
       } else {
-        // Fallback sans animation si on ne trouve pas le bouton
         history.splice(idx, 1);
         saveHistory(history);
         renderAll();
@@ -1594,7 +1626,6 @@ function renderHistory() {
     const scoreNum = parseFloat(item.score);
     const scoreColor = scoreNum >= 7.5 ? 'var(--green)' : scoreNum >= 5 ? 'var(--gold)' : 'var(--red)';
 
-    // Lazy Loading intégré via l'attribut loading="lazy" et decoding="async"
     const imgHtml = item.poster
       ? `<img class="hist-poster" src="${item.poster}" loading="lazy" decoding="async" onerror="this.outerHTML='<div class=\\'hist-poster-ph\\'>🎬</div>'">`
       : `<div class="hist-poster-ph">🎬</div>`;
@@ -1633,21 +1664,33 @@ function renderHistory() {
 }
 
 // ═══════════════════════════════════════════
-//  RENDER STATISTICS
+//  RENDER STATISTICS (TABLEAU DE BORD)
 // ═══════════════════════════════════════════
 function renderStats() {
   const history = loadHistory();
+  
+  // 1. Mise à jour globale
   document.getElementById('total-count').textContent = history.length;
+  document.getElementById('current-year-label').textContent = new Date().getFullYear();
 
   if (history.length === 0) {
     document.getElementById('avg-score').textContent = '—';
+    document.getElementById('year-count').textContent = '0';
     buildHistogram({});
+    document.getElementById('stats-genres').innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Pas assez de données.</div>';
+    document.getElementById('stats-criteria').innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Pas assez de données.</div>';
     return;
   }
 
   const avg = history.reduce((sum, h) => sum + parseFloat(h.score), 0) / history.length;
   document.getElementById('avg-score').textContent = avg.toFixed(2) + '/10';
 
+  // 2. Films de l'année en cours
+  const currentYear = new Date().getFullYear().toString();
+  const yearCount = history.filter(h => h.date && h.date.startsWith(currentYear)).length;
+  document.getElementById('year-count').textContent = yearCount;
+
+  // 3. Distribution (Histogramme)
   const dist = { 50:0, 45:0, 40:0, 35:0, 30:0, 25:0, 20:0, 15:0, 10:0, '05':0 };
   history.forEach(item => {
     const stars = Math.round((parseFloat(item.score) / 2) * 2) / 2;
@@ -1655,6 +1698,76 @@ function renderStats() {
     if (dist[key] !== undefined) dist[key]++;
   });
   buildHistogram(dist);
+
+  // 4. Top Genres
+  const genreStats = {};
+  history.forEach(h => {
+    if(!h.genre) return;
+    h.genre.split(',').forEach(g => {
+      const gt = g.trim();
+      if(!gt) return;
+      if(!genreStats[gt]) genreStats[gt] = { count: 0, sum: 0 };
+      genreStats[gt].count++;
+      genreStats[gt].sum += parseFloat(h.score);
+    });
+  });
+  
+  const topGenres = Object.entries(genreStats)
+    .map(([name, data]) => ({ name, count: data.count, avg: data.sum / data.count }))
+    .sort((a,b) => b.count - a.count)
+    .slice(0, 3); // Garde uniquement le Top 3
+
+  const genresContainer = document.getElementById('stats-genres');
+  genresContainer.innerHTML = '';
+  if (topGenres.length > 0) {
+    topGenres.forEach(g => {
+      genresContainer.innerHTML += `
+        <div class="top-genre-row">
+          <div class="top-genre-name">${g.name}</div>
+          <div class="top-genre-meta">
+            <span>${g.count} films</span>
+            <span class="top-genre-avg">${g.avg.toFixed(1)}/10</span>
+          </div>
+        </div>
+      `;
+    });
+  } else {
+    genresContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Pas assez de données.</div>';
+  }
+
+  // 5. Moyennes des Critères Détaillés
+  const critSums = { scenario: 0, realisation: 0, photo: 0, acteurs: 0, ambiance: 0, affect: 0 };
+  const critLabels = { scenario: 'Scénario', realisation: 'Réalisation', photo: 'Photographie', acteurs: 'Acteurs', ambiance: 'Ambiance', affect: 'Affect' };
+  let detailCount = 0;
+
+  history.forEach(h => {
+    if (h.mode === 'detail' && h.values && h.values.scenario !== undefined) {
+      detailCount++;
+      CRITERIA.forEach(c => { critSums[c] += parseFloat(h.values[c]); });
+    }
+  });
+
+  const criteriaContainer = document.getElementById('stats-criteria');
+  criteriaContainer.innerHTML = '';
+  if (detailCount > 0) {
+    CRITERIA.forEach(c => {
+      const avgCrit = critSums[c] / detailCount;
+      const pct = (avgCrit / 10) * 100;
+      criteriaContainer.innerHTML += `
+        <div class="avg-crit-row">
+          <div class="avg-crit-head">
+            <span>${critLabels[c]}</span>
+            <span class="avg-crit-val">${avgCrit.toFixed(1)}</span>
+          </div>
+          <div class="avg-crit-track">
+            <div class="avg-crit-bar" style="width: ${pct}%;"></div>
+          </div>
+        </div>
+      `;
+    });
+  } else {
+    criteriaContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Pas de notes détaillées.</div>';
+  }
 }
 
 function buildHistogram(dist) {
