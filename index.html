@@ -611,38 +611,11 @@
   .modal-btn.danger { background: rgba(255, 64, 64, 0.15); border-color: var(--red); color: var(--red); }
   .modal-btn.primary { background: rgba(64, 188, 244, 0.15); border-color: var(--blue); color: var(--blue); }
 
-  /* ── WEIGHT INDICATOR ── */
-  .weight-badge {
-    font-size: 0.7rem; color: var(--text); background: var(--bg);
-    border: 1px solid var(--border); border-radius: 20px; padding: 1px 6px;
-    margin-left: 6px; font-family: 'JetBrains Mono', monospace;
-  }
-
-  /* ── TMDB / IMDB RATING BADGES ── */
-  .strip-ratings {
-    display: flex; align-items: center; gap: 10px;
-    margin-top: 5px; flex-wrap: wrap;
-  }
-  .strip-tmdb-badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    background: #01b4e4; border-radius: 3px;
-    padding: 2px 7px; font-size: 0.75rem; font-weight: 700;
-    color: #fff; letter-spacing: 0.02em;
-  }
-  .strip-rating-icon { font-size: 0.75rem; }
-  .strip-rating-src  { font-size: 0.68rem; opacity: 0.85; font-weight: 400; }
-  .strip-votes { font-size: 0.74rem; color: var(--text); }
-
-  .hist-tmdb {
-    display: inline-flex; align-items: center; gap: 3px;
-    background: #01b4e4; border-radius: 3px;
-    padding: 1px 5px; font-size: 0.68rem; font-weight: 700;
-    color: #fff; margin-left: 6px; vertical-align: middle;
-  }
 </style>
 </head>
 <body>
 
+<!-- GABARIT CACHÉ POUR L'EXPORT IMAGE -->
 <div id="export-card" style="position: absolute; top: -9999px; left: -9999px; width: 680px; background: #14181c; padding: 32px; box-sizing: border-box; display: flex; gap: 28px; font-family: 'Titillium Web', sans-serif; border: 1px solid #283040; border-radius: 8px;">
   <img id="export-poster" src="" crossorigin="anonymous" style="width: 170px; height: 255px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
@@ -656,8 +629,10 @@
   </div>
 </div>
 
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Confirmer</div>
@@ -669,6 +644,7 @@
   </div>
 </div>
 
+<!-- HEADER -->
 <header class="app-header">
   <h1 class="app-title"><em>Letterboxd</em> Rating Companion</h1>
   <div class="header-actions">
@@ -678,12 +654,15 @@
   </div>
 </header>
 
+<!-- MAIN LAYOUT -->
 <div class="layout">
 
+  <!-- ════ COL LEFT ════ -->
   <div class="col-left">
     <div class="card">
       <div class="card-title">Film</div>
 
+      <!-- Search & Meta -->
       <div class="search-wrap">
         <div class="search-row">
           <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
@@ -693,6 +672,7 @@
         <div class="suggestions" id="suggestions"></div>
       </div>
 
+      <!-- Context Tags -->
       <div class="context-row" id="context-tags">
         <button type="button" class="ctx-tag" data-tag="🍿 Cinéma">🍿 Cinéma</button>
         <button type="button" class="ctx-tag" data-tag="🔄 Re-visionnage">🔄 Re-visionnage</button>
@@ -700,6 +680,7 @@
         <button type="button" class="ctx-tag" data-tag="🛋️ À la maison">🛋️ À la maison</button>
       </div>
 
+      <!-- Film strip (shown after selection) -->
       <div class="film-strip" id="film-strip">
         <img class="film-strip-poster" id="strip-poster" src="" alt="">
         <div class="film-strip-info">
@@ -722,6 +703,7 @@
       <input type="hidden" id="movie-genre">
       <input type="hidden" id="movie-runtime">
       <input type="hidden" id="movie-director">
+      <input type="hidden" id="movie-actors"> <!-- Nouveau champ caché pour les acteurs -->
       <input type="hidden" id="movie-tmdb-score">
     </div>
 
@@ -731,13 +713,16 @@
         <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
       </div>
 
+      <!-- ── MODE TABS ── -->
       <div class="mode-tabs">
         <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
         <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
+      <!-- ── DETAILED MODE ── -->
       <div class="detailed-section">
 
+        <!-- Weights toggle -->
         <div class="weights-toggle" id="weights-toggle" onclick="toggleWeights()">
           ⚙ Personnaliser les pondérations
         </div>
@@ -812,6 +797,7 @@
         </div>
       </div>
 
+      <!-- ── QUICK MODE ── -->
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
           <input type="radio" id="s10" name="rating" value="5"><label for="s10" class="right-half">★</label>
@@ -827,6 +813,7 @@
         </div>
       </div>
 
+      <!-- Score + critique + actions -->
       <div class="score-result">
         <div class="score-main">
           <div class="score-big" id="score-big">5.0</div>
@@ -848,43 +835,58 @@
     </div>
   </div>
 
+  <!-- ════ COL RIGHT ════ -->
   <div class="col-right">
 
+    <!-- Stats -->
     <div class="card" id="stats-card">
       <div class="card-title">Statistiques</div>
       
+      <!-- Ligne 1 : Films Totaux -->
       <div class="stat-row">
         <span>Films notés</span>
         <span class="stat-num" id="total-count">0</span>
       </div>
       
+      <!-- Ligne 2 : Moyenne Globale -->
       <div class="stat-row">
         <span>Moyenne globale</span>
         <span class="stat-num" id="avg-score">—</span>
       </div>
       
+      <!-- Ligne 3 : Compteur Annuel -->
       <div class="stat-row" style="margin-bottom: 20px;">
         <span>Vus en <span id="current-year-label"></span></span>
         <span class="stat-num" style="color: var(--blue);" id="year-count">0</span>
       </div>
 
+      <!-- Distribution Histogram -->
       <div class="stat-group-title">Distribution des notes</div>
       <div class="histo" id="histogram"></div>
 
+      <!-- Top Genres -->
       <div class="stat-group-title" style="margin-top: 24px;">Top 3 Genres favoris</div>
       <div id="stats-genres"></div>
 
+      <!-- Moyennes par critère -->
       <div class="stat-group-title" style="margin-top: 24px;">L'ADN de tes notes</div>
       <div id="stats-criteria"></div>
 
     </div>
 
+    <!-- History -->
     <div class="card">
       <div class="card-title">
         Historique
         <span class="card-title-badge" id="hist-count-badge">0 film</span>
       </div>
 
+      <!-- Barre de recherche pour l'historique (Nouveau) -->
+      <div class="search-wrap" style="margin-bottom: 14px;">
+        <input type="text" class="search-input" id="history-search" placeholder="Rechercher (titre, réal, acteur...)" autocomplete="off">
+      </div>
+
+      <!-- Sort -->
       <div class="filter-row" id="filter-row">
         <button class="filter-btn active" data-sort="date">Récents</button>
         <button class="filter-btn" data-sort="score-desc">Mieux notés</button>
@@ -892,6 +894,7 @@
         <button class="filter-btn" data-sort="title">A→Z</button>
       </div>
 
+      <!-- Genre filter -->
       <div class="genre-filter-row" id="genre-filter-row" style="display:none;">
         <span class="genre-filter-label">Genre :</span>
         <div class="genre-chips" id="genre-chips"></div>
@@ -901,7 +904,9 @@
     </div>
 
   </div>
-</div><script>
+</div><!-- /layout -->
+
+<script>
 // ═══════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════
@@ -979,6 +984,7 @@ let activeGenre = null;
 let weightsOpen = false;
 let pendingAction = null; 
 let activeContextTags = new Set(); 
+let historySearchQuery = ''; // État pour la recherche dans l'historique
 
 // ═══════════════════════════════════════════
 //  STORAGE 
@@ -1079,9 +1085,16 @@ async function selectMovie(m, year) {
     const runtime = data.runtime ? `${data.runtime} min` : '';
     
     let director = '';
+    let actors = ''; // Nouvelle variable pour le casting
+    
     if (data.credits && data.credits.crew) {
       const dirObj = data.credits.crew.find(c => c.job === 'Director');
       if (dirObj) director = dirObj.name;
+      
+      // Récupération des 3 acteurs principaux
+      if (data.credits.cast && data.credits.cast.length > 0) {
+        actors = data.credits.cast.slice(0, 3).map(a => a.name).join(', ');
+      }
     } else if (data.director) {
       director = data.director;
     }
@@ -1089,11 +1102,13 @@ async function selectMovie(m, year) {
     document.getElementById('movie-genre').value = genres;
     document.getElementById('movie-runtime').value = runtime;
     document.getElementById('movie-director').value = director;
+    document.getElementById('movie-actors').value = actors; // Sauvegarde dans le DOM
 
     let stripMeta = genres;
     if (runtime) stripMeta += ` · ${runtime}`;
     if (year) stripMeta += ` · ${year}`;
     if (director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;">Réalisé par <b>${director}</b></span>`;
+    if (actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;">Avec <b>${actors}</b></span>`;
     
     document.getElementById('strip-genre').innerHTML = stripMeta;
 
@@ -1254,6 +1269,7 @@ document.getElementById('copy-btn').addEventListener('click', () => {
   const title    = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film sans titre';
   const year     = document.getElementById('movie-year').value;
   const director = document.getElementById('movie-director').value;
+  const actors   = document.getElementById('movie-actors').value;
   const dateVal  = document.getElementById('view-date').value;
   const dateStr  = dateVal ? new Date(dateVal + 'T12:00:00').toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }) : '';
   const review   = document.getElementById('review-text').value.trim();
@@ -1263,6 +1279,7 @@ document.getElementById('copy-btn').addEventListener('click', () => {
 
   let text = `📽 ${title} ${year ? '('+year+') ' : ''}${heartStr}\n`;
   if (director) text += `🎬 Un film de ${director}\n`;
+  if (actors) text += `🎭 Avec ${actors}\n`;
   if (dateStr) text += `🗓 Vu le ${dateStr}\n`;
   if (activeContextTags.size > 0) text += `🏷 ${Array.from(activeContextTags).join(' · ')}\n`;
   
@@ -1292,7 +1309,7 @@ document.getElementById('copy-btn').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════
-//  EXPORT IMAGE (NOUVEAU)
+//  EXPORT IMAGE
 // ═══════════════════════════════════════════
 document.getElementById('share-img-btn').addEventListener('click', async () => {
   const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film sans titre';
@@ -1316,8 +1333,11 @@ document.getElementById('share-img-btn').addEventListener('click', async () => {
   
   let meta = document.getElementById('movie-year').value || '';
   const dir = document.getElementById('movie-director').value;
+  const acts = document.getElementById('movie-actors').value;
+  
   if(dir) meta += ` · Réalisé par ${dir}`;
-  exportMeta.textContent = meta;
+  if(acts) meta += `<br><span style="font-size:0.85em; opacity:0.8;">Avec ${acts}</span>`;
+  exportMeta.innerHTML = meta;
 
   exportScore.textContent = document.getElementById('score-big').textContent + (currentMode === 'quick' ? '/5' : '/10');
   exportStars.textContent = document.getElementById('stars-display').textContent;
@@ -1356,7 +1376,7 @@ document.getElementById('share-img-btn').addEventListener('click', async () => {
         useCORS: true
       });
       const link = document.createElement('a');
-      link.download = `Critique_${title.replace(/\\s+/g, '_')}.png`;
+      link.download = `Critique_${title.replace(/\s+/g, '_')}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch (e) {
@@ -1384,6 +1404,7 @@ document.getElementById('save-btn').addEventListener('click', () => {
     genre:      document.getElementById('movie-genre').value,
     runtime:    document.getElementById('movie-runtime').value,
     director:   document.getElementById('movie-director').value,
+    actors:     document.getElementById('movie-actors').value, // Sauvegarde des acteurs
     tmdbScore:  document.getElementById('movie-tmdb-score').value || null,
     date:       document.getElementById('view-date').value,
     liked:      isLiked,
@@ -1401,7 +1422,7 @@ document.getElementById('save-btn').addEventListener('click', () => {
   if (existing) {
     openModal(
       'Film déjà noté',
-      `"${title}" est déjà dans votre historique avec ${existing.score}/10.\\nVoulez-vous écraser cette note ?`,
+      `"${title}" est déjà dans votre historique avec ${existing.score}/10.\nVoulez-vous écraser cette note ?`,
       () => {
         const idx = history.findIndex(h => h.title.toLowerCase() === title.toLowerCase());
         history[idx] = movie;
@@ -1428,6 +1449,7 @@ function resetForm() {
   document.getElementById('movie-genre').value     = '';
   document.getElementById('movie-runtime').value   = '';
   document.getElementById('movie-director').value  = '';
+  document.getElementById('movie-actors').value    = '';
   document.getElementById('movie-tmdb-score').value = '';
   document.getElementById('review-text').value     = '';
   document.getElementById('strip-ratings').style.display = 'none';
@@ -1458,6 +1480,7 @@ window.loadItem = function(idx) {
   document.getElementById('movie-genre').value  = item.genre  || '';
   document.getElementById('movie-runtime').value = item.runtime || '';
   document.getElementById('movie-director').value = item.director || '';
+  document.getElementById('movie-actors').value   = item.actors || ''; // Chargement des acteurs
   
   searchEl.value = item.title;
   document.getElementById('view-date').value     = item.date  || '';
@@ -1479,6 +1502,7 @@ window.loadItem = function(idx) {
   if (item.runtime) stripMeta += ` · ${item.runtime}`;
   if (item.year) stripMeta += ` · ${item.year}`;
   if (item.director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;">Réalisé par <b>${item.director}</b></span>`;
+  if (item.actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;">Avec <b>${item.actors}</b></span>`;
   document.getElementById('strip-genre').innerHTML = stripMeta;
 
   if (item.poster) {
@@ -1536,6 +1560,14 @@ window.deleteItem = function(idx, btnEl) {
 };
 
 // ═══════════════════════════════════════════
+//  RECHERCHE HISTORIQUE (NOUVEAU)
+// ═══════════════════════════════════════════
+document.getElementById('history-search').addEventListener('input', (e) => {
+  historySearchQuery = e.target.value.toLowerCase();
+  renderHistory();
+});
+
+// ═══════════════════════════════════════════
 //  RENDER HISTORY
 // ═══════════════════════════════════════════
 function getGenres(history) {
@@ -1577,13 +1609,28 @@ function renderGenreChips(history) {
 }
 
 function getSorted(history) {
-  let h = activeGenre
-    ? history.filter(item => item.genre && item.genre.split(',').map(g => g.trim()).includes(activeGenre))
-    : [...history];
+  let h = history;
 
+  // 1. Filtre par Genre
+  if (activeGenre) {
+    h = h.filter(item => item.genre && item.genre.split(',').map(g => g.trim()).includes(activeGenre));
+  }
+
+  // 2. Filtre par Barre de Recherche en direct (Titre, Réal, Acteur)
+  if (historySearchQuery) {
+    h = h.filter(item => {
+      const titleMatch = item.title && item.title.toLowerCase().includes(historySearchQuery);
+      const dirMatch = item.director && item.director.toLowerCase().includes(historySearchQuery);
+      const actMatch = item.actors && item.actors.toLowerCase().includes(historySearchQuery);
+      return titleMatch || dirMatch || actMatch;
+    });
+  }
+
+  // 3. Tri (Score, Date, Alphabet)
   if (sortOrder === 'score-desc') return h.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
   if (sortOrder === 'score-asc')  return h.sort((a, b) => parseFloat(a.score) - parseFloat(b.score));
   if (sortOrder === 'title')      return h.sort((a, b) => a.title.localeCompare(b.title));
+  
   return h; 
 }
 
@@ -1593,7 +1640,7 @@ function renderHistory() {
   const container = document.getElementById('history-list');
 
   const badge = document.getElementById('hist-count-badge');
-  if (activeGenre) {
+  if (activeGenre || historySearchQuery) {
     badge.textContent = `${sorted.length} / ${history.length} film${history.length > 1 ? 's' : ''}`;
     badge.style.color = 'var(--orange)';
   } else {
@@ -1609,7 +1656,7 @@ function renderHistory() {
   }
 
   if (sorted.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔍</div>Aucun film dans ce genre.</div>`;
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔍</div>Aucun résultat pour cette recherche.</div>`;
     return;
   }
 
@@ -1639,6 +1686,7 @@ function renderHistory() {
     if (item.runtime) metaHTML += item.runtime + ' · ';
     metaHTML += item.genre || '';
     if (item.director) metaHTML += `<br><span style="color:var(--text-mid)">Réalisé par <b>${item.director}</b></span>`;
+    if (item.actors) metaHTML += `<br><span style="color:var(--text-mid)">Avec <b>${item.actors}</b></span>`;
 
     let tagsHTML = '';
     if (item.contextTags && item.contextTags.length > 0) {
@@ -1664,12 +1712,11 @@ function renderHistory() {
 }
 
 // ═══════════════════════════════════════════
-//  RENDER STATISTICS (TABLEAU DE BORD)
+//  RENDER STATISTICS
 // ═══════════════════════════════════════════
 function renderStats() {
   const history = loadHistory();
   
-  // 1. Mise à jour globale
   document.getElementById('total-count').textContent = history.length;
   document.getElementById('current-year-label').textContent = new Date().getFullYear();
 
@@ -1685,12 +1732,10 @@ function renderStats() {
   const avg = history.reduce((sum, h) => sum + parseFloat(h.score), 0) / history.length;
   document.getElementById('avg-score').textContent = avg.toFixed(2) + '/10';
 
-  // 2. Films de l'année en cours
   const currentYear = new Date().getFullYear().toString();
   const yearCount = history.filter(h => h.date && h.date.startsWith(currentYear)).length;
   document.getElementById('year-count').textContent = yearCount;
 
-  // 3. Distribution (Histogramme)
   const dist = { 50:0, 45:0, 40:0, 35:0, 30:0, 25:0, 20:0, 15:0, 10:0, '05':0 };
   history.forEach(item => {
     const stars = Math.round((parseFloat(item.score) / 2) * 2) / 2;
@@ -1699,7 +1744,6 @@ function renderStats() {
   });
   buildHistogram(dist);
 
-  // 4. Top Genres
   const genreStats = {};
   history.forEach(h => {
     if(!h.genre) return;
@@ -1715,7 +1759,7 @@ function renderStats() {
   const topGenres = Object.entries(genreStats)
     .map(([name, data]) => ({ name, count: data.count, avg: data.sum / data.count }))
     .sort((a,b) => b.count - a.count)
-    .slice(0, 3); // Garde uniquement le Top 3
+    .slice(0, 3); 
 
   const genresContainer = document.getElementById('stats-genres');
   genresContainer.innerHTML = '';
@@ -1735,7 +1779,6 @@ function renderStats() {
     genresContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Pas assez de données.</div>';
   }
 
-  // 5. Moyennes des Critères Détaillés
   const critSums = { scenario: 0, realisation: 0, photo: 0, acteurs: 0, ambiance: 0, affect: 0 };
   const critLabels = { scenario: 'Scénario', realisation: 'Réalisation', photo: 'Photographie', acteurs: 'Acteurs', ambiance: 'Ambiance', affect: 'Affect' };
   let detailCount = 0;
