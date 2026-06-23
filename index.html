@@ -1185,12 +1185,31 @@ const DESCS = {
   ]
 };
 
+const _descCache = {};
 function getDesc(criterion, val) {
+  const key = criterion + val;
+  if (_descCache[key]) return _descCache[key];
   const tiers = DESCS[criterion];
   for (const [thresh, text] of tiers) {
-    if (val >= thresh) return text;
+    if (val >= thresh) { _descCache[key] = text; return text; }
   }
-  return tiers[tiers.length - 1][1];
+  const fallback = tiers[tiers.length - 1][1];
+  _descCache[key] = fallback;
+  return fallback;
+}
+
+// ═══════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════
+/**
+ * Construit le HTML de métadonnées pour le film-strip à partir d'un objet
+ * {genre, runtime, year, director, actors}
+ */
+function buildStripMeta({ genre = '', runtime = '', year = '', director = '', actors = '' } = {}) {
+  let meta = [genre, runtime, year].filter(Boolean).join(' · ');
+  if (director) meta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Réalisé par <b>${director}</b></span>`;
+  if (actors)   meta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Avec <b>${actors}</b></span>`;
+  return meta;
 }
 
 // ═══════════════════════════════════════════
@@ -1205,6 +1224,7 @@ let weightsOpen = false;
 let pendingAction = null; 
 let activeContextTags = new Set(); 
 let historySearchQuery = ''; 
+let isFetchingMovie = false; // bloque saveDraft pendant un fetch TMDb
 
 // ═══════════════════════════════════════════
 //  STORAGE & DRAFT (BROUILLON)
@@ -1220,6 +1240,7 @@ function saveHistory(history) {
 }
 
 function saveDraft() {
+  if (isFetchingMovie) return; // attendre la fin du fetch
   const draft = {
     title: document.getElementById('movie-title').value,
     year: document.getElementById('movie-year').value,
@@ -1264,12 +1285,10 @@ function loadDraft() {
       const strip = document.getElementById('film-strip');
       strip.classList.add('visible');
       document.getElementById('strip-title').textContent = draft.title;
-      let stripMeta = draft.genre || '';
-      if (draft.runtime) stripMeta += ` · ${draft.runtime}`;
-      if (draft.year) stripMeta += ` · ${draft.year}`;
-      if (draft.director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Réalisé par <b>${draft.director}</b></span>`;
-      if (draft.actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Avec <b>${draft.actors}</b></span>`;
-      document.getElementById('strip-genre').innerHTML = stripMeta;
+      document.getElementById('strip-genre').innerHTML = buildStripMeta({
+        genre: draft.genre, runtime: draft.runtime, year: draft.year,
+        director: draft.director, actors: draft.actors
+      });
       if (draft.poster) {
         document.getElementById('strip-poster').src = draft.poster;
         document.getElementById('strip-poster').style.display = 'block';
@@ -1405,6 +1424,7 @@ async function selectMovie(m, year) {
 
   searchStatus.style.display = 'block';
   searchStatus.textContent = '⏳ Récupération des détails...';
+  isFetchingMovie = true;
 
   try {
     const res = await fetch(`/api/search?id=${m.id}`);
@@ -1431,13 +1451,9 @@ async function selectMovie(m, year) {
     document.getElementById('movie-director').value = director;
     document.getElementById('movie-actors').value = actors; 
 
-    let stripMeta = genres;
-    if (runtime) stripMeta += ` · ${runtime}`;
-    if (year) stripMeta += ` · ${year}`;
-    if (director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Réalisé par <b>${director}</b></span>`;
-    if (actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Avec <b>${actors}</b></span>`;
-    
-    document.getElementById('strip-genre').innerHTML = stripMeta;
+    document.getElementById('strip-genre').innerHTML = buildStripMeta({
+      genre: genres, runtime, year, director, actors
+    });
 
     const score = data.vote_average;
     const count = data.vote_count;
@@ -1451,6 +1467,7 @@ async function selectMovie(m, year) {
     document.getElementById('strip-genre').textContent = year || '';
   } finally {
     searchStatus.style.display = 'none';
+    isFetchingMovie = false;
   }
 
   const strip = document.getElementById('film-strip');
@@ -1574,20 +1591,16 @@ function calculateScore() {
   const scoreEl = document.getElementById('score-big');
   const denomEl = document.querySelector('.score-denom');
 
-  if (currentMode === 'quick') {
-    scoreEl.textContent = quickRating.toFixed(1);
-    denomEl.textContent = '/5';
-  } else {
-    scoreEl.textContent = score.toFixed(1);
-    denomEl.textContent = '/10';
-  }
+  // Toujours afficher en /10 pour cohérence avec l'historique et les stats
+  scoreEl.textContent = score.toFixed(1);
+  denomEl.textContent = '/10';
 
   scoreEl.className = 'score-big ' + (score >= 7.5 ? 'good' : score >= 5.0 ? 'mid' : 'bad');
 
   const stars = Math.round((score / 2) * 2) / 2;
   document.getElementById('stars-display').textContent = getStarStr(stars);
 
-  return score; 
+  return score;
 }
 
 CRITERIA.forEach(c => {
@@ -1630,7 +1643,7 @@ document.getElementById('copy-btn').addEventListener('click', () => {
   if (activeContextTags.size > 0) text += `🏷 ${Array.from(activeContextTags).join(' · ')}\n`;
   
   if (currentMode === 'quick') {
-    text += `⭐ ${stars} (${quickRating.toFixed(1)}/5)\n`;
+    text += `⭐ ${stars} (${score.toFixed(1)}/10)\n`;
   } else {
     text += `⭐ ${stars} (${score.toFixed(1)}/10)\n`;
   }
@@ -1699,15 +1712,15 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
   if(acts) meta += `<br><span style="font-size:0.85em; opacity:0.8;">Avec ${acts}</span>`;
   exportMeta.innerHTML = meta;
 
-  exportScore.textContent = document.getElementById('score-big').textContent + (currentMode === 'quick' ? '/5' : '/10');
+  exportScore.textContent = document.getElementById('score-big').textContent + '/10';
   exportStars.textContent = document.getElementById('stars-display').textContent;
 
   const scoreNum = parseFloat(document.getElementById('score-big').textContent);
   let colorVarName = '--orange'; 
   if(currentMode === 'detail' && scoreNum >= 7.5) colorVarName = '--green';
   if(currentMode === 'detail' && scoreNum < 5.0) colorVarName = '--red';
-  if(currentMode === 'quick' && scoreNum >= 4) colorVarName = '--green';
-  if(currentMode === 'quick' && scoreNum < 2.5) colorVarName = '--red';
+  if(currentMode === 'quick' && scoreNum >= 7.5) colorVarName = '--green';
+  if(currentMode === 'quick' && scoreNum < 5.0) colorVarName = '--red';
   
   const accentColor = getThemeVar(colorVarName);
   const surface2Color = getThemeVar('--surface2');
@@ -1734,12 +1747,36 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
     });
   }
 
+  // Pré-charger le poster via un canvas pour contourner les restrictions CORS
+  const posterUrl = document.getElementById('movie-poster').value;
+  async function loadImageAsDataURL(url) {
+    if (!url) return null;
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+    } catch { return null; }
+  }
+
+  const posterDataURL = await loadImageAsDataURL(posterUrl);
+  if (posterDataURL) {
+    exportPoster.src = posterDataURL;
+    await new Promise(r => { exportPoster.onload = r; exportPoster.onerror = r; });
+  } else {
+    exportPoster.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+  }
+
   setTimeout(async () => {
     try {
       const canvas = await html2canvas(exportCard, { 
         backgroundColor: getThemeVar('--bg'), 
         scale: 2, 
-        useCORS: true
+        useCORS: false,
+        allowTaint: false
       });
       const link = document.createElement('a');
       link.download = `Critique_${title.replace(/\s+/g, '_')}.png`;
@@ -1811,6 +1848,12 @@ document.getElementById('save-btn').addEventListener('click', () => {
     resetForm();
     renderAll();
     showToast(`"${title}" enregistré`);
+    const saveBtn = document.getElementById('save-btn');
+    const origSave = saveBtn.innerHTML;
+    saveBtn.innerHTML = '✓ Sauvé !';
+    saveBtn.style.background = 'var(--green)';
+    saveBtn.style.color = '#0d1117';
+    setTimeout(() => { saveBtn.innerHTML = origSave; saveBtn.style.background = ''; saveBtn.style.color = ''; }, 1800);
   }
 });
 
@@ -1871,12 +1914,10 @@ window.loadItem = function(idx) {
   strip.classList.add('visible');
   document.getElementById('strip-title').textContent = item.title;
   
-  let stripMeta = item.genre || '';
-  if (item.runtime) stripMeta += ` · ${item.runtime}`;
-  if (item.year) stripMeta += ` · ${item.year}`;
-  if (item.director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Réalisé par <b>${item.director}</b></span>`;
-  if (item.actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Avec <b>${item.actors}</b></span>`;
-  document.getElementById('strip-genre').innerHTML = stripMeta;
+  document.getElementById('strip-genre').innerHTML = buildStripMeta({
+    genre: item.genre, runtime: item.runtime, year: item.year,
+    director: item.director, actors: item.actors
+  });
 
   if (item.poster) {
     document.getElementById('strip-poster').src = item.poster;
@@ -1936,9 +1977,11 @@ window.deleteItem = function(idx, btnEl) {
 // ═══════════════════════════════════════════
 //  RECHERCHE HISTORIQUE
 // ═══════════════════════════════════════════
+let histSearchTimer;
 document.getElementById('history-search').addEventListener('input', (e) => {
   historySearchQuery = e.target.value.toLowerCase();
-  renderHistory();
+  clearTimeout(histSearchTimer);
+  histSearchTimer = setTimeout(renderHistory, 150);
 });
 
 // ═══════════════════════════════════════════
@@ -2095,7 +2138,7 @@ function renderHistory() {
         ${reviewHTML}
       </div>
       <div class="hist-actions">
-        <button class="hist-action-btn" onclick="loadItem(${realIdx})" title="Charger">🔄</button>
+        <button class="hist-action-btn" onclick="loadItem(${realIdx})" title="Modifier">✏️</button>
         <button class="hist-action-btn del" onclick="deleteItem(${realIdx}, this)" title="Supprimer">🗑</button>
       </div>`;
     container.appendChild(div);
@@ -2200,7 +2243,7 @@ function renderStats() {
       `;
     });
   } else {
-    criteriaContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Pas de notes détaillées.</div>';
+    criteriaContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Utilisez le mode <b>Détaillé</b> pour voir l\'ADN de vos notes par critère.</div>';
   }
 }
 
@@ -2276,8 +2319,8 @@ document.getElementById('import-file').addEventListener('change', e => {
         `Importer ${data.length} film${data.length > 1 ? 's' : ''} ? Cela fusionnera avec votre historique actuel (les doublons seront ignorés).`,
         () => {
           const existing = loadHistory();
-          const existingTitles = new Set(existing.map(h => h.title.toLowerCase()));
-          const toAdd = data.filter(d => !existingTitles.has(d.title?.toLowerCase()));
+          const existingKeys = new Set(existing.map(h => (h.title + '|' + (h.year||'')).toLowerCase()));
+          const toAdd = data.filter(d => !existingKeys.has((d.title + '|' + (d.year||'')).toLowerCase()));
           const merged = [...toAdd, ...existing];
           saveHistory(merged);
           renderAll();
