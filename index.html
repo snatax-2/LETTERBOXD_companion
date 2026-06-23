@@ -5,6 +5,9 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Letterboxd Rating Companion</title>
+<!-- Ajout de la librairie html2canvas pour la génération d'image -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
 
@@ -428,18 +431,20 @@
   .review-textarea::placeholder { color: #455; }
 
   /* ── ACTION BUTTONS ── */
-  .btn-row { display: flex; gap: 8px; }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .btn {
     border: none; border-radius: var(--radius-sm);
-    padding: 11px 18px; font-family: 'Titillium Web', sans-serif;
+    padding: 11px 16px; font-family: 'Titillium Web', sans-serif;
     font-size: 0.85rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
     cursor: pointer; transition: opacity .15s, background .15s;
-    display: flex; align-items: center; gap: 6px;
+    display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1;
+    min-width: 120px;
   }
   .btn:hover { opacity: 0.88; }
-  .btn-copy { background: var(--green); color: #0d1117; flex: 2; }
-  .btn-copy.copied { background: var(--text-hi); color: #0d1117; }
-  .btn-save { background: var(--blue); color: #0d1117; flex: 1; }
+  .btn-copy { background: #333; color: #fff; border: 1px solid var(--border-hi); }
+  .btn-copy.copied { background: var(--green); color: #0d1117; border-color: var(--green); }
+  .btn-image { background: var(--green); color: #0d1117; }
+  .btn-save { background: var(--blue); color: #0d1117; }
 
   /* ── STATS COLUMN ── */
   .stat-row {
@@ -471,7 +476,7 @@
   .filter-btn.active { background: var(--orange-dim); border-color: var(--orange); color: var(--orange); }
 
   /* ── HISTORY ── */
-  .history-scroller { max-height: 420px; overflow-y: auto; }
+  .history-scroller { max-height: 420px; overflow-y: auto; overflow-x: hidden;}
   .history-scroller::-webkit-scrollbar { width: 4px; }
   .history-scroller::-webkit-scrollbar-track { background: transparent; }
   .history-scroller::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
@@ -480,8 +485,10 @@
     display: flex; gap: 10px;
     background: var(--bg); border: 1px solid var(--border);
     border-radius: var(--radius-sm); padding: 10px; margin-bottom: 8px;
-    position: relative; transition: border-color .1s;
+    position: relative; 
+    transition: border-color .1s, opacity 0.3s ease, transform 0.3s ease; /* Ajout transition pour la suppression */
   }
+  .hist-item.deleting { opacity: 0; transform: translateX(-30px); } /* État d'animation de suppression */
   .hist-item:hover { border-color: var(--border-hi); }
   .hist-poster { width: 36px; height: 54px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
   .hist-poster-ph { width: 36px; height: 54px; background: var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; }
@@ -582,40 +589,28 @@
   .modal-btn.danger { background: rgba(255, 64, 64, 0.15); border-color: var(--red); color: var(--red); }
   .modal-btn.primary { background: rgba(64, 188, 244, 0.15); border-color: var(--blue); color: var(--blue); }
 
-  /* ── WEIGHT INDICATOR ── */
-  .weight-badge {
-    font-size: 0.7rem; color: var(--text); background: var(--bg);
-    border: 1px solid var(--border); border-radius: 20px; padding: 1px 6px;
-    margin-left: 6px; font-family: 'JetBrains Mono', monospace;
-  }
-
-  /* ── TMDB / IMDB RATING BADGES ── */
-  .strip-ratings {
-    display: flex; align-items: center; gap: 10px;
-    margin-top: 5px; flex-wrap: wrap;
-  }
-  .strip-tmdb-badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    background: #01b4e4; border-radius: 3px;
-    padding: 2px 7px; font-size: 0.75rem; font-weight: 700;
-    color: #fff; letter-spacing: 0.02em;
-  }
-  .strip-rating-icon { font-size: 0.75rem; }
-  .strip-rating-src  { font-size: 0.68rem; opacity: 0.85; font-weight: 400; }
-  .strip-votes { font-size: 0.74rem; color: var(--text); }
-
-  .hist-tmdb {
-    display: inline-flex; align-items: center; gap: 3px;
-    background: #01b4e4; border-radius: 3px;
-    padding: 1px 5px; font-size: 0.68rem; font-weight: 700;
-    color: #fff; margin-left: 6px; vertical-align: middle;
-  }
 </style>
 </head>
 <body>
 
+<!-- GABARIT CACHÉ POUR L'EXPORT IMAGE -->
+<div id="export-card" style="position: absolute; top: -9999px; left: -9999px; width: 680px; background: #14181c; padding: 32px; box-sizing: border-box; display: flex; gap: 28px; font-family: 'Titillium Web', sans-serif; border: 1px solid #283040; border-radius: 8px;">
+  <img id="export-poster" src="" crossorigin="anonymous" style="width: 170px; height: 255px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+     <h2 id="export-title" style="margin: 0 0 6px 0; font-size: 2.1rem; color: #fff; line-height: 1.1;"></h2>
+     <div id="export-meta" style="color: #9ab; font-size: 1rem; margin-bottom: 20px;"></div>
+     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+        <span id="export-score" style="font-size: 3rem; font-weight: bold; line-height: 1;"></span>
+        <span id="export-stars" style="font-size: 1.8rem; color: #ff8000; letter-spacing: 2px;"></span>
+     </div>
+     <div id="export-criteria" style="display: flex; flex-direction: column; gap: 10px;"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Confirmer</div>
@@ -627,6 +622,7 @@
   </div>
 </div>
 
+<!-- HEADER -->
 <header class="app-header">
   <h1 class="app-title"><em>Letterboxd</em> Rating Companion</h1>
   <div class="header-actions">
@@ -636,12 +632,15 @@
   </div>
 </header>
 
+<!-- MAIN LAYOUT -->
 <div class="layout">
 
+  <!-- ════ COL LEFT ════ -->
   <div class="col-left">
     <div class="card">
       <div class="card-title">Film</div>
 
+      <!-- Search & Meta -->
       <div class="search-wrap">
         <div class="search-row">
           <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
@@ -651,6 +650,7 @@
         <div class="suggestions" id="suggestions"></div>
       </div>
 
+      <!-- Context Tags -->
       <div class="context-row" id="context-tags">
         <button type="button" class="ctx-tag" data-tag="🍿 Cinéma">🍿 Cinéma</button>
         <button type="button" class="ctx-tag" data-tag="🔄 Re-visionnage">🔄 Re-visionnage</button>
@@ -658,6 +658,7 @@
         <button type="button" class="ctx-tag" data-tag="🛋️ À la maison">🛋️ À la maison</button>
       </div>
 
+      <!-- Film strip (shown after selection) -->
       <div class="film-strip" id="film-strip">
         <img class="film-strip-poster" id="strip-poster" src="" alt="">
         <div class="film-strip-info">
@@ -689,13 +690,16 @@
         <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
       </div>
 
+      <!-- ── MODE TABS ── -->
       <div class="mode-tabs">
         <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
         <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
+      <!-- ── DETAILED MODE ── -->
       <div class="detailed-section">
 
+        <!-- Weights toggle -->
         <div class="weights-toggle" id="weights-toggle" onclick="toggleWeights()">
           ⚙ Personnaliser les pondérations
         </div>
@@ -770,6 +774,7 @@
         </div>
       </div>
 
+      <!-- ── QUICK MODE ── -->
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
           <input type="radio" id="s10" name="rating" value="5"><label for="s10" class="right-half">★</label>
@@ -785,6 +790,7 @@
         </div>
       </div>
 
+      <!-- Score + critique + actions -->
       <div class="score-result">
         <div class="score-main">
           <div class="score-big" id="score-big">5.0</div>
@@ -798,15 +804,19 @@
         </div>
 
         <div class="btn-row">
-          <button class="btn btn-copy" id="copy-btn">📋 Copier pour Letterboxd</button>
+          <button class="btn btn-copy" id="copy-btn">📋 Texte</button>
+          <!-- Nouveau bouton de partage Image -->
+          <button class="btn btn-image" id="share-img-btn">📸 Image</button>
           <button class="btn btn-save" id="save-btn">💾 Sauver</button>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- ════ COL RIGHT ════ -->
   <div class="col-right">
 
+    <!-- Stats -->
     <div class="card">
       <div class="card-title">Statistiques</div>
       <div class="stat-row">
@@ -820,12 +830,14 @@
       <div class="histo" id="histogram"></div>
     </div>
 
+    <!-- History -->
     <div class="card">
       <div class="card-title">
         Historique
         <span class="card-title-badge" id="hist-count-badge">0 film</span>
       </div>
 
+      <!-- Sort -->
       <div class="filter-row" id="filter-row">
         <button class="filter-btn active" data-sort="date">Récents</button>
         <button class="filter-btn" data-sort="score-desc">Mieux notés</button>
@@ -833,6 +845,7 @@
         <button class="filter-btn" data-sort="title">A→Z</button>
       </div>
 
+      <!-- Genre filter -->
       <div class="genre-filter-row" id="genre-filter-row" style="display:none;">
         <span class="genre-filter-label">Genre :</span>
         <div class="genre-chips" id="genre-chips"></div>
@@ -842,11 +855,14 @@
     </div>
 
   </div>
-</div><script>
+</div><!-- /layout -->
+
+<script>
 // ═══════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════
 const STORE_KEY = "lbx_v2";
+
 const CRITERIA = ['scenario','realisation','photo','acteurs','ambiance','affect'];
 
 const DESCS = {
@@ -968,7 +984,7 @@ document.querySelectorAll('.ctx-tag').forEach(btn => {
 });
 
 // ═══════════════════════════════════════════
-//  TMDb SEARCH VIA TON PROXY VERCEL
+//  TMDb SEARCH
 // ═══════════════════════════════════════════
 const searchEl  = document.getElementById('movie-search');
 const suggestEl = document.getElementById('suggestions');
@@ -1012,7 +1028,6 @@ async function selectMovie(m, year) {
   document.getElementById('strip-ratings').style.display = 'none';
 
   try {
-    // 1. On interroge uniquement ton proxy Vercel
     const res = await fetch(`/api/search?id=${m.id}`);
     const data = await res.json();
 
@@ -1020,7 +1035,6 @@ async function selectMovie(m, year) {
     const runtime = data.runtime ? `${data.runtime} min` : '';
     
     let director = '';
-    // 2. Si tu modifies ton backend Vercel pour inclure 'credits', ces lignes récupéreront le réalisateur :
     if (data.credits && data.credits.crew) {
       const dirObj = data.credits.crew.find(c => c.job === 'Director');
       if (dirObj) director = dirObj.name;
@@ -1190,7 +1204,7 @@ CRITERIA.forEach(c => {
 document.getElementById('view-date').valueAsDate = new Date();
 
 // ═══════════════════════════════════════════
-//  COPY
+//  COPY TEXT
 // ═══════════════════════════════════════════
 document.getElementById('copy-btn').addEventListener('click', () => {
   const title    = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film sans titre';
@@ -1228,9 +1242,90 @@ document.getElementById('copy-btn').addEventListener('click', () => {
     const btn = document.getElementById('copy-btn');
     btn.textContent = '✓ Copié !';
     btn.classList.add('copied');
-    setTimeout(() => { btn.innerHTML = '📋 Copier pour Letterboxd'; btn.classList.remove('copied'); }, 2000);
+    setTimeout(() => { btn.innerHTML = '📋 Texte'; btn.classList.remove('copied'); }, 2000);
     showToast('Critique copiée dans le presse-papier');
   });
+});
+
+// ═══════════════════════════════════════════
+//  EXPORT IMAGE (NOUVEAU)
+// ═══════════════════════════════════════════
+document.getElementById('share-img-btn').addEventListener('click', async () => {
+  const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film sans titre';
+  if (!title || title === 'Film sans titre') {
+    showToast("Sélectionnez d'abord un film.");
+    return;
+  }
+
+  showToast("Génération de l'image en cours...");
+
+  // Récupération des éléments du gabarit caché
+  const exportCard = document.getElementById('export-card');
+  const exportPoster = document.getElementById('export-poster');
+  const exportTitle = document.getElementById('export-title');
+  const exportMeta = document.getElementById('export-meta');
+  const exportScore = document.getElementById('export-score');
+  const exportStars = document.getElementById('export-stars');
+  const exportCriteria = document.getElementById('export-criteria');
+
+  // Peuplement des données
+  exportPoster.src = document.getElementById('movie-poster').value || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+  exportTitle.textContent = title + (isLiked ? ' ❤️' : '');
+  
+  let meta = document.getElementById('movie-year').value || '';
+  const dir = document.getElementById('movie-director').value;
+  if(dir) meta += ` · Réalisé par ${dir}`;
+  exportMeta.textContent = meta;
+
+  exportScore.textContent = document.getElementById('score-big').textContent + (currentMode === 'quick' ? '/5' : '/10');
+  exportStars.textContent = document.getElementById('stars-display').textContent;
+
+  // Définition de la couleur principale en fonction de la note
+  const scoreNum = parseFloat(document.getElementById('score-big').textContent);
+  let color = '#ff8000'; // Gold par défaut
+  if(currentMode === 'detail' && scoreNum >= 7.5) color = '#00e054';
+  if(currentMode === 'detail' && scoreNum < 5.0) color = '#ff4040';
+  if(currentMode === 'quick' && scoreNum >= 4) color = '#00e054';
+  if(currentMode === 'quick' && scoreNum < 2.5) color = '#ff4040';
+  exportScore.style.color = color;
+
+  // Remplissage des jauges de critères (uniquement si mode détaillé)
+  exportCriteria.innerHTML = '';
+  if (currentMode === 'detail') {
+    CRITERIA.forEach(c => {
+       const val = parseFloat(document.getElementById(c).value);
+       // Récupérer le label textuel propre
+       const realLabel = document.querySelector(`#desc-${c}`).previousElementSibling.previousElementSibling.querySelector('.criterion-label').innerText.split(' ×')[0];
+
+       exportCriteria.innerHTML += `
+         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.9rem; color:#fff;">
+           <span style="width: 170px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${realLabel}</span>
+           <div style="flex:1; height:8px; background:#283040; border-radius:4px; margin:0 14px; overflow:hidden;">
+             <div style="width:${val*10}%; height:100%; background:${color}; border-radius:4px;"></div>
+           </div>
+           <span style="font-family:monospace; font-weight:bold; width:30px; text-align:right;">${val.toFixed(1)}</span>
+         </div>
+       `;
+    });
+  }
+
+  // Lancement de html2canvas (petite pause pour laisser l'image se charger dans le DOM caché)
+  setTimeout(async () => {
+    try {
+      const canvas = await html2canvas(exportCard, { 
+        backgroundColor: '#14181c', 
+        scale: 2, 
+        useCORS: true // Essentiel pour charger l'affiche TMDb
+      });
+      const link = document.createElement('a');
+      link.download = `Critique_${title.replace(/\s+/g, '_')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (e) {
+      console.error(e);
+      showToast("Erreur lors de la génération de l'image.");
+    }
+  }, 150);
 });
 
 // ═══════════════════════════════════════════
@@ -1373,19 +1468,36 @@ window.loadItem = function(idx) {
 };
 
 // ═══════════════════════════════════════════
-//  DELETE
+//  DELETE (AVEC ANIMATION)
 // ═══════════════════════════════════════════
-window.deleteItem = function(idx) {
+// On passe désormais le bouton `btnEl` cliqué pour cibler précisément la ligne à animer
+window.deleteItem = function(idx, btnEl) {
   const history = loadHistory();
   const item    = history[idx];
+  
   openModal(
     'Supprimer ce film',
     `Supprimer "${item?.title}" de l'historique ? Cette action est irréversible.`,
     () => {
-      history.splice(idx, 1);
-      saveHistory(history);
-      renderAll();
-      showToast('Film supprimé');
+      if (btnEl) {
+        // Ajoute la classe CSS pour déclencher l'animation de sortie
+        const cardToAnimate = btnEl.closest('.hist-item');
+        cardToAnimate.classList.add('deleting');
+        
+        // Attends 300ms (la durée de l'animation CSS) avant de supprimer la donnée et re-rendre
+        setTimeout(() => {
+          history.splice(idx, 1);
+          saveHistory(history);
+          renderAll();
+          showToast('Film supprimé');
+        }, 300);
+      } else {
+        // Fallback sans animation si on ne trouve pas le bouton
+        history.splice(idx, 1);
+        saveHistory(history);
+        renderAll();
+        showToast('Film supprimé');
+      }
     },
     true
   );
@@ -1482,8 +1594,9 @@ function renderHistory() {
     const scoreNum = parseFloat(item.score);
     const scoreColor = scoreNum >= 7.5 ? 'var(--green)' : scoreNum >= 5 ? 'var(--gold)' : 'var(--red)';
 
+    // Lazy Loading intégré via l'attribut loading="lazy" et decoding="async"
     const imgHtml = item.poster
-      ? `<img class="hist-poster" src="${item.poster}" loading="lazy" onerror="this.outerHTML='<div class=\\'hist-poster-ph\\'>🎬</div>'">`
+      ? `<img class="hist-poster" src="${item.poster}" loading="lazy" decoding="async" onerror="this.outerHTML='<div class=\\'hist-poster-ph\\'>🎬</div>'">`
       : `<div class="hist-poster-ph">🎬</div>`;
 
     const tmdbHtml = item.tmdbScore
@@ -1513,7 +1626,7 @@ function renderHistory() {
       </div>
       <div class="hist-actions">
         <button class="hist-action-btn" onclick="loadItem(${realIdx})" title="Charger">🔄</button>
-        <button class="hist-action-btn del" onclick="deleteItem(${realIdx})" title="Supprimer">🗑</button>
+        <button class="hist-action-btn del" onclick="deleteItem(${realIdx}, this)" title="Supprimer">🗑</button>
       </div>`;
     container.appendChild(div);
   });
