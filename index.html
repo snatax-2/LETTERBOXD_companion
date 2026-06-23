@@ -950,7 +950,7 @@ searchEl.addEventListener('input', () => {
 
 async function fetchSuggestions(q) {
   try {
-    const res  = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}&language=fr-FR`);
+    const res = await fetch(`/api/search?query=${encodeURIComponent(q)}`);
     const data = await res.json();
     if (!data.results?.length) { suggestEl.style.display = 'none'; return; }
     suggestEl.innerHTML = '';
