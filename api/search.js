@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   try {
     if (id) {
       // Cas 2 : On veut les détails d'un film spécifique
-      const detailsRes = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${TMDB_KEY}&language=fr-FR`);
+     const detailsRes = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${TMDB_KEY}&language=fr-FR&append_to_response=credits`);
       const detailsData = await detailsRes.json();
       return res.status(200).json(detailsData);
     } else {
