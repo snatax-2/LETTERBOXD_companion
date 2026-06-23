@@ -99,17 +99,6 @@
     align-items: center;
     font-family: 'Titillium Web', sans-serif;
   }
-  .card-title-badge {
-    font-size: 0.72rem;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2px 8px;
-    text-transform: none;
-    letter-spacing: 0;
-    font-weight: 400;
-    color: var(--text);
-  }
 
   /* ── MOVIE SEARCH ── */
   .search-wrap { position: relative; margin-bottom: 16px; }
@@ -220,18 +209,6 @@
   .strip-rating-src  { color: var(--text); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; }
   .strip-votes       { color: var(--text); font-size: 0.74rem; }
 
-  /* ── TABS: DÉTAILLÉ / RAPIDE ── */
-  .mode-tabs { display: flex; gap: 4px; margin-bottom: 18px; background: var(--bg); border-radius: var(--radius-sm); padding: 4px; }
-  .mode-tab {
-    flex: 1; text-align: center; padding: 7px;
-    border: none; border-radius: 4px; cursor: pointer;
-    font-family: 'Titillium Web', sans-serif;
-    font-size: 0.82rem; font-weight: 700;
-    color: var(--text); background: transparent;
-    transition: all .15s;
-  }
-  .mode-tab.active { background: var(--surface2); color: var(--text-hi); border: 1px solid var(--border); }
-
   /* ── WEIGHTS PANEL ── */
   .weights-toggle {
     display: flex; align-items: center; gap: 6px; justify-content: flex-end;
@@ -311,34 +288,6 @@
     min-height: 32px;
   }
   .criterion-block.affect-block .criterion-desc { border-left-color: var(--blue); }
-
-  /* ── QUICK RATING (Style Letterboxd) ── */
-.quick-section { display: none; padding: 20px 0; }
-body.quick-mode .quick-section { display: block; }
-
-.rating-stars { 
-    display: flex; flex-direction: row-reverse; justify-content: center; gap: 2px; 
-}
-.rating-stars input { display: none; }
-.rating-stars label { 
-    font-size: 2.5rem; color: var(--border-hi); cursor: pointer; transition: color 0.1s; 
-}
-/* Logique de survol et de sélection */
-.rating-stars label:hover, 
-.rating-stars label:hover ~ label, 
-.rating-stars input:checked ~ label { 
-    color: var(--gold); 
-}
-.rating-stars label.half { width: 1.25rem; overflow: hidden; }
-
-  /* Quick star rating via CSS hack */
- document.getElementById('quick-stars-container').addEventListener('change', (e) => {
-  quickRating = parseFloat(e.target.value);
-  calculateScore();
-});
-  .q-star { font-size: 2rem; cursor: pointer; color: var(--border-hi); transition: color .1s; user-select: none; }
-  .q-star.active { color: var(--orange); }
-  .q-star.half-active { color: var(--orange); }
 
   /* ── SCORE RESULT ── */
   .score-result {
@@ -544,24 +493,6 @@ body.quick-mode .quick-section { display: block; }
   .modal-btn.danger { background: var(--red-dim); border-color: var(--red); color: var(--red); }
   .modal-btn.primary { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
 
-  /* ── DETAILED MODE TOGGLE ── */
-  .detailed-section { }
-  <!-- ── QUICK MODE (Corrigé et optimisé) ── -->
-<div class="quick-section">
-  <div class="rating-stars" id="quick-stars-container">
-    <input type="radio" id="s10" name="rating" value="5"><label for="s10">★</label>
-    <input type="radio" id="s9" name="rating" value="4.5"><label for="s9" class="half">★</label>
-    <input type="radio" id="s8" name="rating" value="4"><label for="s8">★</label>
-    <input type="radio" id="s7" name="rating" value="3.5"><label for="s7" class="half">★</label>
-    <input type="radio" id="s6" name="rating" value="3"><label for="s6">★</label>
-    <input type="radio" id="s5" name="rating" value="2.5"><label for="s5" class="half">★</label>
-    <input type="radio" id="s4" name="rating" value="2"><label for="s4">★</label>
-    <input type="radio" id="s3" name="rating" value="1.5"><label for="s3" class="half">★</label>
-    <input type="radio" id="s2" name="rating" value="1"><label for="s2">★</label>
-    <input type="radio" id="s1" name="rating" value="0.5"><label for="s1" class="half">★</label>
-  </div>
-</div>
-
   /* ── WEIGHT INDICATOR ── */
   .weight-badge {
     font-size: 0.7rem; color: var(--text); background: var(--bg);
@@ -663,13 +594,6 @@ body.quick-mode .quick-section { display: block; }
     <div class="card" style="margin-top:16px;">
       <div class="card-title">
         Notation
-        <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
-      </div>
-
-      <!-- Mode tabs -->
-      <div class="mode-tabs">
-        <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
-        <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
       <!-- ── DETAILED MODE ── -->
@@ -749,22 +673,6 @@ body.quick-mode .quick-section { display: block; }
 
         </div>
       </div>
-
-      <!-- ── QUICK MODE ── -->
-      <div class="quick-section">
-  <div class="rating-stars" id="quick-stars-container">
-    <input type="radio" id="s10" name="rating" value="5"><label for="s10">★</label>
-    <input type="radio" id="s9" name="rating" value="4.5"><label for="s9" class="half">★</label>
-    <input type="radio" id="s8" name="rating" value="4"><label for="s8">★</label>
-    <input type="radio" id="s7" name="rating" value="3.5"><label for="s7" class="half">★</label>
-    <input type="radio" id="s6" name="rating" value="3"><label for="s6">★</label>
-    <input type="radio" id="s5" name="rating" value="2.5"><label for="s5" class="half">★</label>
-    <input type="radio" id="s4" name="rating" value="2"><label for="s4">★</label>
-    <input type="radio" id="s3" name="rating" value="1.5"><label for="s3" class="half">★</label>
-    <input type="radio" id="s2" name="rating" value="1"><label for="s2">★</label>
-    <input type="radio" id="s1" name="rating" value="0.5"><label for="s1" class="half">★</label>
-  </div>
-</div>
 
       <!-- Score + critique + actions -->
       <div class="score-result">
@@ -902,8 +810,6 @@ function getDesc(criterion, val) {
 //  STATE
 // ═══════════════════════════════════════════
 let isLiked    = false;
-let currentMode = 'detail'; // 'detail' | 'quick'
-let quickRating = 2.5; // étoiles
 let sortOrder   = 'date';
 let activeGenre = null; // null = tous
 let weightsOpen = false;
@@ -1032,40 +938,6 @@ document.getElementById('heart-btn').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════
-//  MODE (Détaillé / Rapide)
-// ═══════════════════════════════════════════
-function setMode(mode) {
-  currentMode = mode;
-  document.querySelector('.detailed-section').style.display = mode === 'detail' ? '' : 'none';
-  document.querySelector('.quick-section').style.display    = mode === 'quick'  ? '' : 'none';
-  document.getElementById('tab-detail').classList.toggle('active', mode === 'detail');
-  document.getElementById('tab-quick').classList.toggle('active', mode === 'quick');
-  document.getElementById('mode-badge').textContent = mode === 'detail' ? 'Mode détaillé' : 'Mode rapide';
-  calculateScore();
-}
-
-// ═══════════════════════════════════════════
-//  QUICK STARS
-// ═══════════════════════════════════════════
-const QUICK_VALUES = [0.5,1,1.5,2,2.5,3,3.5,4,4.5,5];
-const quickContainer = document.getElementById('quick-stars');
-
-document.getElementById('quick-stars-container').addEventListener('change', (e) => {
-  quickRating = parseFloat(e.target.value);
-  calculateScore();
-});
-
-// ═══════════════════════════════════════════
-//  LOGIQUE QUICK RATING (Correcte)
-// ═══════════════════════════════════════════
-document.getElementById('quick-stars-container').addEventListener('change', (e) => {
-    quickRating = parseFloat(e.target.value);
-    calculateScore(); // Met à jour le score 5.0/10 et les étoiles affichées
-});
-
-// Note : pas besoin de updateQuickStars() ici car le CSS gère l'état 'checked' automatiquement.
-
-// ═══════════════════════════════════════════
 //  WEIGHTS
 // ═══════════════════════════════════════════
 function toggleWeights() {
@@ -1116,23 +988,17 @@ function getStarStr(stars) {
 }
 
 function calculateScore() {
-  let score;
-
-  if (currentMode === 'quick') {
-    score = quickRating * 2; // convert stars to /10
-  } else {
-    const w = getWeights();
-    let weightedSum = 0, totalWeight = 0;
-    CRITERIA.forEach(c => {
-      const val = parseFloat(document.getElementById(c).value);
-      const wt  = w[c];
-      document.getElementById(`val-${c}`).textContent = val.toFixed(1);
-      document.getElementById(`desc-${c}`).textContent = getDesc(c, val);
-      weightedSum  += val * wt;
-      totalWeight  += wt;
-    });
-    score = totalWeight > 0 ? weightedSum / totalWeight : 5;
-  }
+  const w = getWeights();
+  let weightedSum = 0, totalWeight = 0;
+  CRITERIA.forEach(c => {
+    const val = parseFloat(document.getElementById(c).value);
+    const wt  = w[c];
+    document.getElementById(`val-${c}`).textContent = val.toFixed(1);
+    document.getElementById(`desc-${c}`).textContent = getDesc(c, val);
+    weightedSum  += val * wt;
+    totalWeight  += wt;
+  });
+  const score = totalWeight > 0 ? weightedSum / totalWeight : 5;
 
   const scoreEl = document.getElementById('score-big');
   scoreEl.textContent = score.toFixed(1);
@@ -1169,13 +1035,11 @@ document.getElementById('copy-btn').addEventListener('click', () => {
   if (dateStr) text += `🗓 Vu le ${dateStr}\n`;
   text += `⭐ ${stars} (${score.toFixed(1)}/10)\n`;
 
-  if (currentMode === 'detail') {
-    const vals = CRITERIA.reduce((acc, c) => {
-      acc[c] = parseFloat(document.getElementById(c).value).toFixed(1);
-      return acc;
-    }, {});
-    text += `\nScénario ${vals.scenario} · Réal ${vals.realisation} · Photo ${vals.photo} · Acteurs ${vals.acteurs} · Son ${vals.ambiance} · Affect ${vals.affect}\n`;
-  }
+  const vals = CRITERIA.reduce((acc, c) => {
+    acc[c] = parseFloat(document.getElementById(c).value).toFixed(1);
+    return acc;
+  }, {});
+  text += `\nScénario ${vals.scenario} · Réal ${vals.realisation} · Photo ${vals.photo} · Acteurs ${vals.acteurs} · Son ${vals.ambiance} · Affect ${vals.affect}\n`;
 
   if (review) text += `\n${review}`;
 
@@ -1208,12 +1072,9 @@ document.getElementById('save-btn').addEventListener('click', () => {
     liked:      isLiked,
     score:      score.toFixed(1),
     stars:      document.getElementById('stars-display').textContent,
-    mode:       currentMode,
     review:     document.getElementById('review-text').value.trim(),
-    values: currentMode === 'detail'
-      ? CRITERIA.reduce((acc, c) => { acc[c] = document.getElementById(c).value; return acc; }, {})
-      : { quick: quickRating },
-    savedAt: new Date().toISOString()
+    values:     CRITERIA.reduce((acc, c) => { acc[c] = document.getElementById(c).value; return acc; }, {}),
+    savedAt:    new Date().toISOString()
   };
 
   if (existing) {
@@ -1251,8 +1112,6 @@ function resetForm() {
   document.getElementById('heart-btn').classList.remove('active');
   document.getElementById('view-date').valueAsDate = new Date();
   CRITERIA.forEach(c => { document.getElementById(c).value = 5; });
-  quickRating = 2.5;
-  updateQuickStars();
   calculateScore();
 }
 
@@ -1280,18 +1139,11 @@ window.loadItem = function(idx) {
     document.getElementById('strip-poster').style.display = 'block';
   }
 
-  if (item.mode === 'quick' && item.values?.quick !== undefined) {
-    setMode('quick');
-    quickRating = parseFloat(item.values.quick);
-    updateQuickStars();
-  } else {
-    setMode('detail');
-    if (item.values) {
-      CRITERIA.forEach(c => {
-        if (item.values[c] !== undefined) document.getElementById(c).value = item.values[c];
-      });
-    }
-  }
+  // Reload detail mode sliders, fallback to 5 if the item was saved under "quick" mode
+  CRITERIA.forEach(c => {
+    document.getElementById(c).value = item.values && item.values[c] !== undefined ? item.values[c] : 5;
+  });
+
   calculateScore();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
