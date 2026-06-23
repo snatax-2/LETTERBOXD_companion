@@ -1034,13 +1034,17 @@ document.getElementById('quick-stars-container').addEventListener('change', (e) 
 });
   updateQuickStars();
 
+// ═══════════════════════════════════════════
+//  QUICK STARS (Logique Letterboxd)
+// ═══════════════════════════════════════════
+document.getElementById('quick-stars-container').addEventListener('change', (e) => {
+    quickRating = parseFloat(e.target.value);
+    calculateScore();
+});
+
 function updateQuickStars() {
-  document.querySelectorAll('.q-star').forEach(btn => {
-    btn.classList.toggle('active', parseFloat(btn.dataset.val) <= quickRating);
-  });
-  const labels = ['½','1','1½','2','2½','3','3½','4','4½','5 ★★★★★'];
-  const idx = QUICK_VALUES.indexOf(quickRating);
-  document.getElementById('quick-label').textContent = (idx >= 0 ? QUICK_VALUES[idx] : quickRating) + ' étoile' + (quickRating > 1 ? 's' : '');
+    // Cette fonction est désormais vide car le CSS gère l'affichage des étoiles.
+    // On la garde vide pour éviter les erreurs de "function not defined".
 }
 
 // ═══════════════════════════════════════════
