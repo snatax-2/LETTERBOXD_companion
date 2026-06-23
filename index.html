@@ -316,12 +316,14 @@
 .quick-section { display: none; padding: 20px 0; }
 body.quick-mode .quick-section { display: block; }
 
-.rating-stars { display: flex; flex-direction: row-reverse; justify-content: center; gap: 2px; }
+.rating-stars { 
+    display: flex; flex-direction: row-reverse; justify-content: center; gap: 2px; 
+}
 .rating-stars input { display: none; }
 .rating-stars label { 
     font-size: 2.5rem; color: var(--border-hi); cursor: pointer; transition: color 0.1s; 
 }
-/* Logique de survol et de sélection (le sélecteur ~ est la clé) */
+/* Logique de survol et de sélection */
 .rating-stars label:hover, 
 .rating-stars label:hover ~ label, 
 .rating-stars input:checked ~ label { 
@@ -1058,7 +1060,7 @@ document.getElementById('quick-stars-container').addEventListener('change', (e) 
 // ═══════════════════════════════════════════
 document.getElementById('quick-stars-container').addEventListener('change', (e) => {
     quickRating = parseFloat(e.target.value);
-    calculateScore();
+    calculateScore(); // Met à jour le score 5.0/10 et les étoiles affichées
 });
 
 // Note : pas besoin de updateQuickStars() ici car le CSS gère l'état 'checked' automatiquement.
