@@ -347,7 +347,10 @@ body.quick-mode .quick-section { display: block; }
 .rating-stars label.half { width: 1.25rem; overflow: hidden; }
 
   /* Quick star rating via CSS hack */
-  .quick-star-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 20px; }
+ document.getElementById('quick-stars-container').addEventListener('change', (e) => {
+  quickRating = parseFloat(e.target.value);
+  calculateScore();
+});
   .q-star { font-size: 2rem; cursor: pointer; color: var(--border-hi); transition: color .1s; user-select: none; }
   .q-star.active { color: var(--orange); }
   .q-star.half-active { color: var(--orange); }
