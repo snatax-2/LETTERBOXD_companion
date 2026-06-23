@@ -319,18 +319,44 @@
   body.quick-mode .quick-section { display: block; }
 
   .rating-stars { 
-      display: flex; flex-direction: row-reverse; justify-content: center; gap: 2px; 
+      display: flex; flex-direction: row-reverse; justify-content: center; 
   }
   .rating-stars input { display: none; }
+
+  /* Astuce CSS pour les demi-étoiles */
   .rating-stars label { 
-      font-size: 2.5rem; color: var(--border-hi); cursor: pointer; transition: color 0.1s; 
+      cursor: pointer; 
+      font-size: 3.5rem; 
+      width: 0.5em; /* Affiche seulement la moitié du caractère */
+      display: inline-block; 
+      position: relative; 
+      overflow: hidden; 
+      color: transparent; 
+      margin: 0;
   }
-  .rating-stars label:hover, 
-  .rating-stars label:hover ~ label, 
-  .rating-stars input:checked ~ label { 
+
+  /* Espacement entre les "vraies" étoiles */
+  .rating-stars label.right-half:not(:first-child) {
+      margin-right: 6px;
+  }
+
+  .rating-stars label::before { 
+      content: '★'; 
+      position: absolute; 
+      top: 0; 
+      color: var(--border-hi); 
+      transition: color 0.1s; 
+  }
+
+  .rating-stars label.left-half::before { left: 0; }
+  .rating-stars label.right-half::before { right: 0; }
+
+  /* Changement de couleur au survol et au clic */
+  .rating-stars label:hover::before, 
+  .rating-stars label:hover ~ label::before, 
+  .rating-stars input:checked ~ label::before { 
       color: var(--gold); 
   }
-  .rating-stars label.half { width: 1.25rem; overflow: hidden; }
 
   /* ── SCORE RESULT ── */
   .score-result {
@@ -716,16 +742,16 @@
 
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
-          <input type="radio" id="s10" name="rating" value="5"><label for="s10">★</label>
-          <input type="radio" id="s9" name="rating" value="4.5"><label for="s9" class="half">★</label>
-          <input type="radio" id="s8" name="rating" value="4"><label for="s8">★</label>
-          <input type="radio" id="s7" name="rating" value="3.5"><label for="s7" class="half">★</label>
-          <input type="radio" id="s6" name="rating" value="3"><label for="s6">★</label>
-          <input type="radio" id="s5" name="rating" value="2.5" checked><label for="s5" class="half">★</label>
-          <input type="radio" id="s4" name="rating" value="2"><label for="s4">★</label>
-          <input type="radio" id="s3" name="rating" value="1.5"><label for="s3" class="half">★</label>
-          <input type="radio" id="s2" name="rating" value="1"><label for="s2">★</label>
-          <input type="radio" id="s1" name="rating" value="0.5"><label for="s1" class="half">★</label>
+          <input type="radio" id="s10" name="rating" value="5"><label for="s10" class="right-half">★</label>
+          <input type="radio" id="s9" name="rating" value="4.5"><label for="s9" class="left-half">★</label>
+          <input type="radio" id="s8" name="rating" value="4"><label for="s8" class="right-half">★</label>
+          <input type="radio" id="s7" name="rating" value="3.5"><label for="s7" class="left-half">★</label>
+          <input type="radio" id="s6" name="rating" value="3"><label for="s6" class="right-half">★</label>
+          <input type="radio" id="s5" name="rating" value="2.5" checked><label for="s5" class="left-half">★</label>
+          <input type="radio" id="s4" name="rating" value="2"><label for="s4" class="right-half">★</label>
+          <input type="radio" id="s3" name="rating" value="1.5"><label for="s3" class="left-half">★</label>
+          <input type="radio" id="s2" name="rating" value="1"><label for="s2" class="right-half">★</label>
+          <input type="radio" id="s1" name="rating" value="0.5"><label for="s1" class="left-half">★</label>
         </div>
       </div>
 
@@ -857,15 +883,15 @@ function getDesc(criterion, val) {
 //  STATE
 // ═══════════════════════════════════════════
 let isLiked     = false;
-let currentMode = 'detail'; // 'detail' | 'quick'
-let quickRating = 2.5;      // Note rapide par défaut (en étoiles)
+let currentMode = 'detail'; 
+let quickRating = 2.5;      
 let sortOrder   = 'date';
 let activeGenre = null; 
 let weightsOpen = false;
 let pendingAction = null; 
 
 // ═══════════════════════════════════════════
-//  STORAGE (localStorage + Claude Storage API)
+//  STORAGE 
 // ═══════════════════════════════════════════
 function loadHistory() {
   try {
