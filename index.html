@@ -9,7 +9,7 @@
 
 <style>
   /* Importation de toutes les polices pour les différents thèmes */
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Oswald:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Righteous&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&family=VT323&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Oswald:wght@400;700&family=Quicksand:wght@400;600;700&family=Righteous&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&family=VT323&display=swap');
 
   /* ── VARIABLES GLOBALES ET THÈMES ── */
   :root {
@@ -34,15 +34,15 @@
     --font-mono: 'JetBrains Mono', monospace;
   }
 
-  [data-theme="auteur"] {
-    /* 3. Auteur (Élégant, Académique) */
-    --bg: #050505; --surface: #121212; --surface2: #1f1f1f; --border: #333333;
-    --border-hi: #555; --text: #777; --text-hi: #f4f4f0; --text-mid: #b0b0b0;
-    --orange: #d4af37; --gold: #d4af37; --blue: #800020; --red: #8b0000; --green: #556b2f;
-    --radius: 0px; --radius-sm: 0px;
-    --font-heading: 'Playfair Display', serif;
-    --font-body: 'Source Sans 3', sans-serif;
-    --font-mono: 'Playfair Display', serif;
+  [data-theme="aesthetic"] {
+    /* 3. Aesthetic (Soft Lofi & Pastel) */
+    --bg: #1e1b26; --surface: #282433; --surface2: #353043; --border: #443e55;
+    --border-hi: #665c7d; --text: #a49eb3; --text-hi: #f5f3f7; --text-mid: #c6c1d1;
+    --orange: #ffb7b2; --gold: #e2c2ff; --blue: #b5e2fa; --red: #ff9aa2; --green: #b5ead7;
+    --radius: 20px; --radius-sm: 12px;
+    --font-heading: 'Quicksand', sans-serif;
+    --font-body: 'Quicksand', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
   }
 
   [data-theme="ludex"] {
@@ -67,9 +67,11 @@
     --font-mono: 'VT323', monospace;
   }
 
-  /* Effets spéciaux pour Vintage */
+  /* Effets spéciaux par thème */
   [data-theme="vintage"] .app-title, [data-theme="vintage"] .score-big { text-shadow: 0px 0px 8px rgba(247, 37, 133, 0.5); }
   [data-theme="vintage"] .search-input:focus { box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.4); }
+  [data-theme="aesthetic"] .search-input:focus { box-shadow: 0 0 0 3px rgba(226, 194, 255, 0.3); }
+  [data-theme="aesthetic"] .card { box-shadow: 0 8px 24px rgba(0,0,0,0.15); border: 1px solid rgba(68, 62, 85, 0.5); }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -343,7 +345,7 @@
     width: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+    border-radius: 4px;
     color: var(--text-hi);
     padding: 6px 10px;
     font-family: var(--font-heading);
@@ -772,7 +774,7 @@
   </div>
 </div>
 
-<!-- MODAL PARAMÈTRES (NOUVEAU) -->
+<!-- MODAL PARAMÈTRES -->
 <div class="modal-overlay" id="settings-modal">
   <div class="modal-box">
     <div class="modal-title">🎨 Personnalisation</div>
@@ -784,7 +786,7 @@
       <select id="setting-theme" class="settings-select">
         <option value="default">Letterboxd (L'Original)</option>
         <option value="scuderia">Scuderia (Sport & Agressif)</option>
-        <option value="auteur">Auteur (Prestige & Académique)</option>
+        <option value="aesthetic">Aesthetic (Soft Lofi & Pastel)</option>
         <option value="ludex">Ludex Studio (Data & Minimaliste)</option>
         <option value="vintage">Synthwave 80s (Retro & Néon)</option>
       </select>
@@ -1067,7 +1069,7 @@
 
 <script>
 // ═══════════════════════════════════════════
-//  THEMING & SETTINGS (NOUVEAU)
+//  THEMING & SETTINGS
 // ═══════════════════════════════════════════
 function loadSettings() {
   const defaultSettings = { appName: "<em>Letterboxd</em> Rating Companion", theme: "default" };
@@ -1083,7 +1085,6 @@ function applySettings(settings) {
   document.getElementById('main-app-title').innerHTML = settings.appName || "<em>Letterboxd</em> Rating Companion";
   document.documentElement.setAttribute('data-theme', settings.theme || "default");
   
-  // Met à jour les valeurs dans la modal pour la prochaine ouverture
   document.getElementById('setting-app-name').value = (settings.appName || "").replace(/<\/?em>/g, '');
   document.getElementById('setting-theme').value = settings.theme || "default";
 }
@@ -1099,7 +1100,6 @@ document.getElementById('settings-cancel').addEventListener('click', () => {
 document.getElementById('settings-save').addEventListener('click', () => {
   let rawName = document.getElementById('setting-app-name').value.trim();
   if(!rawName) rawName = "Letterboxd Rating Companion";
-  // Si le mot Letterboxd est présent, on le met en emphase pour garder le style par défaut si on veut
   const formattedName = rawName.replace(/Letterboxd/gi, "<em>Letterboxd</em>");
   
   const newSettings = {
@@ -1112,10 +1112,8 @@ document.getElementById('settings-save').addEventListener('click', () => {
   document.getElementById('settings-modal').classList.remove('open');
 });
 
-// Appliquer au chargement
 loadSettings();
 
-// Helper pour récupérer une variable CSS du thème actuel (Utile pour le Canvas)
 function getThemeVar(varName) {
   return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
 }
@@ -1269,8 +1267,8 @@ function loadDraft() {
       let stripMeta = draft.genre || '';
       if (draft.runtime) stripMeta += ` · ${draft.runtime}`;
       if (draft.year) stripMeta += ` · ${draft.year}`;
-      if (draft.director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;">Réalisé par <b>${draft.director}</b></span>`;
-      if (draft.actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;">Avec <b>${draft.actors}</b></span>`;
+      if (draft.director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Réalisé par <b>${draft.director}</b></span>`;
+      if (draft.actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Avec <b>${draft.actors}</b></span>`;
       document.getElementById('strip-genre').innerHTML = stripMeta;
       if (draft.poster) {
         document.getElementById('strip-poster').src = draft.poster;
@@ -1436,8 +1434,8 @@ async function selectMovie(m, year) {
     let stripMeta = genres;
     if (runtime) stripMeta += ` · ${runtime}`;
     if (year) stripMeta += ` · ${year}`;
-    if (director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body);">Réalisé par <b>${director}</b></span>`;
-    if (actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body);">Avec <b>${actors}</b></span>`;
+    if (director) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Réalisé par <b>${director}</b></span>`;
+    if (actors) stripMeta += `<br><span style="color:var(--text-mid);font-size:0.75rem;font-family:var(--font-body)">Avec <b>${actors}</b></span>`;
     
     document.getElementById('strip-genre').innerHTML = stripMeta;
 
@@ -1704,7 +1702,6 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
   exportScore.textContent = document.getElementById('score-big').textContent + (currentMode === 'quick' ? '/5' : '/10');
   exportStars.textContent = document.getElementById('stars-display').textContent;
 
-  // Calcul de la couleur d'accentuation
   const scoreNum = parseFloat(document.getElementById('score-big').textContent);
   let colorVarName = '--orange'; 
   if(currentMode === 'detail' && scoreNum >= 7.5) colorVarName = '--green';
@@ -2053,7 +2050,9 @@ function renderHistory() {
       : '';
 
     const scoreNum = parseFloat(item.score);
-    const scoreColor = scoreNum >= 7.5 ? 'var(--green)' : scoreNum >= 5 ? 'var(--gold)' : 'var(--red)';
+    let scoreColor = 'var(--red)';
+    if(scoreNum >= 7.5) scoreColor = 'var(--green)';
+    else if(scoreNum >= 5.0) scoreColor = 'var(--gold)';
 
     const imgHtml = item.poster
       ? `<img class="hist-poster" src="${item.poster}" loading="lazy" decoding="async" onerror="this.outerHTML='<div class=\\'hist-poster-ph\\'>🎬</div>'">`
@@ -2067,8 +2066,8 @@ function renderHistory() {
     if (item.year) metaHTML += item.year + ' · ';
     if (item.runtime) metaHTML += item.runtime + ' · ';
     metaHTML += item.genre || '';
-    if (item.director) metaHTML += `<br><span style="color:var(--text-mid); font-family:var(--font-body)">Réalisé par <b>${item.director}</b></span>`;
-    if (item.actors) metaHTML += `<br><span style="color:var(--text-mid); font-family:var(--font-body)">Avec <b>${item.actors}</b></span>`;
+    if (item.director) metaHTML += `<br><span style="color:var(--text-mid)">Réalisé par <b>${item.director}</b></span>`;
+    if (item.actors) metaHTML += `<br><span style="color:var(--text-mid)">Avec <b>${item.actors}</b></span>`;
 
     let tagsHTML = '';
     if (item.contextTags && item.contextTags.length > 0) {
