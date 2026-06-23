@@ -1468,13 +1468,15 @@ function buildHistogram(dist) {
   const container = document.getElementById('histogram');
   container.innerHTML = '';
 
+  const order = [50, 45, 40, 35, 30, 25, 20, 15, 10, '05'];
   const labels = {
     50: '★★★★★', 45: '★★★★½', 40: '★★★★', 35: '★★★½', 30: '★★★',
     25: '★★½',   20: '★★',    15: '★½',    10: '★',    '05': '½'
   };
+
   const maxVal = Math.max(...Object.values(dist), 1);
 
-  Object.keys(labels).forEach(key => {
+  order.forEach(key => {
     const count   = dist[key] || 0;
     const pct     = (count / maxVal) * 100;
     const row     = document.createElement('div');
