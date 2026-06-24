@@ -925,7 +925,7 @@ function switchMobileNav(view) {
 
   if (view === 'rating') {
     navRating.classList.add('active');
-    colRating.style.display = 'flex';
+    colRating.style.display = 'block'; /* CORRECTION ICI : block au lieu de flex */
   } else if (view === 'history') {
     navHistory.classList.add('active');
     colRightViews.style.display = 'flex';
