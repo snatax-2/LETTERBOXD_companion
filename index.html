@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr" data-theme="default">
 <head>
@@ -1675,78 +1676,86 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
     });
   }
 
+  // ── Chargement du poster via proxy /api/search?img= pour contourner CORS mobile ──
   const posterUrl = document.getElementById('movie-poster').value;
-  async function loadImageAsDataURL(url) {
+
+  async function loadPosterAsDataURL(url) {
     if (!url) return null;
+    // 1. Proxy Vercel (contourne le CORS de TMDb sur mobile Chrome)
     try {
-      // ASTUCE ANTI-CORS : Contourner le cache du navigateur
-      const corsUrl = url + (url.includes('?') ? '&' : '?') + 'v=' + new Date().getTime();
-      const res = await fetch(corsUrl, { mode: 'cors' });
-      const blob = await res.blob();
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(blob);
-      });
-    } catch { return null; }
+      const res = await fetch(`/api/search?img=${encodeURIComponent(url)}`);
+      if (res.ok) {
+        const blob = await res.blob();
+        return await new Promise(resolve => { const r = new FileReader(); r.onload = () => resolve(r.result); r.readAsDataURL(blob); });
+      }
+    } catch {}
+    // 2. Fetch direct (desktop)
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        const blob = await res.blob();
+        return await new Promise(resolve => { const r = new FileReader(); r.onload = () => resolve(r.result); r.readAsDataURL(blob); });
+      }
+    } catch {}
+    return null;
   }
 
-  const posterDataURL = await loadImageAsDataURL(posterUrl);
+  const posterDataURL = await loadPosterAsDataURL(posterUrl);
+  exportPoster.src = posterDataURL || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
   if (posterDataURL) {
-    exportPoster.src = posterDataURL;
     await new Promise(r => { exportPoster.onload = r; exportPoster.onerror = r; });
-  } else {
-    exportPoster.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
   }
 
-  setTimeout(async () => {
-    try {
-      const canvas = await html2canvas(exportCard, { 
-        backgroundColor: getThemeVar('--bg'), 
-        scale: 2,
-        useCORS: true
-      });
-      
-      const fileName = `Critique_${title.replace(/[\s\W]+/g, '_')}.png`;
+  await new Promise(r => setTimeout(r, 200));
 
-      // Si le navigateur est sur mobile et supporte le partage
-      if (navigator.canShare && /Mobi|Android/i.test(navigator.userAgent)) {
-         canvas.toBlob(async (blob) => {
-            const file = new File([blob], fileName, { type: 'image/png' });
-            if (navigator.canShare({ files: [file] })) {
-               try {
-                   await navigator.share({ files: [file], title: fileName });
-               } catch(err) {
-                   console.log("Partage annulé", err);
-               }
-            } else {
-               downloadFallback();
-            }
-         }, 'image/png');
-      } else {
-          // Sur PC (ou mobile sans partage natif)
-          downloadFallback();
-      }
+  try {
+    const canvas = await html2canvas(exportCard, {
+      backgroundColor: getThemeVar('--bg'),
+      scale: 2,
+      useCORS: false,
+      allowTaint: false
+    });
 
-      function downloadFallback() {
+    const fileName = `Critique_${title.replace(/[\s\W]+/g, '_')}.png`;
+    const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      // Mobile : ouvrir dans un nouvel onglet → appui long → Enregistrer l'image
+      canvas.toBlob(blob => {
+        const blobUrl = URL.createObjectURL(blob);
+        const newTab = window.open(blobUrl, '_blank');
+        if (!newTab) {
+          // Popup bloqué : afficher une overlay dans la page
           const dataUrl = canvas.toDataURL('image/png');
-          const link = document.createElement('a');
-          link.download = fileName;
-          link.href = dataUrl;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-      }
-
-    } catch (e) {
-      console.error(e);
-      showToast("Erreur lors de la génération de l'image.");
-    } finally {
-      imgBtn.innerHTML = originalText;
-      imgBtn.style.opacity = '1';
-      imgBtn.disabled = false;
+          const overlay = document.createElement('div');
+          overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px;box-sizing:border-box;';
+          overlay.innerHTML = `
+            <p style="color:#fff;font-size:0.85rem;font-family:sans-serif;margin:0;text-align:center;">📥 Appui long sur l'image → <b>Enregistrer</b></p>
+            <img src="${dataUrl}" style="max-width:92vw;max-height:78vh;border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,0.6);">
+            <button onclick="this.parentNode.remove()" style="background:#fff;color:#000;border:none;border-radius:20px;padding:9px 24px;font-weight:700;font-size:0.9rem;cursor:pointer;">✕ Fermer</button>`;
+          document.body.appendChild(overlay);
+        }
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+      }, 'image/png');
+    } else {
+      // Desktop : téléchargement direct
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = fileName;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
-  }, 150);
+
+  } catch (e) {
+    console.error(e);
+    showToast("Erreur lors de la génération de l'image.");
+  } finally {
+    imgBtn.innerHTML = originalText;
+    imgBtn.style.opacity = '1';
+    imgBtn.disabled = false;
+  }
 });
 
 // ═══════════════════════════════════════════
