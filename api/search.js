@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  const { query, id, providers, img } = req.query;
+  const { query, id, providers, img, discover, with_genres, without_genres, with_crew } = req.query;
   const TMDB_KEY = process.env.TMDB_KEY;
 
   try {
@@ -17,6 +17,18 @@ export default async function handler(req, res) {
       res.setHeader('Content-Type', contentType);
       res.setHeader('Cache-Control', 'public, max-age=86400');
       return res.status(200).send(Buffer.from(buffer));
+
+    } else if (discover) {
+      // Cas 5 : Moteur de recommandation (Smart Queue & Sortie de zone)
+      let url = `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_KEY}&language=fr-FR&sort_by=vote_average.desc&vote_count.gte=100`;
+      
+      if (with_genres) url += `&with_genres=${with_genres}`;
+      if (without_genres) url += `&without_genres=${without_genres}`;
+      if (with_crew) url += `&with_crew=${with_crew}`;
+
+      const discRes = await fetch(url);
+      const discData = await discRes.json();
+      return res.status(200).json(discData);
 
     } else if (id && providers) {
       // Cas 3 : Watch providers pour un film donné, filtrés par région (ex: BE)
