@@ -1597,7 +1597,7 @@ document.getElementById('copy-btn').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════
-//  EXPORT IMAGE AVEC THÈMES (CORRECTION FINALE)
+//  EXPORT IMAGE AVEC THÈMES (CORRECTION CORS)
 // ═══════════════════════════════════════════
 document.getElementById('share-img-btn').addEventListener('click', async (e) => {
   const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film sans titre';
@@ -1679,7 +1679,9 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
   async function loadImageAsDataURL(url) {
     if (!url) return null;
     try {
-      const res = await fetch(url);
+      // ASTUCE ANTI-CORS : Contourner le cache du navigateur
+      const corsUrl = url + (url.includes('?') ? '&' : '?') + 'v=' + new Date().getTime();
+      const res = await fetch(corsUrl, { mode: 'cors' });
       const blob = await res.blob();
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -1701,29 +1703,33 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
     try {
       const canvas = await html2canvas(exportCard, { 
         backgroundColor: getThemeVar('--bg'), 
-        scale: 2 
+        scale: 2,
+        useCORS: true
       });
       
-      const dataUrl = canvas.toDataURL('image/png');
       const fileName = `Critique_${title.replace(/[\s\W]+/g, '_')}.png`;
 
-      // API de Partage Natif pour Mobile si dispo
-      let shared = false;
+      // Si le navigateur est sur mobile et supporte le partage
       if (navigator.canShare && /Mobi|Android/i.test(navigator.userAgent)) {
-         try {
-           const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-           const file = new File([blob], fileName, { type: 'image/png' });
-           if (navigator.canShare({ files: [file] })) {
-               await navigator.share({ files: [file], title: fileName });
-               shared = true;
-           }
-         } catch(err) {
-           console.log("Partage échoué ou annulé", err);
-         }
+         canvas.toBlob(async (blob) => {
+            const file = new File([blob], fileName, { type: 'image/png' });
+            if (navigator.canShare({ files: [file] })) {
+               try {
+                   await navigator.share({ files: [file], title: fileName });
+               } catch(err) {
+                   console.log("Partage annulé", err);
+               }
+            } else {
+               downloadFallback();
+            }
+         }, 'image/png');
+      } else {
+          // Sur PC (ou mobile sans partage natif)
+          downloadFallback();
       }
-      
-      // Fallback au téléchargement classique (PC ou refus/échec du partage mobile)
-      if (!shared) {
+
+      function downloadFallback() {
+          const dataUrl = canvas.toDataURL('image/png');
           const link = document.createElement('a');
           link.download = fileName;
           link.href = dataUrl;
@@ -1733,7 +1739,7 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
       }
 
     } catch (e) {
-      console.error("html2canvas error:", e);
+      console.error(e);
       showToast("Erreur lors de la génération de l'image.");
     } finally {
       imgBtn.innerHTML = originalText;
@@ -2471,7 +2477,6 @@ window.watchlistToForm = function(idx) {
   saveWatchlist(list);
   renderWatchlist();
   
-  // Sur mobile, on bascule de l'onglet Watchlist à l'onglet Noter
   if (window.innerWidth <= 860) switchMobileNav('rating');
   window.scrollTo({ top: 0, behavior: 'smooth' });
   showToast(`Recherche lancée pour "${item.title}"`);
