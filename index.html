@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr" data-theme="default">
 <head>
@@ -10,7 +9,7 @@
 
 <style>
   /* Importation de toutes les polices pour les différents thèmes */
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Oswald:wght@400;700&family=Quicksand:wght@400;600;700&family=Righteous&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&family=VT323&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Jost:wght@400;600;700&family=Orbitron:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Quicksand:wght@400;600;700&family=Rajdhani:wght@400;600;700&family=Righteous&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&family=VT323&display=swap');
 
   /* ── VARIABLES GLOBALES ET THÈMES ── */
   :root {
@@ -68,11 +67,90 @@
     --font-mono: 'VT323', monospace;
   }
 
-  /* Effets spéciaux par thème */
+  [data-theme="fincher"] {
+    /* 6. Minimalisme de l'Obsession (Fincher) */
+    --bg: #0A0A0A; --surface: #111111; --surface2: #1A1A1A; --border: #333333;
+    --border-hi: #5B5B5B; --text: #A0A0A0; --text-hi: #E0E0E0; --text-mid: #7A7A7A;
+    --orange: #D4AF37; --gold: #D4AF37; --blue: #5B5B5B; --red: #8B0000; --green: #4F7942;
+    --radius: 0px; --radius-sm: 0px;
+    --font-heading: 'Courier New', Courier, monospace;
+    --font-body: 'JetBrains Mono', monospace;
+    --font-mono: 'Courier New', Courier, monospace;
+  }
+
+  [data-theme="anderson"] {
+    /* 7. Rêverie Onirique (Wes Anderson) */
+    --bg: #FDF6E3; --surface: #FAF3E0; --surface2: #F0E6CD; --border: #E2D6BC;
+    --border-hi: #D1495B; --text: #555555; --text-hi: #333333; --text-mid: #666666;
+    --orange: #D1495B; --gold: #E8A825; --blue: #669999; --red: #D1495B; --green: #568259;
+    --radius: 8px; --radius-sm: 4px;
+    --font-heading: 'Jost', sans-serif;
+    --font-body: 'Jost', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  [data-theme="cyberpunk"] {
+    /* 8. Néon & Mélancolie (Blade Runner) */
+    --bg: #050510; --surface: #0A0A1A; --surface2: #111122; --border: #FF0055;
+    --border-hi: #00F5FF; --text: #8888AA; --text-hi: #FFFFFF; --text-mid: #AAAAEE;
+    --orange: #FF0055; --gold: #FFD700; --blue: #00F5FF; --red: #FF0055; --green: #00FF99;
+    --radius: 0px; --radius-sm: 0px;
+    --font-heading: 'Orbitron', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  [data-theme="godard"] {
+    /* 9. Nouveau Réalisme (Godard / Nouvelle Vague) */
+    --bg: #FFFFFF; --surface: #F9F9F9; --surface2: #F0F0F0; --border: #000000;
+    --border-hi: #000000; --text: #333333; --text-hi: #000000; --text-mid: #555555;
+    --orange: #FF0000; --gold: #FF0000; --blue: #000000; --red: #FF0000; --green: #000000;
+    --radius: 0px; --radius-sm: 0px;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  /* ── EFFETS SPÉCIAUX PAR THÈMES ── */
+  /* Vintage */
   [data-theme="vintage"] .app-title, [data-theme="vintage"] .score-big { text-shadow: 0px 0px 8px rgba(247, 37, 133, 0.5); }
   [data-theme="vintage"] .search-input:focus { box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.4); }
+  
+  /* Aesthetic */
   [data-theme="aesthetic"] .search-input:focus { box-shadow: 0 0 0 3px rgba(226, 194, 255, 0.3); }
   [data-theme="aesthetic"] .card { box-shadow: 0 8px 24px rgba(0,0,0,0.15); border: 1px solid rgba(68, 62, 85, 0.5); }
+
+  /* Fincher */
+  [data-theme="fincher"] .card { border-top: 2px solid var(--orange); }
+  [data-theme="fincher"] input[type="range"] { background: #333; height: 2px; }
+  [data-theme="fincher"] input[type="range"]::-webkit-slider-thumb { border-radius: 0; width: 10px; height: 16px; background: var(--text-hi); }
+  [data-theme="fincher"] .affect-range::-webkit-slider-thumb { background: var(--orange); }
+
+  /* Wes Anderson */
+  [data-theme="anderson"] .card { box-shadow: 0 4px 12px rgba(209, 73, 91, 0.08); border: 1px solid rgba(209, 73, 91, 0.2); }
+  [data-theme="anderson"] .card-title { justify-content: center; border-bottom: 2px dashed var(--border); color: var(--blue); font-weight: 700; letter-spacing: 0.15em;}
+  [data-theme="anderson"] .app-title { text-align: center; width: 100%; letter-spacing: 0.1em; color: var(--orange); }
+  [data-theme="anderson"] .btn { box-shadow: 2px 2px 0 var(--border-hi); transition: transform 0.1s, box-shadow 0.1s; }
+  [data-theme="anderson"] .btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--border-hi); }
+
+  /* Cyberpunk */
+  [data-theme="cyberpunk"] .card { border: 1px solid rgba(0, 245, 255, 0.3); box-shadow: inset 0 0 20px rgba(0, 245, 255, 0.05), 0 0 10px rgba(255, 0, 85, 0.15); backdrop-filter: blur(5px); }
+  [data-theme="cyberpunk"] .search-input:focus { box-shadow: 0 0 15px var(--blue); border-color: var(--blue); }
+  [data-theme="cyberpunk"] .score-big { text-shadow: 0 0 15px var(--orange); }
+  [data-theme="cyberpunk"] .app-title { text-shadow: 0 0 10px var(--blue); }
+  [data-theme="cyberpunk"] .btn { box-shadow: 0 0 10px var(--orange); border: 1px solid var(--orange); }
+
+  /* Godard / Nouvelle Vague */
+  [data-theme="godard"] .card { border: 3px solid #000; box-shadow: 6px 6px 0 #000; margin-bottom: 6px; }
+  [data-theme="godard"] .btn { border: 2px solid #000; box-shadow: 3px 3px 0 #000; font-weight: 800; transform: translateY(-2px); transition: all 0.1s; color: #fff; }
+  [data-theme="godard"] .btn-copy { background: #000; }
+  [data-theme="godard"] .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 #000; }
+  [data-theme="godard"] .card-title { border-bottom: 3px solid #000; font-size: 1.1rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em;}
+  [data-theme="godard"] .search-input, [data-theme="godard"] .date-input, [data-theme="godard"] .review-textarea { border: 2px solid #000; box-shadow: 2px 2px 0 #000; }
+  [data-theme="godard"] .histo-bar { border: 1px solid #000; }
+  [data-theme="godard"] .ctx-tag { border: 2px solid #000; font-weight: bold; }
+  [data-theme="godard"] input[type="range"] { background: #000; height: 3px; }
+  [data-theme="godard"] input[type="range"]::-webkit-slider-thumb { border: 2px solid #000; background: var(--orange); }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -392,7 +470,6 @@
   .histo-row:hover { background: var(--surface2); }
   .histo-row.active { background: rgba(255,128,0,0.12); outline: 1px solid rgba(255,128,0,0.35); }
   
-  /* CORRECTION LARGEUR LABELS HISTOGRAMME (40px -> 70px) */
   .histo-label { width: 70px; color: var(--text); text-align: right; flex-shrink: 0; }
   
   .histo-track { flex: 1; height: 10px; background: var(--bg); border-radius: 3px; overflow: hidden; }
@@ -532,7 +609,6 @@
 <body>
 
 <!-- GABARIT CACHÉ POUR L'EXPORT IMAGE -->
-<!-- Retrait de display: none / opacity: 0 qui faisait crasher html2canvas -->
 <div id="export-card" style="position: absolute; top: -9999px; left: -9999px; width: 680px; box-sizing: border-box; display: flex; gap: 28px; border-radius: 8px; padding: 24px;">
   <img id="export-poster" src="" crossorigin="anonymous" style="width: 170px; height: 255px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
@@ -576,6 +652,10 @@
         <option value="aesthetic">Aesthetic (Soft Lofi & Pastel)</option>
         <option value="ludex">Ludex Studio (Data & Minimaliste)</option>
         <option value="vintage">Synthwave 80s (Retro & Néon)</option>
+        <option value="fincher">Minimalisme de l'Obsession (Fincher)</option>
+        <option value="anderson">Rêverie Onirique (Wes Anderson)</option>
+        <option value="cyberpunk">Néon & Mélancolie (Blade Runner)</option>
+        <option value="godard">Nouveau Réalisme (Godard)</option>
       </select>
     </div>
     <div class="modal-actions">
@@ -1598,163 +1678,128 @@ document.getElementById('copy-btn').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════
-//  EXPORT IMAGE AVEC THÈMES (CORRECTION CORS)
+//  EXPORT IMAGE AVEC THÈMES (CORRIGÉ)
 // ═══════════════════════════════════════════
 document.getElementById('share-img-btn').addEventListener('click', async (e) => {
-  const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film sans titre';
-  if (!title || title === 'Film sans titre') {
-    showToast("Sélectionnez d'abord un film.");
-    return;
-  }
-
+  const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film';
   const imgBtn = e.target;
   const originalText = imgBtn.innerHTML;
+  
   imgBtn.innerHTML = '⏳ Création...';
-  imgBtn.style.opacity = '0.7';
   imgBtn.disabled = true;
 
-  const exportCard = document.getElementById('export-card');
-  const exportPoster = document.getElementById('export-poster');
-  const exportTitle = document.getElementById('export-title');
-  const exportMeta = document.getElementById('export-meta');
-  const exportScore = document.getElementById('export-score');
-  const exportStars = document.getElementById('export-stars');
-  const exportCriteria = document.getElementById('export-criteria');
-
-  exportCard.style.background = getThemeVar('--bg');
-  exportCard.style.border = `1px solid ${getThemeVar('--border')}`;
-  exportTitle.style.fontFamily = getThemeVar('--font-heading');
-  exportTitle.style.color = getThemeVar('--text-hi');
-  exportMeta.style.fontFamily = getThemeVar('--font-body');
-  exportMeta.style.color = getThemeVar('--text-mid');
-  exportScore.style.fontFamily = getThemeVar('--font-heading');
-  exportStars.style.color = getThemeVar('--gold');
-
-  exportPoster.src = document.getElementById('movie-poster').value || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
-  exportTitle.textContent = title + (isLiked ? ' ❤️' : '');
-  
-  let meta = document.getElementById('movie-year').value || '';
-  const dir = document.getElementById('movie-director').value;
-  const acts = document.getElementById('movie-actors').value;
-  
-  if(dir) meta += ` · Réalisé par ${dir}`;
-  if(acts) meta += `<br><span style="font-size:0.85em; opacity:0.8;">Avec ${acts}</span>`;
-  exportMeta.innerHTML = meta;
-
-  exportScore.textContent = document.getElementById('score-big').textContent + '/10';
-  exportStars.textContent = document.getElementById('stars-display').textContent;
-
-  const scoreNum = parseFloat(document.getElementById('score-big').textContent);
-  let colorVarName = '--orange'; 
-  if(currentMode === 'detail' && scoreNum >= 7.5) colorVarName = '--green';
-  if(currentMode === 'detail' && scoreNum < 5.0) colorVarName = '--red';
-  if(currentMode === 'quick' && scoreNum >= 7.5) colorVarName = '--green';
-  if(currentMode === 'quick' && scoreNum < 5.0) colorVarName = '--red';
-  
-  const accentColor = getThemeVar(colorVarName);
-  const surface2Color = getThemeVar('--surface2');
-  const fontBody = getThemeVar('--font-body');
-  const fontMono = getThemeVar('--font-mono');
-
-  exportScore.style.color = accentColor;
-
-  exportCriteria.innerHTML = '';
-  if (currentMode === 'detail') {
-    CRITERIA.forEach(c => {
-       const val = parseFloat(document.getElementById(c).value);
-       const realLabel = document.querySelector(`#desc-${c}`).previousElementSibling.previousElementSibling.querySelector('.criterion-label').innerText.split(' ×')[0];
-
-       exportCriteria.innerHTML += `
-         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.9rem; color:#fff; font-family:${fontBody}">
-           <span style="width: 170px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight: 600;">${realLabel}</span>
-           <div style="flex:1; height:8px; background:${surface2Color}; border-radius:4px; margin:0 14px; overflow:hidden;">
-             <div style="width:${val*10}%; height:100%; background:${accentColor}; border-radius:4px;"></div>
-           </div>
-           <span style="font-family:${fontMono}; font-weight:bold; width:30px; text-align:right;">${val.toFixed(1)}</span>
-         </div>
-       `;
-    });
-  }
-
-  // ── Chargement du poster via proxy /api/search?img= pour contourner CORS mobile ──
-  const posterUrl = document.getElementById('movie-poster').value;
-
-  async function loadPosterAsDataURL(url) {
-    if (!url) return null;
-    // 1. Proxy Vercel (contourne le CORS de TMDb sur mobile Chrome)
-    try {
-      const res = await fetch(`/api/search?img=${encodeURIComponent(url)}`);
-      if (res.ok) {
-        const blob = await res.blob();
-        return await new Promise(resolve => { const r = new FileReader(); r.onload = () => resolve(r.result); r.readAsDataURL(blob); });
-      }
-    } catch {}
-    // 2. Fetch direct (desktop)
-    try {
-      const res = await fetch(url);
-      if (res.ok) {
-        const blob = await res.blob();
-        return await new Promise(resolve => { const r = new FileReader(); r.onload = () => resolve(r.result); r.readAsDataURL(blob); });
-      }
-    } catch {}
-    return null;
-  }
-
-  const posterDataURL = await loadPosterAsDataURL(posterUrl);
-  exportPoster.src = posterDataURL || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
-  if (posterDataURL) {
-    await new Promise(r => { exportPoster.onload = r; exportPoster.onerror = r; });
-  }
-
-  await new Promise(r => setTimeout(r, 200));
-
   try {
-    const canvas = await html2canvas(exportCard, {
-      backgroundColor: getThemeVar('--bg'),
+    const exportCard = document.getElementById('export-card');
+    exportCard.style.position = 'absolute';
+    exportCard.style.top = '0';
+    exportCard.style.left = '0';
+    exportCard.style.zIndex = '9999';
+
+    exportCard.style.background = getThemeVar('--bg');
+    exportCard.style.border = `1px solid ${getThemeVar('--border')}`;
+    document.getElementById('export-title').style.fontFamily = getThemeVar('--font-heading');
+    document.getElementById('export-title').style.color = getThemeVar('--text-hi');
+    document.getElementById('export-meta').style.fontFamily = getThemeVar('--font-body');
+    document.getElementById('export-meta').style.color = getThemeVar('--text-mid');
+    document.getElementById('export-score').style.fontFamily = getThemeVar('--font-heading');
+    document.getElementById('export-stars').style.color = getThemeVar('--gold');
+
+    const posterImg = document.getElementById('export-poster');
+    posterImg.src = document.getElementById('movie-poster').value || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+    document.getElementById('export-title').textContent = title + (isLiked ? ' ❤️' : '');
+    
+    let meta = document.getElementById('movie-year').value || '';
+    const dir = document.getElementById('movie-director').value;
+    const acts = document.getElementById('movie-actors').value;
+    
+    if(dir) meta += ` · Réalisé par ${dir}`;
+    if(acts) meta += `<br><span style="font-size:0.85em; opacity:0.8;">Avec ${acts}</span>`;
+    document.getElementById('export-meta').innerHTML = meta;
+
+    document.getElementById('export-score').textContent = document.getElementById('score-big').textContent + '/10';
+    document.getElementById('export-stars').textContent = document.getElementById('stars-display').textContent;
+
+    const scoreNum = parseFloat(document.getElementById('score-big').textContent);
+    let colorVarName = '--orange'; 
+    if(currentMode === 'detail' && scoreNum >= 7.5) colorVarName = '--green';
+    if(currentMode === 'detail' && scoreNum < 5.0) colorVarName = '--red';
+    if(currentMode === 'quick' && scoreNum >= 7.5) colorVarName = '--green';
+    if(currentMode === 'quick' && scoreNum < 5.0) colorVarName = '--red';
+    
+    const accentColor = getThemeVar(colorVarName);
+    const surface2Color = getThemeVar('--surface2');
+    const fontBody = getThemeVar('--font-body');
+    const fontMono = getThemeVar('--font-mono');
+
+    document.getElementById('export-score').style.color = accentColor;
+
+    const exportCriteria = document.getElementById('export-criteria');
+    exportCriteria.innerHTML = '';
+    if (currentMode === 'detail') {
+      CRITERIA.forEach(c => {
+         const val = parseFloat(document.getElementById(c).value);
+         const realLabel = document.querySelector(`#desc-${c}`).previousElementSibling.previousElementSibling.querySelector('.criterion-label').innerText.split(' ×')[0];
+
+         exportCriteria.innerHTML += `
+           <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.9rem; color:#fff; font-family:${fontBody}">
+             <span style="width: 170px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight: 600;">${realLabel}</span>
+             <div style="flex:1; height:8px; background:${surface2Color}; border-radius:4px; margin:0 14px; overflow:hidden;">
+               <div style="width:${val*10}%; height:100%; background:${accentColor}; border-radius:4px;"></div>
+             </div>
+             <span style="font-family:${fontMono}; font-weight:bold; width:30px; text-align:right;">${val.toFixed(1)}</span>
+           </div>
+         `;
+      });
+    }
+
+    // Proxy load pour l'image 
+    const originalPosterUrl = document.getElementById('movie-poster').value;
+    if (originalPosterUrl) {
+        try {
+            const corsUrl = originalPosterUrl + (originalPosterUrl.includes('?') ? '&' : '?') + 'v=' + new Date().getTime();
+            const res = await fetch(corsUrl, { mode: 'cors' });
+            const blob = await res.blob();
+            posterImg.src = await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result);
+              reader.readAsDataURL(blob);
+            });
+            await new Promise(r => { posterImg.onload = r; posterImg.onerror = r; });
+        } catch(e) { console.log(e) }
+    }
+
+    const canvas = await html2canvas(exportCard, { 
+      backgroundColor: getThemeVar('--bg'), 
       scale: 2,
-      useCORS: false,
-      allowTaint: false
+      useCORS: true 
     });
 
-    const fileName = `Critique_${title.replace(/[\s\W]+/g, '_')}.png`;
-    const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    exportCard.style.top = '-9999px';
 
-    if (isMobile) {
-      // Mobile : ouvrir dans un nouvel onglet → appui long → Enregistrer l'image
-      canvas.toBlob(blob => {
-        const blobUrl = URL.createObjectURL(blob);
-        const newTab = window.open(blobUrl, '_blank');
-        if (!newTab) {
-          // Popup bloqué : afficher une overlay dans la page
-          const dataUrl = canvas.toDataURL('image/png');
-          const overlay = document.createElement('div');
-          overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px;box-sizing:border-box;';
-          overlay.innerHTML = `
-            <p style="color:#fff;font-size:0.85rem;font-family:sans-serif;margin:0;text-align:center;">📥 Appui long sur l'image → <b>Enregistrer</b></p>
-            <img src="${dataUrl}" style="max-width:92vw;max-height:78vh;border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,0.6);">
-            <button onclick="this.parentNode.remove()" style="background:#fff;color:#000;border:none;border-radius:20px;padding:9px 24px;font-weight:700;font-size:0.9rem;cursor:pointer;">✕ Fermer</button>`;
-          document.body.appendChild(overlay);
-        }
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
-      }, 'image/png');
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    const fileName = `Critique_${title.replace(/[\s\W]+/g, '_')}.png`;
+    const file = new File([blob], fileName, { type: 'image/png' });
+
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'Ma critique',
+        text: 'Regarde ma critique générée avec Ludex !'
+      });
     } else {
-      // Desktop : téléchargement direct
       const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.download = fileName;
       link.href = dataUrl;
-      document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
     }
-
-  } catch (e) {
-    console.error(e);
-    showToast("Erreur lors de la génération de l'image.");
+  } catch (err) {
+    console.error("Erreur export :", err);
+    showToast("Erreur : l'image n'a pas pu être créée.");
   } finally {
     imgBtn.innerHTML = originalText;
-    imgBtn.style.opacity = '1';
     imgBtn.disabled = false;
+    document.getElementById('export-card').style.top = '-9999px';
   }
 });
 
