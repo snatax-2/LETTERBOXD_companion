@@ -1600,153 +1600,58 @@ document.getElementById('copy-btn').addEventListener('click', () => {
 //  EXPORT IMAGE AVEC THÈMES (CORRECTION CORS)
 // ═══════════════════════════════════════════
 document.getElementById('share-img-btn').addEventListener('click', async (e) => {
-  const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film sans titre';
-  if (!title || title === 'Film sans titre') {
-    showToast("Sélectionnez d'abord un film.");
-    return;
-  }
-
+  const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film';
   const imgBtn = e.target;
   const originalText = imgBtn.innerHTML;
+  
   imgBtn.innerHTML = '⏳ Création...';
-  imgBtn.style.opacity = '0.7';
   imgBtn.disabled = true;
 
-  const exportCard = document.getElementById('export-card');
-  const exportPoster = document.getElementById('export-poster');
-  const exportTitle = document.getElementById('export-title');
-  const exportMeta = document.getElementById('export-meta');
-  const exportScore = document.getElementById('export-score');
-  const exportStars = document.getElementById('export-stars');
-  const exportCriteria = document.getElementById('export-criteria');
+  try {
+    // 1. Génération du Canvas
+    // On s'assure que l'élément est visible pour html2canvas mais placé hors écran
+    const exportCard = document.getElementById('export-card');
+    exportCard.style.position = 'absolute';
+    exportCard.style.top = '0';
+    exportCard.style.left = '0';
+    exportCard.style.zIndex = '9999';
 
-  exportCard.style.background = getThemeVar('--bg');
-  exportCard.style.border = `1px solid ${getThemeVar('--border')}`;
-  exportTitle.style.fontFamily = getThemeVar('--font-heading');
-  exportTitle.style.color = getThemeVar('--text-hi');
-  exportMeta.style.fontFamily = getThemeVar('--font-body');
-  exportMeta.style.color = getThemeVar('--text-mid');
-  exportScore.style.fontFamily = getThemeVar('--font-heading');
-  exportStars.style.color = getThemeVar('--gold');
-
-  exportPoster.src = document.getElementById('movie-poster').value || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
-  exportTitle.textContent = title + (isLiked ? ' ❤️' : '');
-  
-  let meta = document.getElementById('movie-year').value || '';
-  const dir = document.getElementById('movie-director').value;
-  const acts = document.getElementById('movie-actors').value;
-  
-  if(dir) meta += ` · Réalisé par ${dir}`;
-  if(acts) meta += `<br><span style="font-size:0.85em; opacity:0.8;">Avec ${acts}</span>`;
-  exportMeta.innerHTML = meta;
-
-  exportScore.textContent = document.getElementById('score-big').textContent + '/10';
-  exportStars.textContent = document.getElementById('stars-display').textContent;
-
-  const scoreNum = parseFloat(document.getElementById('score-big').textContent);
-  let colorVarName = '--orange'; 
-  if(currentMode === 'detail' && scoreNum >= 7.5) colorVarName = '--green';
-  if(currentMode === 'detail' && scoreNum < 5.0) colorVarName = '--red';
-  if(currentMode === 'quick' && scoreNum >= 7.5) colorVarName = '--green';
-  if(currentMode === 'quick' && scoreNum < 5.0) colorVarName = '--red';
-  
-  const accentColor = getThemeVar(colorVarName);
-  const surface2Color = getThemeVar('--surface2');
-  const fontBody = getThemeVar('--font-body');
-  const fontMono = getThemeVar('--font-mono');
-
-  exportScore.style.color = accentColor;
-
-  exportCriteria.innerHTML = '';
-  if (currentMode === 'detail') {
-    CRITERIA.forEach(c => {
-       const val = parseFloat(document.getElementById(c).value);
-       const realLabel = document.querySelector(`#desc-${c}`).previousElementSibling.previousElementSibling.querySelector('.criterion-label').innerText.split(' ×')[0];
-
-       exportCriteria.innerHTML += `
-         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.9rem; color:#fff; font-family:${fontBody}">
-           <span style="width: 170px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight: 600;">${realLabel}</span>
-           <div style="flex:1; height:8px; background:${surface2Color}; border-radius:4px; margin:0 14px; overflow:hidden;">
-             <div style="width:${val*10}%; height:100%; background:${accentColor}; border-radius:4px;"></div>
-           </div>
-           <span style="font-family:${fontMono}; font-weight:bold; width:30px; text-align:right;">${val.toFixed(1)}</span>
-         </div>
-       `;
+    const canvas = await html2canvas(exportCard, { 
+      backgroundColor: getThemeVar('--bg'), 
+      scale: 2,
+      useCORS: true 
     });
-  }
 
-  const posterUrl = document.getElementById('movie-poster').value;
-  async function loadImageAsDataURL(url) {
-    if (!url) return null;
-    try {
-      // ASTUCE ANTI-CORS : Contourner le cache du navigateur
-      const corsUrl = url + (url.includes('?') ? '&' : '?') + 'v=' + new Date().getTime();
-      const res = await fetch(corsUrl, { mode: 'cors' });
-      const blob = await res.blob();
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(blob);
+    // Remise en place discrète
+    exportCard.style.top = '-9999px';
+
+    // 2. Conversion en Blob
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    const fileName = `Critique_${title.replace(/[\s\W]+/g, '_')}.png`;
+    const file = new File([blob], fileName, { type: 'image/png' });
+
+    // 3. Tentative de partage natif (iOS / Android)
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'Ma critique',
+        text: 'Regarde ma critique générée avec Ludex !'
       });
-    } catch { return null; }
-  }
-
-  const posterDataURL = await loadImageAsDataURL(posterUrl);
-  if (posterDataURL) {
-    exportPoster.src = posterDataURL;
-    await new Promise(r => { exportPoster.onload = r; exportPoster.onerror = r; });
-  } else {
-    exportPoster.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
-  }
-
-  setTimeout(async () => {
-    try {
-      const canvas = await html2canvas(exportCard, { 
-        backgroundColor: getThemeVar('--bg'), 
-        scale: 2,
-        useCORS: true
-      });
-      
-      const fileName = `Critique_${title.replace(/[\s\W]+/g, '_')}.png`;
-
-      // Si le navigateur est sur mobile et supporte le partage
-      if (navigator.canShare && /Mobi|Android/i.test(navigator.userAgent)) {
-         canvas.toBlob(async (blob) => {
-            const file = new File([blob], fileName, { type: 'image/png' });
-            if (navigator.canShare({ files: [file] })) {
-               try {
-                   await navigator.share({ files: [file], title: fileName });
-               } catch(err) {
-                   console.log("Partage annulé", err);
-               }
-            } else {
-               downloadFallback();
-            }
-         }, 'image/png');
-      } else {
-          // Sur PC (ou mobile sans partage natif)
-          downloadFallback();
-      }
-
-      function downloadFallback() {
-          const dataUrl = canvas.toDataURL('image/png');
-          const link = document.createElement('a');
-          link.download = fileName;
-          link.href = dataUrl;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-      }
-
-    } catch (e) {
-      console.error(e);
-      showToast("Erreur lors de la génération de l'image.");
-    } finally {
-      imgBtn.innerHTML = originalText;
-      imgBtn.style.opacity = '1';
-      imgBtn.disabled = false;
+    } else {
+      // Fallback si le partage n'est pas supporté (Chrome desktop)
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = fileName;
+      link.href = dataUrl;
+      link.click();
     }
-  }, 150);
+  } catch (err) {
+    console.error("Erreur export :", err);
+    showToast("Erreur : l'image n'a pas pu être créée.");
+  } finally {
+    imgBtn.innerHTML = originalText;
+    imgBtn.disabled = false;
+  }
 });
 
 // ═══════════════════════════════════════════
