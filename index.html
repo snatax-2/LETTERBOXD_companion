@@ -55,8 +55,6 @@
     --font-mono: 'Space Mono', monospace;
   }
 
-
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
@@ -459,6 +457,8 @@
   .wl-providers { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; align-items: center; }
   .wl-provider-logo { width: 26px; height: 26px; border-radius: 5px; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; transition: transform .15s; }
   .wl-provider-logo:hover { transform: scale(1.15); }
+  .wl-provider-logo { width: 26px; height: 26px; border-radius: 5px; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; transition: transform .15s; }
+  .wl-provider-logo:hover { transform: scale(1.15); }
   .wl-provider-tag { display: inline-flex; align-items: center; gap: 4px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 2px 7px; font-size: 0.68rem; color: var(--text-mid); font-family: var(--font-heading); font-weight: 600; white-space: nowrap; }
   .wl-provider-tag.flatrate { border-color: var(--green); color: var(--green); background: rgba(0,224,84,0.08); }
   .wl-provider-tag.rent { border-color: var(--gold); color: var(--gold); background: rgba(255,128,0,0.08); }
@@ -792,6 +792,7 @@
     <div class="right-tabs-container">
       <button class="right-tab active" id="tab-right-history">📊 Historique & Stats</button>
       <button class="right-tab" id="tab-right-watchlist">🎯 Watchlist</button>
+      <button class="right-tab" id="tab-right-insights">🧠 Insights</button>
     </div>
 
     <!-- ── VUE HISTORIQUE ── -->
@@ -869,6 +870,47 @@
       </div>
     </div> <!-- Fin Vue Watchlist -->
 
+    <!-- ── VUE INSIGHTS ── -->
+    <div class="right-view" id="view-insights">
+      <!-- 1. Cinematheque Digest -->
+      <div class="card" id="digest-card" style="background: linear-gradient(135deg, var(--surface2), var(--bg)); border-color: var(--blue);">
+        <div class="card-title" style="border-bottom-color: var(--blue);">
+          Cinematheque Digest <span class="card-title-badge">Ce mois-ci</span>
+        </div>
+        <div id="monthly-digest-content">
+          <!-- Rempli par le JS -->
+        </div>
+        <button class="btn btn-image" id="export-digest-btn" style="margin-top: 15px; width: 100%;">📸 Exporter Story (WIP)</button>
+      </div>
+
+      <!-- 2. Moteur de Corrélation -->
+      <div class="card">
+        <div class="card-title">Analyse de tes goûts</div>
+        <div id="correlation-engine-content" style="font-size: 0.85rem; line-height: 1.5;">
+          <!-- Rempli par le JS -->
+        </div>
+      </div>
+
+      <!-- 3. Smart Queue -->
+      <div class="card">
+        <div class="card-title">File d'attente intelligente</div>
+        
+        <div style="margin-bottom: 15px;">
+          <div style="font-size: 0.75rem; font-weight: bold; color: var(--blue); text-transform: uppercase; margin-bottom: 5px;">🎯 Recommandation ciblée</div>
+          <div id="smart-queue-match" style="display: flex; gap: 10px; background: var(--surface2); padding: 10px; border-radius: var(--radius-sm);">
+            ⏳ Analyse en cours...
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size: 0.75rem; font-weight: bold; color: var(--orange); text-transform: uppercase; margin-bottom: 5px;">🌪️ Défi : Sortie de zone</div>
+          <div id="smart-queue-challenge" style="display: flex; gap: 10px; background: rgba(255,128,0,0.1); border: 1px dashed var(--orange); padding: 10px; border-radius: var(--radius-sm);">
+            ⏳ Analyse en cours...
+          </div>
+        </div>
+      </div>
+    </div> <!-- Fin Vue Insights -->
+
   </div>
 
 </div><!-- /layout -->
@@ -892,25 +934,35 @@
 // ═══════════════════════════════════════════
 const tabHistBtn = document.getElementById('tab-right-history');
 const tabWlBtn = document.getElementById('tab-right-watchlist');
+const tabInsightsBtn = document.getElementById('tab-right-insights');
 const viewHist = document.getElementById('view-history');
 const viewWl = document.getElementById('view-watchlist');
+const viewInsights = document.getElementById('view-insights');
 
 function switchRightTab(tabName) {
+  tabHistBtn.classList.remove('active');
+  tabWlBtn.classList.remove('active');
+  tabInsightsBtn.classList.remove('active');
+  viewHist.classList.remove('active');
+  viewWl.classList.remove('active');
+  viewInsights.classList.remove('active');
+
   if (tabName === 'history') {
     tabHistBtn.classList.add('active');
-    tabWlBtn.classList.remove('active');
     viewHist.classList.add('active');
-    viewWl.classList.remove('active');
-  } else {
-    tabHistBtn.classList.remove('active');
+  } else if (tabName === 'watchlist') {
     tabWlBtn.classList.add('active');
-    viewHist.classList.remove('active');
     viewWl.classList.add('active');
+  } else if (tabName === 'insights') {
+    tabInsightsBtn.classList.add('active');
+    viewInsights.classList.add('active');
+    generateInsights();
   }
 }
 
 tabHistBtn.addEventListener('click', () => switchRightTab('history'));
 tabWlBtn.addEventListener('click', () => switchRightTab('watchlist'));
+tabInsightsBtn.addEventListener('click', () => switchRightTab('insights'));
 
 const navRating = document.getElementById('nav-rating');
 const navHistory = document.getElementById('nav-history');
@@ -1337,7 +1389,7 @@ async function fetchSuggestions(q) {
       const imgHtml = m.poster_path
         ? `<img class="suggestion-poster" src="https://image.tmdb.org/t/p/w92${m.poster_path}" loading="lazy">`
         : `<div class="suggestion-poster-placeholder">🎬</div>`;
-      item.innerHTML = `${imgHtml}<div class="suggestion-info"><div class="suggestion-title">${m.title}</div><div class="suggestion-year">${year}${m.genre_ids?.length ? '' : ''}</div></div>`;
+      item.innerHTML = `${imgHtml}<div class="suggestion-info"><div class="suggestion-title">${m.title}</div><div class="suggestion-year">${year}</div></div>`;
       item.addEventListener('click', () => selectMovie(m, year));
       suggestEl.appendChild(item);
     });
@@ -1581,16 +1633,23 @@ document.getElementById('copy-btn').addEventListener('click', () => {
   const stars    = document.getElementById('stars-display').textContent;
   const heartStr = isLiked ? ' ❤️' : '';
 
-  let text = `📽 ${title} ${year ? '('+year+') ' : ''}${heartStr}\n`;
-  if (director) text += `🎬 Un film de ${director}\n`;
-  if (actors) text += `🎭 Avec ${actors}\n`;
-  if (dateStr) text += `🗓 Vu le ${dateStr}\n`;
-  if (activeContextTags.size > 0) text += `🏷 ${Array.from(activeContextTags).join(' · ')}\n`;
+  let text = `📽 ${title} ${year ? '('+year+') ' : ''}${heartStr}
+`;
+  if (director) text += `🎬 Un film de ${director}
+`;
+  if (actors) text += `🎭 Avec ${actors}
+`;
+  if (dateStr) text += `🗓 Vu le ${dateStr}
+`;
+  if (activeContextTags.size > 0) text += `🏷 ${Array.from(activeContextTags).join(' · ')}
+`;
   
   if (currentMode === 'quick') {
-    text += `⭐ ${stars} (${score.toFixed(1)}/10)\n`;
+    text += `⭐ ${stars} (${score.toFixed(1)}/10)
+`;
   } else {
-    text += `⭐ ${stars} (${score.toFixed(1)}/10)\n`;
+    text += `⭐ ${stars} (${score.toFixed(1)}/10)
+`;
   }
 
   if (currentMode === 'detail') {
@@ -1598,10 +1657,13 @@ document.getElementById('copy-btn').addEventListener('click', () => {
       acc[c] = parseFloat(document.getElementById(c).value).toFixed(1);
       return acc;
     }, {});
-    text += `\nScénario ${vals.scenario} · Réal ${vals.realisation} · Photo ${vals.photo} · Acteurs ${vals.acteurs} · Son ${vals.ambiance} · Affect ${vals.affect}\n`;
+    text += `
+Scénario ${vals.scenario} · Réal ${vals.realisation} · Photo ${vals.photo} · Acteurs ${vals.acteurs} · Son ${vals.ambiance} · Affect ${vals.affect}
+`;
   }
 
-  if (review) text += `\n${review}`;
+  if (review) text += `
+${review}`;
 
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('copy-btn');
@@ -1612,9 +1674,6 @@ document.getElementById('copy-btn').addEventListener('click', () => {
   });
 });
 
-// ═══════════════════════════════════════════
-//  EXPORT IMAGE
-// ═══════════════════════════════════════════
 // ═══════════════════════════════════════════
 //  SAVE
 // ═══════════════════════════════════════════
@@ -1651,7 +1710,8 @@ document.getElementById('save-btn').addEventListener('click', () => {
   if (existing) {
     openModal(
       'Film déjà noté',
-      `"${title}" est déjà dans votre historique avec ${existing.score}/10.\nVoulez-vous écraser cette note ?`,
+      `"${title}" est déjà dans votre historique avec ${existing.score}/10.
+Voulez-vous écraser cette note ?`,
       () => {
         const idx = history.findIndex(h => h.title.toLowerCase() === title.toLowerCase());
         history.splice(idx, 1);
@@ -1934,7 +1994,7 @@ function renderHistory() {
     else if(scoreNum >= 5.0) scoreColor = 'var(--gold)';
 
     const imgHtml = item.poster
-      ? `<img class="hist-poster" src="${item.poster}" loading="lazy" decoding="async" onerror="this.outerHTML='<div class=\\'hist-poster-ph\\'>🎬</div>'">`
+      ? `<img class="hist-poster" src="${item.poster}" loading="lazy" decoding="async" onerror="this.outerHTML='<div class=\'hist-poster-ph\'>🎬</div>'">`
       : `<div class="hist-poster-ph">🎬</div>`;
 
     const tmdbHtml = item.tmdbScore
@@ -2086,7 +2146,7 @@ function renderStats() {
       `;
     });
   } else {
-    criteriaContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Utilisez le mode <b>Détaillé</b> pour voir l\'ADN de vos notes par critère.</div>';
+    criteriaContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Utilisez le mode <b>Détaillé</b> pour voir l'ADN de vos notes par critère.</div>';
   }
 }
 
@@ -2132,6 +2192,9 @@ function buildHistogram(dist) {
 function renderAll() {
   renderStats();
   renderHistory();
+  if (document.getElementById('view-insights').classList.contains('active')) {
+    generateInsights();
+  }
 }
 
 // ═══════════════════════════════════════════
@@ -2172,7 +2235,7 @@ document.getElementById('import-file').addEventListener('change', e => {
       const data = JSON.parse(ev.target.result);
       if (!Array.isArray(data)) throw new Error('Format invalide');
       openModal(
-        'Importer l\'historique',
+        'Importer l'historique',
         `Importer ${data.length} film${data.length > 1 ? 's' : ''} ? Cela fusionnera avec votre historique actuel (les doublons seront ignorés).`,
         () => {
           const existing = loadHistory();
@@ -2456,6 +2519,188 @@ document.querySelectorAll('.modal-overlay').forEach(modal => {
 });
 
 // ═══════════════════════════════════════════
+//  INSIGHTS & ANALYTICS (Digest, Corrélation, Recommandation)
+// ═══════════════════════════════════════════
+const GENRE_MAP = { "Action":28, "Aventure":12, "Animation":16, "Comédie":35, "Crime":80, "Documentaire":99, "Drame":18, "Familial":10751, "Fantastique":14, "Histoire":36, "Horreur":27, "Musique":10402, "Mystère":9648, "Romance":10749, "Science-Fiction":878, "Téléfilm":10770, "Thriller":53, "Guerre":10752, "Western":37 };
+
+function generateInsights() {
+  const history = loadHistory();
+  if (history.length === 0) {
+    document.getElementById('monthly-digest-content').innerHTML = `<div class="empty-state">Aucun film noté dans l'historique.</div>`;
+    document.getElementById('correlation-engine-content').innerHTML = "<em>Aucune donnée disponible.</em>";
+    document.getElementById('smart-queue-match').innerHTML = "⏳ En attente de films...";
+    document.getElementById('smart-queue-challenge').innerHTML = "⏳ En attente de films...";
+    return;
+  }
+
+  generateMonthlyDigest(history);
+  analyzeCorrelations(history);
+  generateSmartQueue(history);
+}
+
+function generateMonthlyDigest(history) {
+  const now = new Date();
+  const currentMonthStr = now.toISOString().slice(0, 7); // Format YYYY-MM
+  
+  const thisMonthMovies = history.filter(h => h.date && h.date.startsWith(currentMonthStr));
+  const container = document.getElementById('monthly-digest-content');
+
+  if (thisMonthMovies.length === 0) {
+    container.innerHTML = `<div class="empty-state">Aucun film regardé ce mois-ci.</div>`;
+    return;
+  }
+
+  const avgScore = thisMonthMovies.reduce((acc, curr) => acc + parseFloat(curr.score), 0) / thisMonthMovies.length;
+  const topMovie = thisMonthMovies.reduce((prev, curr) => (parseFloat(curr.score) > parseFloat(prev.score)) ? curr : prev);
+  
+  const genreCounts = {};
+  thisMonthMovies.forEach(m => {
+    if(m.genre) m.genre.split(',').forEach(g => {
+      const gt = g.trim();
+      if (gt) genreCounts[gt] = (genreCounts[gt] || 0) + 1;
+    });
+  });
+  const topGenre = Object.keys(genreCounts).sort((a,b) => genreCounts[b] - genreCounts[a])[0];
+
+  const posterImg = topMovie.poster 
+    ? `<img src="${topMovie.poster}" style="width: 60px; border-radius: var(--radius-sm); border: 2px solid var(--gold);">`
+    : `<div style="width: 60px; height: 90px; background: var(--surface); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🎬</div>`;
+
+  container.innerHTML = `
+    <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
+      ${posterImg}
+      <div>
+        <div style="font-size: 0.75rem; color: var(--gold); font-weight: bold;">Coup de cœur du mois</div>
+        <div style="font-family: var(--font-heading); font-size: 1rem; font-weight: bold; color: var(--text-hi);">${topMovie.title}</div>
+        <div style="font-size: 0.8rem; color: var(--text);">${topMovie.score}/10</div>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 10px;">
+      <div>
+        <div style="font-size: 0.7rem; color: var(--text-mid); text-transform: uppercase;">Moyenne</div>
+        <div style="font-family: var(--font-mono); font-size: 1.1rem; color: var(--blue);">${avgScore.toFixed(1)}</div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-size: 0.7rem; color: var(--text-mid); text-transform: uppercase;">Genre Dominant</div>
+        <div style="font-family: var(--font-heading); font-size: 1rem; color: var(--text-hi);">${topGenre || 'N/A'}</div>
+      </div>
+    </div>
+  `;
+}
+
+function analyzeCorrelations(history) {
+  const container = document.getElementById('correlation-engine-content');
+  const topMovies = history.filter(h => parseFloat(h.score) >= 7.5);
+  
+  if (topMovies.length < 3) {
+    container.innerHTML = "<em>Continue à noter des films (plus de 7.5/10) pour débloquer l'analyse de ton profil.</em>";
+    return;
+  }
+
+  let biasMsg = "";
+  const detailMovies = topMovies.filter(h => h.mode === 'detail' && h.values);
+  if (detailMovies.length >= 2) {
+    const critAverages = {};
+    ['scenario', 'realisation', 'photo', 'acteurs', 'ambiance'].forEach(c => {
+      let validCount = 0;
+      let sum = 0;
+      detailMovies.forEach(m => {
+        if (m.values[c] !== undefined) {
+          sum += parseFloat(m.values[c]);
+          validCount++;
+        }
+      });
+      critAverages[c] = validCount > 0 ? (sum / validCount) : 0;
+    });
+    const highestCrit = Object.keys(critAverages).reduce((a, b) => critAverages[a] > critAverages[b] ? a : b);
+    
+    const critLabels = { scenario: 'l'écriture', realisation: 'la mise en scène', photo: 'l'esthétique visuelle', acteurs: 'la performance des acteurs', ambiance: 'l'ambiance et le son' };
+    biasMsg = `<div style="margin-bottom: 12px; padding-left: 10px; border-left: 2px solid var(--blue);">
+      <strong>Biais de sensibilité :</strong> Tes coups de cœur obtiennent de superbes scores en <em>${highestCrit}</em>. Tu sembles accorder une importance critique à ${critLabels[highestCrit]} lors de tes visionnages.
+    </div>`;
+  }
+
+  const dirCounts = {};
+  topMovies.forEach(m => {
+    if (m.director) dirCounts[m.director] = (dirCounts[m.director] || 0) + 1;
+  });
+  const topDir = Object.keys(dirCounts).sort((a,b) => dirCounts[b] - dirCounts[a])[0];
+  
+  let dirMsg = topDir && dirCounts[topDir] > 1 
+    ? `<div style="padding-left: 10px; border-left: 2px solid var(--orange); margin-top: 8px;">
+        <strong>Affinité d'auteur :</strong> La patte créative de <em>${topDir}</em> résonne particulièrement dans ton historique. C'est un ancrage fort de tes goûts cinématographiques.
+       </div>`
+    : "";
+
+  container.innerHTML = biasMsg + dirMsg || "<em>Tes goûts sont éclectiques ! Continue à enrichir ton historique pour affiner les corrélations de ton ADN cinématographique.</em>";
+}
+
+async function generateSmartQueue(history) {
+  const genreCounts = {};
+  history.forEach(m => {
+    if(m.genre) m.genre.split(',').forEach(g => {
+      const gt = g.trim();
+      if (gt) genreCounts[gt] = (genreCounts[gt] || 0) + 1;
+    });
+  });
+  
+  const sortedGenres = Object.keys(genreCounts).sort((a,b) => genreCounts[b] - genreCounts[a]);
+  if (sortedGenres.length === 0) return;
+
+  const favoriteGenreName = sortedGenres[0];
+  const leastWatchedGenreName = Object.keys(GENRE_MAP).find(g => !sortedGenres.includes(g)) || sortedGenres[sortedGenres.length - 1];
+
+  const favGenreId = GENRE_MAP[favoriteGenreName];
+  const leastGenreId = GENRE_MAP[leastWatchedGenreName];
+
+  try {
+    if (favGenreId) {
+      const matchRes = await fetch(`/api/search?discover=true&with_genres=${favGenreId}`);
+      const matchData = await matchRes.json();
+      const unseenMatch = matchData.results?.find(m => !history.some(h => h.title.toLowerCase() === m.title.toLowerCase()));
+      
+      if (unseenMatch) {
+        const posterHtml = unseenMatch.poster_path 
+          ? `<img src="https://image.tmdb.org/t/p/w92${unseenMatch.poster_path}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 3px; flex-shrink:0;">`
+          : `<div style="width: 40px; height: 60px; background: var(--bg); display:flex; align-items:center; justify-content:center; border-radius:3px; flex-shrink:0;">🎬</div>`;
+        document.getElementById('smart-queue-match').innerHTML = `
+          ${posterHtml}
+          <div>
+            <div style="font-weight: bold; font-size: 0.85rem; color: var(--text-hi);">${unseenMatch.title}</div>
+            <div style="font-size: 0.75rem; color: var(--text-mid); margin-top:2px;">Propulsé par ton affinité avec le genre <b>${favoriteGenreName}</b>.</div>
+          </div>
+        `;
+      } else {
+        document.getElementById('smart-queue-match').innerHTML = `<div style="font-size:0.8rem; color:var(--text);">Tous les films suggérés pour ton genre favori sont déjà vus !</div>`;
+      }
+    }
+
+    if (leastGenreId) {
+      const challengeRes = await fetch(`/api/search?discover=true&with_genres=${leastGenreId}`);
+      const challengeData = await challengeRes.json();
+      const unseenChallenge = challengeData.results?.find(m => !history.some(h => h.title.toLowerCase() === m.title.toLowerCase()));
+      
+          if (unseenChallenge) {
+            const posterHtml = unseenChallenge.poster_path 
+              ? `<img src="https://image.tmdb.org/t/p/w92${unseenChallenge.poster_path}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 3px; flex-shrink:0;">`
+              : `<div style="width: 40px; height: 60px; background: var(--bg); display:flex; align-items:center; justify-content:center; border-radius:3px; flex-shrink:0;">🎬</div>`;
+            document.getElementById('smart-queue-challenge').innerHTML = `
+              ${posterHtml}
+              <div>
+                <div style="font-weight: bold; font-size: 0.85rem; color: var(--text-hi);">${unseenChallenge.title}</div>
+                <div style="font-size: 0.75rem; color: var(--text-mid); margin-top:2px;">Ouvre tes horizons avec du <b>${leastWatchedGenreName}</b>, un genre que tu explores rarement.</div>
+              </div>
+            `;
+          } else {
+            document.getElementById('smart-queue-challenge').innerHTML = `<div style="font-size:0.8rem; color:var(--text);">Aucun défi disponible pour le moment.</div>`;
+          }
+        }
+      } catch (e) {
+        console.error("Erreur de recommandation", e);
+      }
+    }
+
+// ═══════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════
 updateWeightBadges();
@@ -2463,3 +2708,4 @@ calculateScore();
 </script>
 </body>
 </html>
+
