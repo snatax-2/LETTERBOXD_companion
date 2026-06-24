@@ -1,9 +1,24 @@
 export default async function handler(req, res) {
-  const { query, id, providers } = req.query;
+  const { query, id, providers, img } = req.query;
   const TMDB_KEY = process.env.TMDB_KEY;
 
   try {
-    if (id && providers) {
+    if (img) {
+      // Cas 4 : Proxy image (contourne CORS TMDb sur mobile Chrome)
+      // Seules les URLs image.tmdb.org sont autorisées
+      const decoded = decodeURIComponent(img);
+      if (!decoded.startsWith('https://image.tmdb.org/')) {
+        return res.status(403).json({ error: 'URL non autorisée' });
+      }
+      const imgRes = await fetch(decoded);
+      if (!imgRes.ok) return res.status(imgRes.status).end();
+      const buffer = await imgRes.arrayBuffer();
+      const contentType = imgRes.headers.get('content-type') || 'image/jpeg';
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      return res.status(200).send(Buffer.from(buffer));
+
+    } else if (id && providers) {
       // Cas 3 : Watch providers pour un film donné, filtrés par région (ex: BE)
       const provRes = await fetch(
         `https://api.themoviedb.org/3/movie/${id}/watch/providers?api_key=${TMDB_KEY}`
