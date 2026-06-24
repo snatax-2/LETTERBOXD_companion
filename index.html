@@ -155,7 +155,6 @@
     --font-mono: 'Space Mono', monospace;
   }
 
-
   /* ── EFFETS SPÉCIAUX PAR THÈMES ── */
   /* Vintage */
   [data-theme="vintage"] .app-title, [data-theme="vintage"] .score-big { text-shadow: 0px 0px 8px rgba(247, 37, 133, 0.5); }
@@ -685,7 +684,6 @@
 </head>
 <body>
 
-<!-- GABARIT CACHÉ POUR L'EXPORT IMAGE -->
 <div id="export-card" style="position: absolute; top: -9999px; left: -9999px; width: 680px; box-sizing: border-box; display: flex; gap: 28px; border-radius: 8px; padding: 24px;">
   <img id="export-poster" src="" crossorigin="anonymous" style="width: 170px; height: 255px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
@@ -699,10 +697,8 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODAL CONFIRMATION -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Confirmer</div>
@@ -714,7 +710,6 @@
   </div>
 </div>
 
-<!-- MODAL PARAMÈTRES -->
 <div class="modal-overlay" id="settings-modal">
   <div class="modal-box">
     <div class="modal-title">🎨 Personnalisation</div>
@@ -746,7 +741,6 @@
   </div>
 </div>
 
-<!-- HEADER -->
 <header class="app-header">
   <h1 class="app-title" id="main-app-title"><em>Letterboxd</em> Rating Companion</h1>
   <div class="header-actions">
@@ -757,10 +751,8 @@
   </div>
 </header>
 
-<!-- MAIN LAYOUT -->
 <div class="layout">
 
-  <!-- ════ COL LEFT (NOTATION) ════ -->
   <div class="col-left" id="col-rating">
     <div class="card">
       <div class="card-title">
@@ -768,19 +760,16 @@
         <button class="btn-new-review" id="new-btn">➕ Nouvelle critique</button>
       </div>
 
-      <!-- Search & Meta -->
       <div class="search-wrap">
         <div class="search-row">
           <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
           <input type="date" class="date-input" id="view-date">
           <button class="heart-btn" id="heart-btn" title="Aimer ce film">♥</button>
         </div>
-        <!-- Feedback de recherche -->
         <div class="search-status" id="search-status"></div>
         <div class="suggestions" id="suggestions"></div>
       </div>
 
-      <!-- Context Tags -->
       <div class="context-row" id="context-tags">
         <button type="button" class="ctx-tag" data-tag="🍿 Cinéma">🍿 Cinéma</button>
         <button type="button" class="ctx-tag" data-tag="🔄 Re-visionnage">🔄 Re-visionnage</button>
@@ -788,7 +777,6 @@
         <button type="button" class="ctx-tag" data-tag="🛋️ À la maison">🛋️ À la maison</button>
       </div>
 
-      <!-- Film strip -->
       <div class="film-strip" id="film-strip">
         <img class="film-strip-poster" id="strip-poster" src="" alt="">
         <div class="film-strip-info">
@@ -821,16 +809,13 @@
         <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
       </div>
 
-      <!-- ── MODE TABS ── -->
       <div class="mode-tabs">
         <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
         <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
-      <!-- ── DETAILED MODE ── -->
       <div class="detailed-section">
 
-        <!-- Weights toggle -->
         <div class="weights-toggle" id="weights-toggle" onclick="toggleWeights()">
           ⚙ Personnaliser les pondérations
         </div>
@@ -905,7 +890,6 @@
         </div>
       </div>
 
-      <!-- ── QUICK MODE ── -->
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
           <input type="radio" id="s10" name="rating" value="5"><label for="s10" class="right-half">★</label>
@@ -922,7 +906,6 @@
         <div class="quick-rating-label" id="quick-rating-label"><span>★★½</span> — 5.0/10</div>
       </div>
 
-      <!-- Score + critique + actions -->
       <div class="score-result">
         <div class="score-main">
           <div class="score-big" id="score-big">5.0</div>
@@ -944,18 +927,14 @@
     </div>
   </div>
 
-  <!-- ════ COL RIGHT (ONGLETS HISTORIQUE & WATCHLIST) ════ -->
   <div class="col-right" id="col-right-views">
 
-    <!-- Desktop Tabs Container -->
     <div class="right-tabs-container">
       <button class="right-tab active" id="tab-right-history">📊 Historique & Stats</button>
       <button class="right-tab" id="tab-right-watchlist">🎯 Watchlist</button>
     </div>
 
-    <!-- ── VUE HISTORIQUE ── -->
     <div class="right-view active" id="view-history">
-      <!-- Stats -->
       <div class="card" id="stats-card">
         <div class="card-title">Statistiques</div>
         
@@ -982,7 +961,6 @@
         <div id="stats-criteria"></div>
       </div>
 
-      <!-- History -->
       <div class="card">
         <div class="card-title">
           Historique
@@ -1007,11 +985,7 @@
 
         <div class="history-scroller" id="history-list"></div>
       </div>
-    </div> <!-- Fin Vue Historique -->
-
-    <!-- ── VUE WATCHLIST ── -->
-    <div class="right-view" id="view-watchlist">
-      <!-- Watchlist -->
+    </div> <div class="right-view" id="view-watchlist">
       <div class="card" id="watchlist-card">
         <div class="card-title">
           À voir
@@ -1026,14 +1000,9 @@
           <div class="empty-state"><div class="empty-state-icon">🎯</div>Aucun film dans la liste.</div>
         </div>
       </div>
-    </div> <!-- Fin Vue Watchlist -->
+    </div> </div>
 
-  </div>
-
-</div><!-- /layout -->
-
-<!-- ── MOBILE BOTTOM NAVIGATION ── -->
-<nav class="mobile-nav" id="mobile-nav">
+</div><nav class="mobile-nav" id="mobile-nav">
   <button class="nav-btn active" id="nav-rating">
     <span class="nav-btn-icon">🎬</span> Noter
   </button>
@@ -1586,7 +1555,7 @@ document.getElementById('review-text').addEventListener('input', saveDraft);
 // ═══════════════════════════════════════════
 function setMode(mode) {
   currentMode = mode;
-  document.body.classList.toggle('quick-mode', mode === 'quick');
+  document.body.classList.toggle('quick-mode', mode === 'detail' ? false : true);
   
   document.getElementById('tab-detail').classList.toggle('active', mode === 'detail');
   document.getElementById('tab-quick').classList.toggle('active', mode === 'quick');
@@ -1771,10 +1740,11 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
 
   try {
     const exportCard = document.getElementById('export-card');
-    exportCard.style.position = 'absolute';
-    exportCard.style.top = '0';
-    exportCard.style.left = '0';
-    exportCard.style.zIndex = '9999';
+    
+    // On garde l'élément exportCard en absolute, mais HORS DE L'ÉCRAN
+    // Ne pas remettre à '0' pour éviter un redimensionnement de la page sur mobile
+    // exportCard.style.top = '0';
+    // exportCard.style.left = '0';
 
     exportCard.style.background = getThemeVar('--bg');
     exportCard.style.border = `1px solid ${getThemeVar('--border')}`;
@@ -1848,30 +1818,47 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
         } catch(e) { console.log(e) }
     }
 
+    // AJOUT DE CONFIGURATION : Force la largeur sur mobile pour html2canvas
     const canvas = await html2canvas(exportCard, { 
       backgroundColor: getThemeVar('--bg'), 
       scale: 2,
-      useCORS: true 
+      useCORS: true,
+      width: 680,
+      windowWidth: 680 
     });
 
+    // Optionnel, car la carte est déjà en absolu et négatif dans le CSS
     exportCard.style.top = '-9999px';
 
     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
     const fileName = `Critique_${title.replace(/[\s\W]+/g, '_')}.png`;
     const file = new File([blob], fileName, { type: 'image/png' });
 
-    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        files: [file],
-        title: 'Ma critique',
-        text: 'Regarde ma critique générée avec Ludex !'
-      });
-    } else {
+    // FALLBACK : Fonction de secours si le partage natif échoue
+    const triggerDownload = () => {
       const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.download = fileName;
       link.href = dataUrl;
       link.click();
+      showToast("Image téléchargée !");
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: 'Ma critique',
+          text: 'Regarde ma critique !'
+        });
+      } catch (shareError) {
+        // L'utilisateur annule le partage ou erreur sur le mobile
+        console.log("Partage annulé ou échoué, téléchargement forcé", shareError);
+        triggerDownload();
+      }
+    } else {
+      // Pour les appareils (comme PC) où le bouton de partage natif n'est pas supporté
+      triggerDownload();
     }
   } catch (err) {
     console.error("Erreur export :", err);
@@ -2668,66 +2655,4 @@ document.getElementById('watchlist-add-btn').addEventListener('click', () => {
   const key = val.toLowerCase();
   if (list.find(i => i.title.toLowerCase() === key)) { showToast('Déjà dans la liste.'); wlInput.value = ''; return; }
   list.unshift({ title: val, year: '', poster: '', genre: '', tmdbId: null, addedAt: new Date().toISOString() });
-  saveWatchlist(list);
-  renderWatchlist();
-  showToast(`"${val}" ajouté à la liste 🎯`);
-  wlInput.value = '';
-});
-
-wlInput.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { wlSuggestEl.style.display = 'none'; }
-});
-
-renderWatchlist();
-
-// ═══════════════════════════════════════════
-//  TOAST
-// ═══════════════════════════════════════════
-let toastTimer;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
-}
-
-// ═══════════════════════════════════════════
-//  MODAL DE CONFIRMATION
-// ═══════════════════════════════════════════
-function openModal(title, body, onConfirm, danger = false) {
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-body').textContent  = body;
-  const confirmBtn = document.getElementById('modal-confirm');
-  confirmBtn.className = 'modal-btn ' + (danger ? 'danger' : 'primary');
-  confirmBtn.textContent = danger ? 'Supprimer' : 'Confirmer';
-  pendingAction = onConfirm;
-  document.getElementById('modal').classList.add('open');
-}
-
-document.getElementById('modal-confirm').addEventListener('click', () => {
-  if (pendingAction) { pendingAction(); pendingAction = null; }
-  document.getElementById('modal').classList.remove('open');
-});
-document.getElementById('modal-cancel').addEventListener('click', () => {
-  pendingAction = null;
-  document.getElementById('modal').classList.remove('open');
-});
-
-document.querySelectorAll('.modal-overlay').forEach(modal => {
-  modal.addEventListener('click', e => {
-    if (e.target === modal) {
-      modal.classList.remove('open');
-      if (modal.id === 'modal') pendingAction = null;
-    }
-  });
-});
-
-// ═══════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════
-updateWeightBadges();
-calculateScore();
-</script>
-</body>
-</html>
+  saveWatchlist(list
