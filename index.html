@@ -155,46 +155,64 @@
     --font-mono: 'Space Mono', monospace;
   }
 
+
   /* ── EFFETS SPÉCIAUX PAR THÈMES ── */
+  /* Vintage */
   [data-theme="vintage"] .app-title, [data-theme="vintage"] .score-big { text-shadow: 0px 0px 8px rgba(247, 37, 133, 0.5); }
-  [data-theme="vintage"] .search-input:focus, [data-theme="vintage"] .search-type-select:focus { box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.4); }
-  [data-theme="aesthetic"] .search-input:focus, [data-theme="aesthetic"] .search-type-select:focus { box-shadow: 0 0 0 3px rgba(226, 194, 255, 0.3); }
+  [data-theme="vintage"] .search-input:focus { box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.4); }
+  
+  /* Aesthetic */
+  [data-theme="aesthetic"] .search-input:focus { box-shadow: 0 0 0 3px rgba(226, 194, 255, 0.3); }
   [data-theme="aesthetic"] .card { box-shadow: 0 8px 24px rgba(0,0,0,0.15); border: 1px solid rgba(68, 62, 85, 0.5); }
+
+  /* Fincher */
   [data-theme="fincher"] .card { border-top: 2px solid var(--orange); }
   [data-theme="fincher"] input[type="range"] { background: #333; height: 2px; }
   [data-theme="fincher"] input[type="range"]::-webkit-slider-thumb { border-radius: 0; width: 10px; height: 16px; background: var(--text-hi); }
   [data-theme="fincher"] .affect-range::-webkit-slider-thumb { background: var(--orange); }
+
+  /* Wes Anderson */
   [data-theme="anderson"] .card { box-shadow: 0 4px 12px rgba(209, 73, 91, 0.08); border: 1px solid rgba(209, 73, 91, 0.2); }
   [data-theme="anderson"] .card-title { justify-content: center; border-bottom: 2px dashed var(--border); color: var(--blue); font-weight: 700; letter-spacing: 0.15em;}
   [data-theme="anderson"] .app-title { text-align: center; width: 100%; letter-spacing: 0.1em; color: var(--orange); }
   [data-theme="anderson"] .btn { box-shadow: 2px 2px 0 var(--border-hi); transition: transform 0.1s, box-shadow 0.1s; }
   [data-theme="anderson"] .btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--border-hi); }
+
+  /* Cyberpunk */
   [data-theme="cyberpunk"] .card { border: 1px solid rgba(0, 245, 255, 0.3); box-shadow: inset 0 0 20px rgba(0, 245, 255, 0.05), 0 0 10px rgba(255, 0, 85, 0.15); backdrop-filter: blur(5px); }
-  [data-theme="cyberpunk"] .search-input:focus, [data-theme="cyberpunk"] .search-type-select:focus { box-shadow: 0 0 15px var(--blue); border-color: var(--blue); }
+  [data-theme="cyberpunk"] .search-input:focus { box-shadow: 0 0 15px var(--blue); border-color: var(--blue); }
   [data-theme="cyberpunk"] .score-big { text-shadow: 0 0 15px var(--orange); }
   [data-theme="cyberpunk"] .app-title { text-shadow: 0 0 10px var(--blue); }
   [data-theme="cyberpunk"] .btn { box-shadow: 0 0 10px var(--orange); border: 1px solid var(--orange); }
+
+  /* Godard / Nouvelle Vague */
   [data-theme="godard"] .card { border: 3px solid #000; box-shadow: 6px 6px 0 #000; margin-bottom: 6px; }
   [data-theme="godard"] .btn { border: 2px solid #000; box-shadow: 3px 3px 0 #000; font-weight: 800; transform: translateY(-2px); transition: all 0.1s; color: #fff; }
   [data-theme="godard"] .btn-copy { background: #000; }
   [data-theme="godard"] .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 #000; }
   [data-theme="godard"] .card-title { border-bottom: 3px solid #000; font-size: 1.1rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em;}
-  [data-theme="godard"] .search-input, [data-theme="godard"] .search-type-select, [data-theme="godard"] .date-input, [data-theme="godard"] .review-textarea { border: 2px solid #000; box-shadow: 2px 2px 0 #000; font-weight: 600;}
+  [data-theme="godard"] .search-input, [data-theme="godard"] .date-input, [data-theme="godard"] .review-textarea { border: 2px solid #000; box-shadow: 2px 2px 0 #000; }
   [data-theme="godard"] .histo-bar { border: 1px solid #000; }
   [data-theme="godard"] .ctx-tag { border: 2px solid #000; font-weight: bold; }
   [data-theme="godard"] input[type="range"] { background: #000; height: 3px; }
   [data-theme="godard"] input[type="range"]::-webkit-slider-thumb { border: 2px solid #000; background: var(--orange); }
+
+  /* Giallo Italien */
   [data-theme="giallo"] .card { border: 2px solid var(--red); background: repeating-linear-gradient( 45deg, var(--bg), var(--bg) 10px, #1a0a0a 10px, #1a0a0a 20px ); box-shadow: 4px 4px 0 var(--gold); }
   [data-theme="giallo"] .btn { border: 1px solid var(--gold); text-transform: uppercase; letter-spacing: 2px; }
   [data-theme="giallo"] .app-title { font-size: 2rem; letter-spacing: 2px; color: var(--red); text-shadow: 2px 2px 0 var(--gold); }
   [data-theme="giallo"] .app-title em { color: var(--gold); text-shadow: 2px 2px 0 var(--red); }
   [data-theme="giallo"] .score-big { font-family: 'Creepster', cursive; font-weight: 400; font-size: 4rem;}
   [data-theme="giallo"] .card-title { border-bottom: 2px dashed var(--gold); color: var(--red); font-family: 'Creepster', cursive; font-size: 1.2rem; letter-spacing: 2px;}
+
+  /* Aquarelle / Ghibli */
   [data-theme="ghibli"] .card { box-shadow: 0 12px 35px rgba(143, 185, 150, 0.15); border: none; background: rgba(244, 249, 248, 0.85); backdrop-filter: blur(10px); }
   [data-theme="ghibli"] .app-title { font-weight: 600; letter-spacing: 0.05em; color: var(--text-hi); font-style: italic; }
   [data-theme="ghibli"] .app-title em { color: var(--orange); }
   [data-theme="ghibli"] input[type="range"]::-webkit-slider-thumb { box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
   [data-theme="ghibli"] .btn { box-shadow: 0 4px 12px rgba(143, 185, 150, 0.2); border: none; font-weight: 600; }
+
+  /* Film Noir */
   [data-theme="filmnoir"] .card { border: 1px solid var(--border); outline: 1px solid var(--border); outline-offset: -4px; background: var(--surface); box-shadow: 4px 4px 0 var(--border); }
   [data-theme="filmnoir"] .app-title { font-weight: 900; letter-spacing: 2px; border-bottom: 2px solid var(--border); padding-bottom: 4px; display: inline-block;}
   [data-theme="filmnoir"] .app-header { border-bottom: 4px double var(--border); padding-bottom: 12px; margin-bottom: 24px; }
@@ -202,6 +220,8 @@
   [data-theme="filmnoir"] .btn:hover { background: var(--border); color: var(--bg); }
   [data-theme="filmnoir"] .card-title { font-weight: 800; border-bottom: 2px solid var(--border); }
   [data-theme="filmnoir"] .search-input { border: 1px solid var(--border); border-radius: 0; }
+
+  /* Glitch */
   [data-theme="glitch"] .card { border: 1px solid var(--border); box-shadow: 3px 0 0 var(--orange), -3px 0 0 var(--blue); }
   [data-theme="glitch"] .app-title { text-transform: uppercase; font-weight: 700; font-style: italic; text-shadow: 2px 0 0 var(--orange), -2px 0 0 var(--blue); }
   [data-theme="glitch"] .btn { border: 1px solid var(--text-hi); position: relative; }
@@ -292,6 +312,7 @@
   /* RESPONSIVE OPTIMIZATION */
   @media (max-width: 860px) {
     .layout { display: flex; flex-direction: column; }
+    
     .right-tabs-container { display: none; }
     
     .search-input, .date-input, input[type="number"], .watchlist-add-input, .settings-input, .settings-select {
@@ -301,12 +322,6 @@
     body { padding: 16px 12px 80px 12px; }
     .app-header { margin-bottom: 16px; flex-direction: column; align-items: stretch;}
     .header-actions { justify-content: center; }
-
-    /* Fix Layout Mobile Search */
-    .search-row { flex-wrap: wrap; }
-    .search-type-select { width: 100%; padding: 10px; margin-bottom: 4px; }
-    .watchlist-add-row { flex-wrap: wrap; }
-    .watchlist-add-row .search-type-select { width: 100%; padding: 10px; }
 
     .mobile-nav {
       display: flex; position: fixed; bottom: 0; left: 0; right: 0;
@@ -353,16 +368,6 @@
   /* ── MOVIE SEARCH ── */
   .search-wrap { position: relative; margin-bottom: 12px; }
   .search-row { display: flex; gap: 8px; }
-  
-  .search-type-select {
-    background: var(--bg); border: 1px solid var(--blue);
-    border-radius: var(--radius-sm); color: var(--text-hi);
-    padding: 0 8px; font-family: var(--font-heading); font-size: 0.85rem;
-    outline: none; cursor: pointer; transition: border-color .15s, box-shadow .15s;
-    flex-shrink: 0; width: 110px;
-  }
-  .search-type-select:focus { box-shadow: 0 0 0 3px rgba(64, 188, 244, 0.2); }
-
   .search-input {
     flex: 1; background: var(--bg); border: 1px solid var(--blue);
     border-radius: var(--radius-sm); color: var(--text-hi); padding: 10px 14px;
@@ -766,10 +771,6 @@
       <!-- Search & Meta -->
       <div class="search-wrap">
         <div class="search-row">
-          <select id="search-type" class="search-type-select" title="Type de recherche">
-            <option value="title">Film</option>
-            <option value="person">Casting</option>
-          </select>
           <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
           <input type="date" class="date-input" id="view-date">
           <button class="heart-btn" id="heart-btn" title="Aimer ce film">♥</button>
@@ -1017,11 +1018,7 @@
           <span class="card-title-badge" id="watchlist-count-badge">0 film</span>
         </div>
         <div class="watchlist-add-row wl-suggest-wrap">
-          <select id="wl-search-type" class="search-type-select" title="Type de recherche">
-            <option value="title">Film</option>
-            <option value="person">Casting</option>
-          </select>
-          <input type="text" class="watchlist-add-input" id="watchlist-input" placeholder="Rechercher un film..." autocomplete="off">
+          <input type="text" class="watchlist-add-input" id="watchlist-input" placeholder="Rechercher un film à ajouter..." autocomplete="off">
           <button class="watchlist-add-btn" id="watchlist-add-btn">+ Ajouter</button>
           <div class="wl-suggestions" id="wl-suggestions"></div>
         </div>
@@ -1419,27 +1416,12 @@ document.querySelectorAll('.ctx-tag').forEach(btn => {
 });
 
 // ═══════════════════════════════════════════
-//  TMDb SEARCH & VISUAL FEEDBACK (Avec Acteurs)
+//  TMDb SEARCH & VISUAL FEEDBACK
 // ═══════════════════════════════════════════
 const searchEl  = document.getElementById('movie-search');
 const suggestEl = document.getElementById('suggestions');
 const searchStatus = document.getElementById('search-status');
-const searchTypeEl = document.getElementById('search-type');
 let searchTimer;
-
-searchTypeEl.addEventListener('change', (e) => {
-  if (e.target.value === 'person') {
-    searchEl.placeholder = "Nom de l'acteur ou réalisateur...";
-  } else {
-    searchEl.placeholder = "Titre du film...";
-  }
-  const q = searchEl.value.trim();
-  if (q.length >= 2) {
-    searchStatus.style.display = 'block';
-    searchStatus.textContent = '⏳ Recherche...';
-    fetchSuggestions(q);
-  }
-});
 
 searchEl.addEventListener('input', () => {
   clearTimeout(searchTimer);
@@ -1451,7 +1433,7 @@ searchEl.addEventListener('input', () => {
     return; 
   }
   searchStatus.style.display = 'block';
-  searchStatus.textContent = '⏳ Recherche...';
+  searchStatus.textContent = '⏳ Recherche des films...';
   searchTimer = setTimeout(() => fetchSuggestions(q), 280);
 });
 
@@ -1488,15 +1470,12 @@ function selectManual(title) {
 
 async function fetchSuggestions(q) {
   try {
-    const type = document.getElementById('search-type').value;
-    const res = await fetch(`/api/search?query=${encodeURIComponent(q)}&type=${type}`);
+    const res = await fetch(`/api/search?query=${encodeURIComponent(q)}`);
     const data = await res.json();
     searchStatus.style.display = 'none';
     if (!data.results?.length) { suggestEl.style.display = 'none'; return; }
     suggestEl.innerHTML = '';
     suggestEl.style.display = 'block';
-    
-    // TMDb renvoie les films triés par popularité si on a cherché une personne via l'API
     data.results.slice(0, 6).forEach(m => {
       const year = m.release_date?.slice(0, 4) || '????';
       const item = document.createElement('div');
@@ -1504,11 +1483,10 @@ async function fetchSuggestions(q) {
       const imgHtml = m.poster_path
         ? `<img class="suggestion-poster" src="https://image.tmdb.org/t/p/w92${m.poster_path}" loading="lazy">`
         : `<div class="suggestion-poster-placeholder">🎬</div>`;
-      item.innerHTML = `${imgHtml}<div class="suggestion-info"><div class="suggestion-title">${m.title}</div><div class="suggestion-year">${year}</div></div>`;
+      item.innerHTML = `${imgHtml}<div class="suggestion-info"><div class="suggestion-title">${m.title}</div><div class="suggestion-year">${year}${m.genre_ids?.length ? '' : ''}</div></div>`;
       item.addEventListener('click', () => selectMovie(m, year));
       suggestEl.appendChild(item);
     });
-    
     const manualItem = document.createElement('div');
     manualItem.className = 'suggestion-item suggestion-manual';
     manualItem.innerHTML = `<div class="suggestion-poster-placeholder" style="font-size:1rem;">✏️</div><div class="suggestion-info"><div class="suggestion-title" style="color:var(--text-mid);">Utiliser "${q}" sans TMDb</div><div class="suggestion-year">Saisie manuelle</div></div>`;
@@ -1781,7 +1759,7 @@ document.getElementById('copy-btn').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════
-//  EXPORT IMAGE AVEC THÈMES (CORRIGÉ)
+//  EXPORT IMAGE
 // ═══════════════════════════════════════════
 document.getElementById('share-img-btn').addEventListener('click', async (e) => {
   const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film';
@@ -2483,7 +2461,7 @@ document.getElementById('import-file').addEventListener('change', e => {
 });
 
 // ═══════════════════════════════════════════
-//  WATCHLIST (Avec recherche Acteurs)
+//  WATCHLIST
 // ═══════════════════════════════════════════
 const WATCHLIST_KEY = 'lbx_watchlist';
 
@@ -2640,20 +2618,7 @@ window.watchlistToForm = function(idx) {
 
 const wlInput = document.getElementById('watchlist-input');
 const wlSuggestEl = document.getElementById('wl-suggestions');
-const wlSearchTypeEl = document.getElementById('wl-search-type');
 let wlSearchTimer;
-
-wlSearchTypeEl.addEventListener('change', (e) => {
-  if (e.target.value === 'person') {
-    wlInput.placeholder = "Nom de l'acteur ou réalisateur...";
-  } else {
-    wlInput.placeholder = "Rechercher un film à ajouter...";
-  }
-  const q = wlInput.value.trim();
-  if (q.length >= 2) {
-    wlInput.dispatchEvent(new Event('input'));
-  }
-});
 
 wlInput.addEventListener('input', () => {
   clearTimeout(wlSearchTimer);
@@ -2661,8 +2626,7 @@ wlInput.addEventListener('input', () => {
   if (q.length < 2) { wlSuggestEl.style.display = 'none'; return; }
   wlSearchTimer = setTimeout(async () => {
     try {
-      const type = document.getElementById('wl-search-type').value;
-      const res = await fetch(`/api/search?query=${encodeURIComponent(q)}&type=${type}`);
+      const res = await fetch(`/api/search?query=${encodeURIComponent(q)}`);
       const data = await res.json();
       if (!data.results?.length) { wlSuggestEl.style.display = 'none'; return; }
       wlSuggestEl.innerHTML = '';
