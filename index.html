@@ -157,20 +157,16 @@
   @media (max-width: 860px) {
     .layout { display: flex; flex-direction: column; }
     
-    /* On cache le conteneur des onglets Desktop pour utiliser la navbar en bas */
     .right-tabs-container { display: none; }
     
-    /* Évite le zoom sur iOS en forçant 16px sur les inputs */
     .search-input, .date-input, input[type="number"], .watchlist-add-input, .settings-input, .settings-select {
         font-size: 16px !important;
     }
 
-    /* Padding extra pour ne pas cacher le contenu avec la navbar */
     body { padding: 16px 12px 80px 12px; }
     .app-header { margin-bottom: 16px; flex-direction: column; align-items: stretch;}
     .header-actions { justify-content: center; }
 
-    /* Mobile Navigation Bar */
     .mobile-nav {
       display: flex; position: fixed; bottom: 0; left: 0; right: 0;
       background: var(--surface); border-top: 1px solid var(--border);
@@ -394,7 +390,10 @@
   .histo-row { display: flex; align-items: center; gap: 8px; font-size: 0.76rem; cursor: pointer; border-radius: var(--radius-sm); padding: 2px 4px; transition: background .12s; }
   .histo-row:hover { background: var(--surface2); }
   .histo-row.active { background: rgba(255,128,0,0.12); outline: 1px solid rgba(255,128,0,0.35); }
-  .histo-label { width: 40px; color: var(--text); text-align: right; flex-shrink: 0; }
+  
+  /* CORRECTION LARGEUR LABELS HISTOGRAMME (40px -> 70px) */
+  .histo-label { width: 70px; color: var(--text); text-align: right; flex-shrink: 0; }
+  
   .histo-track { flex: 1; height: 10px; background: var(--bg); border-radius: 3px; overflow: hidden; }
   .histo-bar { height: 100%; width: 0%; background: var(--orange); border-radius: 3px; transition: width .4s ease; }
   .histo-count { width: 18px; text-align: right; font-family: var(--font-mono); color: var(--text-hi); font-size: 0.74rem; }
@@ -531,8 +530,7 @@
 </head>
 <body>
 
-<!-- GABARIT CACHÉ POUR L'EXPORT IMAGE -->
-<div id="export-card" style="position: absolute; top: -9999px; left: -9999px; width: 680px; box-sizing: border-box; display: flex; gap: 28px; border-radius: 8px;">
+<div id="export-card" style="position: fixed; top: 0; left: 0; z-index: -9999; opacity: 0; pointer-events: none; width: 680px; box-sizing: border-box; display: flex; gap: 28px; border-radius: 8px; padding: 30px;">
   <img id="export-poster" src="" crossorigin="anonymous" style="width: 170px; height: 255px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
      <h2 id="export-title" style="margin: 0 0 6px 0; font-size: 2.1rem; line-height: 1.1;"></h2>
@@ -545,10 +543,8 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODAL CONFIRMATION -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Confirmer</div>
@@ -560,7 +556,6 @@
   </div>
 </div>
 
-<!-- MODAL PARAMÈTRES -->
 <div class="modal-overlay" id="settings-modal">
   <div class="modal-box">
     <div class="modal-title">🎨 Personnalisation</div>
@@ -584,7 +579,6 @@
   </div>
 </div>
 
-<!-- HEADER -->
 <header class="app-header">
   <h1 class="app-title" id="main-app-title"><em>Letterboxd</em> Rating Companion</h1>
   <div class="header-actions">
@@ -595,10 +589,8 @@
   </div>
 </header>
 
-<!-- MAIN LAYOUT -->
 <div class="layout">
 
-  <!-- ════ COL LEFT (NOTATION) ════ -->
   <div class="col-left" id="col-rating">
     <div class="card">
       <div class="card-title">
@@ -606,19 +598,16 @@
         <button class="btn-new-review" id="new-btn">➕ Nouvelle critique</button>
       </div>
 
-      <!-- Search & Meta -->
       <div class="search-wrap">
         <div class="search-row">
           <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
           <input type="date" class="date-input" id="view-date">
           <button class="heart-btn" id="heart-btn" title="Aimer ce film">♥</button>
         </div>
-        <!-- Feedback de recherche -->
         <div class="search-status" id="search-status"></div>
         <div class="suggestions" id="suggestions"></div>
       </div>
 
-      <!-- Context Tags -->
       <div class="context-row" id="context-tags">
         <button type="button" class="ctx-tag" data-tag="🍿 Cinéma">🍿 Cinéma</button>
         <button type="button" class="ctx-tag" data-tag="🔄 Re-visionnage">🔄 Re-visionnage</button>
@@ -626,7 +615,6 @@
         <button type="button" class="ctx-tag" data-tag="🛋️ À la maison">🛋️ À la maison</button>
       </div>
 
-      <!-- Film strip -->
       <div class="film-strip" id="film-strip">
         <img class="film-strip-poster" id="strip-poster" src="" alt="">
         <div class="film-strip-info">
@@ -659,16 +647,13 @@
         <span class="card-title-badge" id="mode-badge">Mode détaillé</span>
       </div>
 
-      <!-- ── MODE TABS ── -->
       <div class="mode-tabs">
         <button class="mode-tab active" id="tab-detail" onclick="setMode('detail')">Détaillé (6 critères)</button>
         <button class="mode-tab" id="tab-quick" onclick="setMode('quick')">Rapide (étoiles)</button>
       </div>
 
-      <!-- ── DETAILED MODE ── -->
       <div class="detailed-section">
 
-        <!-- Weights toggle -->
         <div class="weights-toggle" id="weights-toggle" onclick="toggleWeights()">
           ⚙ Personnaliser les pondérations
         </div>
@@ -743,7 +728,6 @@
         </div>
       </div>
 
-      <!-- ── QUICK MODE ── -->
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
           <input type="radio" id="s10" name="rating" value="5"><label for="s10" class="right-half">★</label>
@@ -760,7 +744,6 @@
         <div class="quick-rating-label" id="quick-rating-label"><span>★★½</span> — 5.0/10</div>
       </div>
 
-      <!-- Score + critique + actions -->
       <div class="score-result">
         <div class="score-main">
           <div class="score-big" id="score-big">5.0</div>
@@ -782,18 +765,14 @@
     </div>
   </div>
 
-  <!-- ════ COL RIGHT (ONGLETS HISTORIQUE & WATCHLIST) ════ -->
   <div class="col-right" id="col-right-views">
 
-    <!-- Desktop Tabs Container -->
     <div class="right-tabs-container">
       <button class="right-tab active" id="tab-right-history">📊 Historique & Stats</button>
       <button class="right-tab" id="tab-right-watchlist">🎯 Watchlist</button>
     </div>
 
-    <!-- ── VUE HISTORIQUE ── -->
     <div class="right-view active" id="view-history">
-      <!-- Stats -->
       <div class="card" id="stats-card">
         <div class="card-title">Statistiques</div>
         
@@ -820,7 +799,6 @@
         <div id="stats-criteria"></div>
       </div>
 
-      <!-- History -->
       <div class="card">
         <div class="card-title">
           Historique
@@ -845,11 +823,7 @@
 
         <div class="history-scroller" id="history-list"></div>
       </div>
-    </div> <!-- Fin Vue Historique -->
-
-    <!-- ── VUE WATCHLIST ── -->
-    <div class="right-view" id="view-watchlist">
-      <!-- Watchlist -->
+    </div> <div class="right-view" id="view-watchlist">
       <div class="card" id="watchlist-card">
         <div class="card-title">
           À voir
@@ -864,14 +838,9 @@
           <div class="empty-state"><div class="empty-state-icon">🎯</div>Aucun film dans la liste.</div>
         </div>
       </div>
-    </div> <!-- Fin Vue Watchlist -->
+    </div> </div>
 
-  </div>
-
-</div><!-- /layout -->
-
-<!-- ── MOBILE BOTTOM NAVIGATION ── -->
-<nav class="mobile-nav" id="mobile-nav">
+</div><nav class="mobile-nav" id="mobile-nav">
   <button class="nav-btn active" id="nav-rating">
     <span class="nav-btn-icon">🎬</span> Noter
   </button>
@@ -925,7 +894,7 @@ function switchMobileNav(view) {
 
   if (view === 'rating') {
     navRating.classList.add('active');
-    colRating.style.display = 'block'; /* CORRECTION ICI : block au lieu de flex */
+    colRating.style.display = 'block'; 
   } else if (view === 'history') {
     navHistory.classList.add('active');
     colRightViews.style.display = 'flex';
@@ -941,7 +910,6 @@ navRating.addEventListener('click', () => switchMobileNav('rating'));
 navHistory.addEventListener('click', () => switchMobileNav('history'));
 navWatchlist.addEventListener('click', () => switchMobileNav('watchlist'));
 
-// Réinitialiser les display inline lors d'un resize vers PC
 window.addEventListener('resize', () => {
   if (window.innerWidth > 860) {
     colRating.style.display = '';
@@ -954,7 +922,6 @@ window.addEventListener('resize', () => {
   }
 });
 
-// Initialisation mobile
 if (window.innerWidth <= 860) {
   switchMobileNav('rating');
 }
@@ -1599,7 +1566,7 @@ document.getElementById('copy-btn').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════
-//  EXPORT IMAGE AVEC THÈMES 
+//  EXPORT IMAGE AVEC THÈMES (CORRECTION MOBILE)
 // ═══════════════════════════════════════════
 document.getElementById('share-img-btn').addEventListener('click', async (e) => {
   const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film sans titre';
@@ -1704,13 +1671,33 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
       const canvas = await html2canvas(exportCard, { 
         backgroundColor: getThemeVar('--bg'), 
         scale: 2, 
-        useCORS: false,
-        allowTaint: false
+        useCORS: true,
+        allowTaint: true
       });
-      const link = document.createElement('a');
-      link.download = `Critique_${title.replace(/\s+/g, '_')}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      
+      canvas.toBlob(async (blob) => {
+        const fileName = `Critique_${title.replace(/[\s\W]+/g, '_')}.png`;
+        const file = new File([blob], fileName, { type: 'image/png' });
+
+        // Vérifie si le navigateur mobile supporte le Web Share API (le menu de partage natif iOS/Android)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: `Critique : ${title}`
+            });
+          } catch (e) {
+            console.log("Partage annulé ou échoué", e);
+          }
+        } else {
+          // Fallback classique (marche bien sur PC, parfois capricieux sur iOS Safari)
+          const link = document.createElement('a');
+          link.download = fileName;
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          URL.revokeObjectURL(link.href);
+        }
+      }, 'image/png');
     } catch (e) {
       console.error(e);
       showToast("Erreur lors de la génération de l'image.");
@@ -1869,7 +1856,6 @@ window.loadItem = function(idx) {
   calculateScore();
   saveDraft(); 
   
-  // Sur mobile, on repasse automatiquement sur l'onglet de Notation
   if (window.innerWidth <= 860) switchMobileNav('rating');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
@@ -2451,7 +2437,6 @@ window.watchlistToForm = function(idx) {
   saveWatchlist(list);
   renderWatchlist();
   
-  // Sur mobile, on bascule de l'onglet Watchlist à l'onglet Noter
   if (window.innerWidth <= 860) switchMobileNav('rating');
   window.scrollTo({ top: 0, behavior: 'smooth' });
   showToast(`Recherche lancée pour "${item.title}"`);
