@@ -9,7 +9,7 @@
 
 <style>
   /* Importation de toutes les polices pour les différents thèmes */
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Jost:wght@400;600;700&family=Orbitron:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Quicksand:wght@400;600;700&family=Rajdhani:wght@400;600;700&family=Righteous&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&family=VT323&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Creepster&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Jost:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Orbitron:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Quicksand:wght@400;600;700&family=Rajdhani:wght@400;600;700&family=Righteous&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Titillium+Web:ital,wght@0,400;0,600;0,700;1,400&family=VT323&display=swap');
 
   /* ── VARIABLES GLOBALES ET THÈMES ── */
   :root {
@@ -73,9 +73,9 @@
     --border-hi: #5B5B5B; --text: #A0A0A0; --text-hi: #E0E0E0; --text-mid: #7A7A7A;
     --orange: #D4AF37; --gold: #D4AF37; --blue: #5B5B5B; --red: #8B0000; --green: #4F7942;
     --radius: 0px; --radius-sm: 0px;
-    --font-heading: 'Courier New', Courier, monospace;
+    --font-heading: 'Space Mono', monospace;
     --font-body: 'JetBrains Mono', monospace;
-    --font-mono: 'Courier New', Courier, monospace;
+    --font-mono: 'Space Mono', monospace;
   }
 
   [data-theme="anderson"] {
@@ -110,6 +110,51 @@
     --font-body: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
+
+  [data-theme="giallo"] {
+    /* 10. Giallo Italien (Dario Argento) */
+    --bg: #1A0A0A; --surface: #2A0D0D; --surface2: #3D1414; --border: #FF0000;
+    --border-hi: #FFD700; --text: #CCCCCC; --text-hi: #FFFFFF; --text-mid: #E6E6E6;
+    --orange: #FF0000; --gold: #FFD700; --blue: #FFD700; --red: #990000; --green: #FFD700;
+    --radius: 0px; --radius-sm: 0px;
+    --font-heading: 'Creepster', cursive;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  [data-theme="ghibli"] {
+    /* 11. Aquarelle & Mélancolie (Studio Ghibli) */
+    --bg: #E6F0EF; --surface: #F4F9F8; --surface2: #FFFFFF; --border: #C2D6D3;
+    --border-hi: #8FB996; --text: #666666; --text-hi: #4A4A4A; --text-mid: #7A7A7A;
+    --orange: #8FB996; --gold: #E8DAB2; --blue: #8FB996; --red: #D98A8A; --green: #8FB996;
+    --radius: 24px; --radius-sm: 16px;
+    --font-heading: 'Lora', serif;
+    --font-body: 'Quicksand', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  [data-theme="filmnoir"] {
+    /* 12. Noir & Blanc Classique (Film Noir) */
+    --bg: #E5E5E5; --surface: #F0F0F0; --surface2: #FAFAFA; --border: #000000;
+    --border-hi: #333333; --text: #333333; --text-hi: #000000; --text-mid: #1F1F1F;
+    --orange: #000000; --gold: #555555; --blue: #000000; --red: #000000; --green: #000000;
+    --radius: 0px; --radius-sm: 0px;
+    --font-heading: 'Cinzel', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  [data-theme="glitch"] {
+    /* 13. Glitch & Chaos */
+    --bg: #000000; --surface: #050505; --surface2: #111111; --border: #333333;
+    --border-hi: #FFFF00; --text: #CCCCCC; --text-hi: #FFFFFF; --text-mid: #999999;
+    --orange: #FF00FF; --gold: #FFFF00; --blue: #00FFFF; --red: #FF00FF; --green: #00FFFF;
+    --radius: 0px; --radius-sm: 0px;
+    --font-heading: 'Space Mono', monospace;
+    --font-body: 'Space Mono', monospace;
+    --font-mono: 'Space Mono', monospace;
+  }
+
 
   /* ── EFFETS SPÉCIAUX PAR THÈMES ── */
   /* Vintage */
@@ -151,6 +196,38 @@
   [data-theme="godard"] .ctx-tag { border: 2px solid #000; font-weight: bold; }
   [data-theme="godard"] input[type="range"] { background: #000; height: 3px; }
   [data-theme="godard"] input[type="range"]::-webkit-slider-thumb { border: 2px solid #000; background: var(--orange); }
+
+  /* Giallo Italien */
+  [data-theme="giallo"] .card { border: 2px solid var(--red); background: repeating-linear-gradient( 45deg, var(--bg), var(--bg) 10px, #1a0a0a 10px, #1a0a0a 20px ); box-shadow: 4px 4px 0 var(--gold); }
+  [data-theme="giallo"] .btn { border: 1px solid var(--gold); text-transform: uppercase; letter-spacing: 2px; }
+  [data-theme="giallo"] .app-title { font-size: 2rem; letter-spacing: 2px; color: var(--red); text-shadow: 2px 2px 0 var(--gold); }
+  [data-theme="giallo"] .app-title em { color: var(--gold); text-shadow: 2px 2px 0 var(--red); }
+  [data-theme="giallo"] .score-big { font-family: 'Creepster', cursive; font-weight: 400; font-size: 4rem;}
+  [data-theme="giallo"] .card-title { border-bottom: 2px dashed var(--gold); color: var(--red); font-family: 'Creepster', cursive; font-size: 1.2rem; letter-spacing: 2px;}
+
+  /* Aquarelle / Ghibli */
+  [data-theme="ghibli"] .card { box-shadow: 0 12px 35px rgba(143, 185, 150, 0.15); border: none; background: rgba(244, 249, 248, 0.85); backdrop-filter: blur(10px); }
+  [data-theme="ghibli"] .app-title { font-weight: 600; letter-spacing: 0.05em; color: var(--text-hi); font-style: italic; }
+  [data-theme="ghibli"] .app-title em { color: var(--orange); }
+  [data-theme="ghibli"] input[type="range"]::-webkit-slider-thumb { box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+  [data-theme="ghibli"] .btn { box-shadow: 0 4px 12px rgba(143, 185, 150, 0.2); border: none; font-weight: 600; }
+
+  /* Film Noir */
+  [data-theme="filmnoir"] .card { border: 1px solid var(--border); outline: 1px solid var(--border); outline-offset: -4px; background: var(--surface); box-shadow: 4px 4px 0 var(--border); }
+  [data-theme="filmnoir"] .app-title { font-weight: 900; letter-spacing: 2px; border-bottom: 2px solid var(--border); padding-bottom: 4px; display: inline-block;}
+  [data-theme="filmnoir"] .app-header { border-bottom: 4px double var(--border); padding-bottom: 12px; margin-bottom: 24px; }
+  [data-theme="filmnoir"] .btn { border: 1px solid var(--border); background: var(--bg); color: var(--text-hi); font-weight: 700; text-transform: uppercase;}
+  [data-theme="filmnoir"] .btn:hover { background: var(--border); color: var(--bg); }
+  [data-theme="filmnoir"] .card-title { font-weight: 800; border-bottom: 2px solid var(--border); }
+  [data-theme="filmnoir"] .search-input { border: 1px solid var(--border); border-radius: 0; }
+
+  /* Glitch */
+  [data-theme="glitch"] .card { border: 1px solid var(--border); box-shadow: 3px 0 0 var(--orange), -3px 0 0 var(--blue); }
+  [data-theme="glitch"] .app-title { text-transform: uppercase; font-weight: 700; font-style: italic; text-shadow: 2px 0 0 var(--orange), -2px 0 0 var(--blue); }
+  [data-theme="glitch"] .btn { border: 1px solid var(--text-hi); position: relative; }
+  [data-theme="glitch"] .btn:hover { transform: translate(2px, -2px); box-shadow: -2px 2px 0 var(--blue), 2px -2px 0 var(--orange); }
+  [data-theme="glitch"] .score-big { text-shadow: 3px 0 var(--orange), -3px 0 var(--blue); }
+  [data-theme="glitch"] .card-title { border-bottom: 1px solid var(--text-hi); text-shadow: 1px 0 var(--orange), -1px 0 var(--blue); }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -656,6 +733,10 @@
         <option value="anderson">Rêverie Onirique (Wes Anderson)</option>
         <option value="cyberpunk">Néon & Mélancolie (Blade Runner)</option>
         <option value="godard">Nouveau Réalisme (Godard)</option>
+        <option value="giallo">Giallo Italien (Dario Argento)</option>
+        <option value="ghibli">Aquarelle & Mélancolie (Ghibli)</option>
+        <option value="filmnoir">Noir & Blanc Classique</option>
+        <option value="glitch">Glitch & Chaos (Expérimental)</option>
       </select>
     </div>
     <div class="modal-actions">
@@ -1678,7 +1759,7 @@ document.getElementById('copy-btn').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════
-//  EXPORT IMAGE AVEC THÈMES (CORRIGÉ)
+//  EXPORT IMAGE
 // ═══════════════════════════════════════════
 document.getElementById('share-img-btn').addEventListener('click', async (e) => {
   const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim() || 'Film';
@@ -1752,7 +1833,6 @@ document.getElementById('share-img-btn').addEventListener('click', async (e) => 
       });
     }
 
-    // Proxy load pour l'image 
     const originalPosterUrl = document.getElementById('movie-poster').value;
     if (originalPosterUrl) {
         try {
