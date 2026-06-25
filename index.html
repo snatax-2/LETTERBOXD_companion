@@ -764,7 +764,7 @@
         <div class="theme-card" data-theme="anderson">
           <div class="theme-preview" style="background:#FDF6E3; border: 2px solid #D1495B;">
             <div class="theme-preview-row"><div class="theme-preview-bar" style="background:#F5EBD0;flex:1;border:1px solid #CEBF9A"></div></div>
-            <div class="theme-preview-row" style="margin-top:4px"><div class="theme-preview-bar" style="background:gradient(90deg,#D1495B,#669999);width:65%"></div></div>
+            <div class="theme-preview-row" style="margin-top:4px"><div class="theme-preview-bar" style="background:linear-gradient(90deg,#D1495B,#669999);width:65%"></div></div>
             <div class="theme-preview-dots"><div class="theme-preview-dot" style="background:#D1495B"></div><div class="theme-preview-dot" style="background:#669999"></div><div class="theme-preview-dot" style="background:#E8A825"></div></div>
           </div>
           <div class="theme-label" style="background:#F5EBD0;color:#D1495B;font-family:'Jost',sans-serif;font-style:normal;border-top:2px solid #D1495B">Wes Anderson</div>
@@ -1827,32 +1827,23 @@ document.getElementById('copy-btn').addEventListener('click', () => {
   const stars    = document.getElementById('stars-display').textContent;
   const heartStr = isLiked ? ' ❤️' : '';
 
-  let text = `📽 ${title} ${year ? '('+year+') ' : ''}${heartStr}
-`;
-  if (director) text += ` Un film de ${director}
-`;
-  if (actors) text += ` Avec ${actors}
-`;
-  if (dateStr) text += ` Vu le ${dateStr}
-`;
-  if (activeContextTags.size > 0) text += ` ${Array.from(activeContextTags).join(' · ')}
-`;
+  let text = `📽 ${title} ${year ? '('+year+') ' : ''}${heartStr}\n`;
+  if (director) text += `🎬 Un film de ${director}\n`;
+  if (actors) text += `🎭 Avec ${actors}\n`;
+  if (dateStr) text += `🗓 Vu le ${dateStr}\n`;
+  if (activeContextTags.size > 0) text += `🏷 ${Array.from(activeContextTags).join(' · ')}\n`;
   
-  text += `⭐ ${stars} (${score.toFixed(1)}/10)
-`;
+  text += `⭐ ${stars} (${score.toFixed(1)}/10)\n`;
 
   if (currentMode === 'detail') {
     const vals = CRITERIA.reduce((acc, c) => {
       acc[c] = parseFloat(document.getElementById(c).value).toFixed(1);
       return acc;
     }, {});
-    text += `
-Scénario ${vals.scenario} · Réal ${vals.realisation} · Photo ${vals.photo} · Acteurs ${vals.acteurs} · Son ${vals.ambiance} · Affect ${vals.affect}
-`;
+    text += `\nScénario ${vals.scenario} · Réal ${vals.realisation} · Photo ${vals.photo} · Acteurs ${vals.acteurs} · Son ${vals.ambiance} · Affect ${vals.affect}\n`;
   }
 
-  if (review) text += `
-${review}`;
+  if (review) text += `\n${review}`;
 
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('copy-btn');
@@ -1901,8 +1892,7 @@ document.getElementById('save-btn').addEventListener('click', () => {
   if (existing) {
     openModal(
       'Film déjà noté',
-      `"${title}" est déjà dans votre historique avec ${existing.score}/10.
-Voulez-vous écraser cette note ?`,
+      `"${title}" est déjà dans votre historique avec ${existing.score}/10.\nVoulez-vous écraser cette note ?`,
       () => {
         const idx = history.findIndex(h => h.title.toLowerCase() === title.toLowerCase());
         history.splice(idx, 1);
@@ -2205,7 +2195,7 @@ function renderHistory() {
     else if(scoreNum >= 5.0) scoreColor = 'var(--gold)';
 
     const imgHtml = item.poster
-      ? `<img class="hist-poster" src="${item.poster}" loading="lazy" decoding="async" onerror="this.outerHTML='<div class=\'hist-poster-ph\'>🎬</div>'">`
+      ? `<img class="hist-poster" src="${item.poster}" loading="lazy" decoding="async" onerror="this.outerHTML='<div class=\\'hist-poster-ph\\'>🎬</div>'">`
       : `<div class="hist-poster-ph">🎬</div>`;
 
     const tmdbHtml = item.tmdbScore
@@ -2460,7 +2450,7 @@ document.getElementById('import-file').addEventListener('change', e => {
       const data = JSON.parse(ev.target.result);
       if (!Array.isArray(data)) throw new Error('Format invalide');
       openModal(
-        'Importer l'historique',
+        "Importer l'historique",
         `Importer ${data.length} film${data.length > 1 ? 's' : ''} ? Cela fusionnera avec votre historique actuel (les doublons seront ignorés).`,
         () => {
           const existing = loadHistory();
