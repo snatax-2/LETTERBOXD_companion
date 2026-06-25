@@ -82,7 +82,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   /* Transitions douces pour les changements de thèmes */
-  body, .card, .btn, .hist-item, .wl-card, .right-tab, .search-input, .review-textarea, .modal-box {
+  body, .card, .btn, .hist-item, .wl-card, .right-tab, .search-input, .review-textarea, .modal-box, .dash-box {
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease !important;
   }
 
@@ -166,6 +166,31 @@
 
   .mobile-nav { display: none; }
 
+  /* ── DASHBOARD STATS (NOUVEAU) ── */
+  .kpi-row { display: flex; gap: 10px; margin-bottom: 16px; }
+  .kpi-card { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
+  .kpi-val { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; color: var(--text-hi); margin-bottom: 4px; }
+  .kpi-label { font-family: var(--font-heading); font-size: 0.7rem; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.05em; }
+  
+  .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .dash-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; display:flex; flex-direction: column; transition: background-color 0.3s ease, border-color 0.3s ease; }
+  .dash-box-title { font-size: 0.75rem; font-family: var(--font-heading); font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  .dash-box.full-width { grid-column: 1 / -1; }
+  
+  /* SVG Styles natifs */
+  .svg-text { fill: var(--text-hi); font-family: var(--font-heading); font-size: 10px; }
+  .svg-text-mono { fill: var(--text-mid); font-family: var(--font-mono); font-size: 9px; }
+  .svg-axis { stroke: var(--border); stroke-width: 1; }
+  .svg-grid { stroke: var(--border); stroke-width: 1; stroke-dasharray: 2,2; opacity: 0.5;}
+
+  /* Auteurs & Genres list */
+  .top-list { display: flex; flex-direction: column; gap: 6px; }
+  .top-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.8rem; cursor: pointer; transition: border-color 0.15s;}
+  .top-item:hover { border-color: var(--border-hi); }
+  .top-item-name { font-weight: 600; color: var(--text-hi); }
+  .top-item-meta { display: flex; gap: 8px; font-size: 0.75rem; font-family: var(--font-mono); }
+  .top-item-score { color: var(--gold); }
+
   /* RESPONSIVE OPTIMIZATION */
   @media (max-width: 860px) {
     .layout { display: flex; flex-direction: column; }
@@ -194,6 +219,10 @@
     /* Hitboxes tactiles agrandies sur mobile pour les sliders */
     input[type="range"]::-webkit-slider-thumb { width: 26px; height: 26px; }
     input[type="range"]::-moz-range-thumb { width: 26px; height: 26px; }
+  }
+
+  @media (max-width: 450px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
   }
 
   /* ── CARDS ── */
@@ -458,11 +487,11 @@
   .stat-row span:first-child { font-size: 0.82rem; }
   .stat-num { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 600; color: var(--text-hi); }
   .stat-group-title { font-family: var(--font-heading); font-size: 0.65rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.1em; margin: 20px 0 10px 0; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  
   .histo { display: flex; flex-direction: column; gap: 7px; }
   .histo-row { display: flex; align-items: center; gap: 8px; font-size: 0.76rem; cursor: pointer; border-radius: var(--radius-sm); padding: 2px 4px; transition: background .12s; }
   .histo-row:hover { background: var(--surface2); }
   .histo-row.active { background: rgba(255,128,0,0.12); outline: 1px solid rgba(255,128,0,0.35); }
-  
   .histo-label { width: 70px; color: var(--text); text-align: right; flex-shrink: 0; }
   .histo-track { flex: 1; height: 10px; background: var(--bg); border-radius: 999px; overflow: hidden; }
   .histo-bar { height: 100%; width: 0%; background: var(--orange); border-radius: 999px; transition: width .4s ease; }
@@ -619,6 +648,35 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 999px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text); }
+
+  /* ── DASHBOARD STATS (NOUVEAU) ── */
+  .kpi-row { display: flex; gap: 10px; margin-bottom: 16px; }
+  .kpi-card { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
+  .kpi-val { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; color: var(--text-hi); margin-bottom: 4px; }
+  .kpi-label { font-family: var(--font-heading); font-size: 0.7rem; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.05em; }
+  
+  .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .dash-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; display:flex; flex-direction: column; transition: background-color 0.3s ease, border-color 0.3s ease; }
+  .dash-box-title { font-size: 0.75rem; font-family: var(--font-heading); font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  .dash-box.full-width { grid-column: 1 / -1; }
+  
+  /* SVG Styles natifs */
+  .svg-text { fill: var(--text-hi); font-family: var(--font-heading); font-size: 10px; }
+  .svg-text-mono { fill: var(--text-mid); font-family: var(--font-mono); font-size: 9px; }
+  .svg-axis { stroke: var(--border); stroke-width: 1; }
+  .svg-grid { stroke: var(--border); stroke-width: 1; stroke-dasharray: 2,2; opacity: 0.5;}
+
+  /* Auteurs & Genres list */
+  .top-list { display: flex; flex-direction: column; gap: 6px; }
+  .top-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.8rem; cursor: pointer; transition: border-color 0.15s;}
+  .top-item:hover { border-color: var(--border-hi); }
+  .top-item-name { font-weight: 600; color: var(--text-hi); }
+  .top-item-meta { display: flex; gap: 8px; font-size: 0.75rem; font-family: var(--font-mono); }
+  .top-item-score { color: var(--gold); }
+  
+  @media (max-width: 450px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+  }
 
 </style>
 </head>
@@ -885,29 +943,48 @@
 
     <div class="right-view active" id="view-history">
       <div class="card" id="stats-card">
-        <div class="card-title">Statistiques</div>
+        <div class="card-title">Dashboard Analytique</div>
         
-        <div class="stat-row">
-          <span>Films notés</span>
-          <span class="stat-num" id="total-count">0</span>
-        </div>
-        <div class="stat-row">
-          <span>Moyenne globale</span>
-          <span class="stat-num" id="avg-score">—</span>
-        </div>
-        <div class="stat-row" style="margin-bottom: 20px;">
-          <span>Vus en <span id="current-year-label"></span></span>
-          <span class="stat-num" style="color: var(--blue);" id="year-count">0</span>
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-val" id="kpi-total">0</div>
+            <div class="kpi-label">Films notés</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val" id="kpi-avg" style="color:var(--gold)">-</div>
+            <div class="kpi-label">Moyenne</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val" id="kpi-year" style="color:var(--blue)">0</div>
+            <div class="kpi-label" id="kpi-year-label">En 2026</div>
+          </div>
         </div>
 
-        <div class="stat-group-title">Distribution des notes</div>
-        <div class="histo" id="histogram"></div>
+        <div class="dashboard-grid">
+          <div class="dash-box">
+            <div class="dash-box-title">L'ADN de tes notes</div>
+            <div id="radar-chart-container" style="display:flex; justify-content:center; align-items:center; min-height:160px;"></div>
+            <div id="radar-empty" style="display:none; font-size:0.8rem; text-align:center; color:var(--text); margin-top:20px;">Utilise le mode Détaillé pour débloquer ce radar.</div>
+          </div>
 
-        <div class="stat-group-title" style="margin-top: 24px;">Top 3 Genres favoris</div>
-        <div id="stats-genres"></div>
+          <div class="dash-box">
+            <div class="dash-box-title">Activité (6 derniers mois)</div>
+            <div id="timeline-chart-container" style="display:flex; justify-content:center; align-items:flex-end; min-height:160px; padding-top:10px;"></div>
+          </div>
 
-        <div class="stat-group-title" style="margin-top: 24px;">L'ADN de tes notes</div>
-        <div id="stats-criteria"></div>
+          <div class="dash-box full-width">
+            <div class="dash-box-title" style="display:flex; justify-content:space-between">
+              <span>Top Réalisateurs</span>
+              <span style="color:var(--blue); text-transform:none; font-family:var(--font-body)">Basé sur tes vues</span>
+            </div>
+            <div class="top-list" id="top-directors-list"></div>
+          </div>
+          
+          <div class="dash-box full-width">
+            <div class="dash-box-title">Distribution des notes</div>
+            <div class="histo" id="histogram"></div>
+          </div>
+        </div>
       </div>
 
       <div class="card">
@@ -934,7 +1011,8 @@
 
         <div class="history-scroller" id="history-list"></div>
       </div>
-    </div> <div class="right-view" id="view-watchlist">
+    </div> 
+    <div class="right-view" id="view-watchlist">
       <div class="card" id="watchlist-card">
         <div class="card-title">
           À voir
@@ -949,9 +1027,12 @@
           <div class="empty-state"><div class="empty-state-icon">🎯</div>Aucun film dans la liste.</div>
         </div>
       </div>
-    </div> </div>
+    </div> 
+  </div>
 
-</div><nav class="mobile-nav" id="mobile-nav">
+</div>
+
+<nav class="mobile-nav" id="mobile-nav">
   <button class="nav-btn active" id="nav-rating">
     <span class="nav-btn-icon">🎬</span> Noter
   </button>
@@ -1057,12 +1138,10 @@ function applySettings(settings) {
   
   let themeToApply = settings.theme || "default";
   
-  // Détection du thème système
   if (themeToApply === "system") {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     themeToApply = prefersDark ? "default" : "filmnoir"; 
     
-    // Écoute des changements de l'OS
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         if (JSON.parse(localStorage.getItem('lbx_settings') || '{}').theme === 'system') {
             document.documentElement.setAttribute('data-theme', e.matches ? "default" : "filmnoir");
@@ -1085,7 +1164,7 @@ document.getElementById('settings-btn').addEventListener('click', () => {
 
 document.getElementById('settings-cancel').addEventListener('click', () => {
   const s = JSON.parse(localStorage.getItem('lbx_settings') || '{}');
-  applySettings(s); // Ré-applique les paramètres pour remettre le thème système si besoin
+  applySettings(s); 
   document.getElementById('settings-modal').classList.remove('open');
 });
 
@@ -1094,7 +1173,6 @@ document.getElementById('theme-grid').addEventListener('click', e => {
   if (!card) return;
   document.querySelectorAll('.theme-card').forEach(tc => tc.classList.remove('selected'));
   card.classList.add('selected');
-  // Aperçu en direct
   if(card.dataset.theme !== "system") {
       document.documentElement.setAttribute('data-theme', card.dataset.theme);
   } else {
@@ -1106,7 +1184,6 @@ document.getElementById('theme-grid').addEventListener('click', e => {
 document.getElementById('settings-save').addEventListener('click', () => {
   let rawName = document.getElementById('setting-app-name').value.trim();
   if(!rawName) rawName = "Ludex Rating Companion";
-  // On met en em le premier mot s'il y a un espace, sinon tout le mot
   const firstWord = rawName.split(' ')[0];
   const formattedName = rawName.replace(firstWord, `<em>${firstWord}</em>`);
   
@@ -1387,7 +1464,6 @@ searchEl.addEventListener('input', () => {
     return; 
   }
   
-  // Afficher les Skeletons Loading
   searchStatus.style.display = 'none';
   suggestEl.style.display = 'block';
   suggestEl.innerHTML = `
@@ -1535,7 +1611,7 @@ document.addEventListener('click', e => {
 //  HEART & DATES & REVIEW TEXT
 // ═══════════════════════════════════════════
 document.getElementById('heart-btn').addEventListener('click', () => {
-  if (navigator.vibrate) navigator.vibrate(50); // Retour Haptique
+  if (navigator.vibrate) navigator.vibrate(50);
   isLiked = !isLiked;
   document.getElementById('heart-btn').classList.toggle('active', isLiked);
   saveDraft();
@@ -1740,7 +1816,7 @@ document.getElementById('copy-btn').addEventListener('click', () => {
 //  SAVE
 // ═══════════════════════════════════════════
 document.getElementById('save-btn').addEventListener('click', () => {
-  if (navigator.vibrate) navigator.vibrate([50, 50, 50]); // Retour Haptique
+  if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
   
   const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim();
   if (!title) { showToast('Entrez un titre de film avant de sauvegarder.'); return; }
@@ -1956,7 +2032,7 @@ document.getElementById('history-search').addEventListener('input', (e) => {
 });
 
 // ═══════════════════════════════════════════
-//  RENDER HISTORY
+//  RENDER HISTORY / DASHBOARD / STATS
 // ═══════════════════════════════════════════
 function getGenres(history) {
   const set = new Set();
@@ -2124,127 +2200,145 @@ function renderHistory() {
   });
 }
 
-// ═══════════════════════════════════════════
-//  RENDER STATISTICS
-// ═══════════════════════════════════════════
+function createRadarSVG(averages) {
+  if (averages.every(a => a === 0)) return null;
+
+  const s = 180, c = s/2, r = s*0.42;
+  const angles = [0, 60, 120, 180, 240, 300].map(a => (a - 90) * Math.PI / 180);
+  const labels = ['Scén.', 'Réal.', 'Photo.', 'Casting', 'Son', 'Affect'];
+
+  let svg = `<svg viewBox="0 0 ${s} ${s}" width="100%" height="100%" style="max-width:250px; overflow:visible;">`;
+  
+  [10, 6.66, 3.33].forEach(lvl => {
+    const pts = angles.map(a => `${c + (lvl/10)*r*Math.cos(a)},${c + (lvl/10)*r*Math.sin(a)}`).join(' ');
+    svg += `<polygon points="${pts}" fill="none" class="svg-grid" />`;
+  });
+
+  angles.forEach((a, i) => {
+    svg += `<line x1="${c}" y1="${c}" x2="${c + r*Math.cos(a)}" y2="${c + r*Math.sin(a)}" class="svg-axis" />`;
+    const lx = c + (r + 14) * Math.cos(a), ly = c + (r + 8) * Math.sin(a);
+    const anch = lx < c - 10 ? 'end' : (lx > c + 10 ? 'start' : 'middle');
+    svg += `<text x="${lx}" y="${ly}" class="svg-text" text-anchor="${anch}" dominant-baseline="middle">${labels[i]}</text>`;
+  });
+
+  const dataPts = angles.map((a, i) => `${c + (averages[i]/10)*r*Math.cos(a)},${c + (averages[i]/10)*r*Math.sin(a)}`).join(' ');
+  svg += `<polygon points="${dataPts}" fill="var(--orange)" fill-opacity="0.3" stroke="var(--orange)" stroke-width="2" style="transition:all 0.5s ease" />`;
+  
+  angles.forEach((a, i) => {
+    svg += `<circle cx="${c + (averages[i]/10)*r*Math.cos(a)}" cy="${c + (averages[i]/10)*r*Math.sin(a)}" r="3" fill="var(--blue)" />`;
+  });
+
+  svg += `</svg>`;
+  return svg;
+}
+
+function createTimelineSVG(history) {
+  const months = {};
+  const now = new Date();
+  for(let i=5; i>=0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months[`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`] = { c: 0 };
+  }
+  history.forEach(h => {
+    if(h.date) { const k = h.date.substring(0,7); if(months[k]) months[k].c++; }
+  });
+
+  const keys = Object.keys(months).sort();
+  const maxC = Math.max(...keys.map(k => months[k].c), 1);
+  const w = 300, h = 100, pad = 20, barW = (w - pad*2)/6 - 10;
+
+  let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" style="overflow:visible;">`;
+  keys.forEach((k, i) => {
+    const count = months[k].c;
+    const barH = (count / maxC) * (h - pad - 10);
+    const x = pad + i*(barW + 10), y = h - pad - barH;
+    svg += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="var(--border-hi)" rx="2" style="transition:height 0.5s ease, y 0.5s ease" />`;
+    if(count > 0) svg += `<text x="${x + barW/2}" y="${y - 4}" class="svg-text-mono" text-anchor="middle">${count}</text>`;
+    const mLab = new Date(k+'-01').toLocaleDateString('fr-FR', {month:'short'}).substring(0,3);
+    svg += `<text x="${x + barW/2}" y="${h - 5}" class="svg-text" fill="var(--text-mid)" text-anchor="middle">${mLab}</text>`;
+  });
+  svg += `</svg>`;
+  return svg;
+}
+
 function renderStats() {
   const history = loadHistory();
+  document.getElementById('kpi-total').textContent = history.length;
+  document.getElementById('kpi-year-label').textContent = `En ${new Date().getFullYear()}`;
   
-  document.getElementById('total-count').textContent = history.length;
-  document.getElementById('current-year-label').textContent = new Date().getFullYear();
-
   if (history.length === 0) {
-    document.getElementById('avg-score').textContent = '—';
-    document.getElementById('year-count').textContent = '0';
+    document.getElementById('kpi-avg').textContent = '-'; 
+    document.getElementById('kpi-year').textContent = '0';
+    document.getElementById('radar-chart-container').innerHTML = ''; 
+    document.getElementById('radar-empty').style.display = 'block';
+    document.getElementById('timeline-chart-container').innerHTML = '';
+    document.getElementById('top-directors-list').innerHTML = '<div style="font-size:0.8rem;color:var(--text-mid);text-align:center">Enregistrez plus de films avec un réalisateur pour générer ce top.</div>';
     buildHistogram({});
-    document.getElementById('stats-genres').innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Pas assez de données.</div>';
-    document.getElementById('stats-criteria').innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Pas assez de données.</div>';
     return;
   }
 
   const avg = history.reduce((sum, h) => sum + parseFloat(h.score), 0) / history.length;
-  document.getElementById('avg-score').textContent = avg.toFixed(2) + '/10';
+  document.getElementById('kpi-avg').textContent = avg.toFixed(1);
 
   const currentYear = new Date().getFullYear().toString();
   const yearCount = history.filter(h => h.date && h.date.startsWith(currentYear)).length;
-  document.getElementById('year-count').textContent = yearCount;
+  document.getElementById('kpi-year').textContent = yearCount;
 
-  const dist = { 50:0, 45:0, 40:0, 35:0, 30:0, 25:0, 20:0, 15:0, 10:0, '05':0 };
+  let critSums = [0,0,0,0,0,0], detailCount = 0;
+  history.forEach(h => { 
+    if(h.mode === 'detail' && h.values && h.values.scenario !== undefined) { 
+      detailCount++; 
+      CRITERIA.forEach((c,i) => critSums[i]+=parseFloat(h.values[c])); 
+    }
+  });
+  const avgs = detailCount > 0 ? critSums.map(s => s/detailCount) : [0,0,0,0,0,0];
+  const radarSvg = createRadarSVG(avgs);
+  if (radarSvg) { 
+    document.getElementById('radar-chart-container').innerHTML = radarSvg; 
+    document.getElementById('radar-empty').style.display = 'none'; 
+  } else { 
+    document.getElementById('radar-chart-container').innerHTML = ''; 
+    document.getElementById('radar-empty').style.display = 'block'; 
+  }
+
+  document.getElementById('timeline-chart-container').innerHTML = createTimelineSVG(history);
+
+  const dirs = {};
+  history.forEach(h => {
+    if(h.director) { 
+      h.director.split(',').forEach(d => {
+        const t = d.trim(); if(!t) return;
+        if(!dirs[t]) dirs[t] = { count:0, sum:0 }; 
+        dirs[t].count++; dirs[t].sum+=parseFloat(h.score);
+      });
+    }
+  });
+  const topD = Object.entries(dirs).map(([name,d]) => ({name, count:d.count, avg:d.sum/d.count})).filter(d=>d.count>1).sort((a,b)=>b.count-a.count || b.avg-a.avg).slice(0,4);
+  const dirCont = document.getElementById('top-directors-list');
+  if(topD.length > 0) {
+    dirCont.innerHTML = topD.map(d => `<div class="top-item" onclick="document.getElementById('history-search').value='${d.name}';document.getElementById('history-search').dispatchEvent(new Event('input'))"><span class="top-item-name">${d.name}</span><div class="top-item-meta"><span>${d.count} films</span><span class="top-item-score">★ ${d.avg.toFixed(1)}</span></div></div>`).join('');
+  } else { 
+    dirCont.innerHTML = `<div style="font-size:0.8rem;color:var(--text-mid);text-align:center">Enregistrez plus de films avec un réalisateur pour générer ce top.</div>`; 
+  }
+
+  const dist = { '50':0, '45':0, '40':0, '35':0, '30':0, '25':0, '20':0, '15':0, '10':0, '05':0 };
   history.forEach(item => {
     const stars = Math.round((parseFloat(item.score) / 2) * 2) / 2;
     const key   = Math.round(stars * 10).toString().padStart(2,'0');
     if (dist[key] !== undefined) dist[key]++;
   });
   buildHistogram(dist);
-
-  const genreStats = {};
-  history.forEach(h => {
-    if(!h.genre) return;
-    h.genre.split(',').forEach(g => {
-      const gt = g.trim();
-      if(!gt) return;
-      if(!genreStats[gt]) genreStats[gt] = { count: 0, sum: 0 };
-      genreStats[gt].count++;
-      genreStats[gt].sum += parseFloat(h.score);
-    });
-  });
-  
-  const topGenres = Object.entries(genreStats)
-    .map(([name, data]) => ({ name, count: data.count, avg: data.sum / data.count }))
-    .sort((a,b) => b.count - a.count)
-    .slice(0, 3); 
-
-  const genresContainer = document.getElementById('stats-genres');
-  genresContainer.innerHTML = '';
-  if (topGenres.length > 0) {
-    topGenres.forEach(g => {
-      const el = document.createElement('div');
-      el.className = 'top-genre-row' + (activeGenre === g.name ? ' active' : '');
-      el.title = `Filtrer par ${g.name}`;
-      el.innerHTML = `
-        <div class="top-genre-name">${g.name}</div>
-        <div class="top-genre-meta">
-          <span>${g.count} film${g.count > 1 ? 's' : ''}</span>
-          <span class="top-genre-avg">${g.avg.toFixed(1)}/10</span>
-        </div>`;
-      el.addEventListener('click', () => {
-        activeGenre = (activeGenre === g.name) ? null : g.name;
-        activeScoreFilter = null;
-        renderAll();
-        document.querySelector('.history-scroller')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-      genresContainer.appendChild(el);
-    });
-  } else {
-    genresContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Pas assez de données.</div>';
-  }
-
-  const critSums = { scenario: 0, realisation: 0, photo: 0, acteurs: 0, ambiance: 0, affect: 0 };
-  const critLabels = { scenario: 'Scénario', realisation: 'Réalisation', photo: 'Photographie', acteurs: 'Acteurs', ambiance: 'Ambiance', affect: 'Affect' };
-  let detailCount = 0;
-
-  history.forEach(h => {
-    if (h.mode === 'detail' && h.values && h.values.scenario !== undefined) {
-      detailCount++;
-      CRITERIA.forEach(c => { critSums[c] += parseFloat(h.values[c]); });
-    }
-  });
-
-  const criteriaContainer = document.getElementById('stats-criteria');
-  criteriaContainer.innerHTML = '';
-  if (detailCount > 0) {
-    CRITERIA.forEach(c => {
-      const avgCrit = critSums[c] / detailCount;
-      const pct = (avgCrit / 10) * 100;
-      criteriaContainer.innerHTML += `
-        <div class="avg-crit-row">
-          <div class="avg-crit-head">
-            <span style="font-family:var(--font-heading)">${critLabels[c]}</span>
-            <span class="avg-crit-val">${avgCrit.toFixed(1)}</span>
-          </div>
-          <div class="avg-crit-track">
-            <div class="avg-crit-bar" style="width: ${pct}%;"></div>
-          </div>
-        </div>
-      `;
-    });
-  } else {
-    criteriaContainer.innerHTML = '<div style="font-size:0.8rem; color:var(--text); text-align:center;">Utilisez le mode <b>Détaillé</b> pour voir l\'ADN de vos notes par critère.</div>';
-  }
 }
 
 function buildHistogram(dist) {
   const container = document.getElementById('histogram');
   container.innerHTML = '';
-
   const order = [50, 45, 40, 35, 30, 25, 20, 15, 10, '05'];
   const labels = {
     50: '★★★★★', 45: '★★★★½', 40: '★★★★', 35: '★★★½', 30: '★★★',
     25: '★★½',   20: '★★',    15: '★½',    10: '★',    '05': '½'
   };
-
   const maxVal = Math.max(...Object.values(dist), 1);
-
   order.forEach(key => {
     const count   = dist[key] || 0;
     const pct     = (count / maxVal) * 100;
