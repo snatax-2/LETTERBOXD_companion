@@ -4,55 +4,79 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="favicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Letterboxd Rating Companion</title>
+<title>Ludex Rating Companion</title>
 
 <style>
-  /* Importation de toutes les polices pour les différents thèmes */
-  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=JetBrains+Mono:wght@400;600;700&family=Oswald:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  /* Importation complète de toutes les polices nécessaires */
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Jost:ital,wght@0,400;0,600;0,700;1,400&family=Oswald:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
 
   /* ── VARIABLES GLOBALES ET THÈMES ── */
   :root {
     /* 1. L'Original (Letterboxd) */
     --bg: #14181c; --surface: #1f2935; --surface2: #263240; --border: #283040;
-    --border-hi: #445566; --text: #678; --text-hi: #fff; --text-mid: #9ab;
+    --border-hi: #445566; --text: #89a; --text-hi: #fff; --text-mid: #9ab;
     --orange: #ff8000; --gold: #ff8000; --blue: #40bcf4; --red: #ff4040; --green: #00e054;
     --radius: 4px; --radius-sm: 3px;
     --font-heading: 'Titillium Web', sans-serif;
     --font-body: 'Titillium Web', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
+    
+    /* Variables de personnalisation (Default) */
+    --header-bar: linear-gradient(to right, #00e054 33%, #40bcf4 33%, #40bcf4 66%, #ff8000 66%);
   }
 
   [data-theme="scuderia"] {
-    /* 2. Scuderia (Agressif, Sport) - Contraste amélioré */
+    /* 2. Scuderia (Agressif, Sport) - Contraste et dynamisme */
     --bg: #0a0a0a; --surface: #141414; --surface2: #1e1e1e; --border: #2a2a2a;
     --border-hi: #444; --text: #a0a0a0; --text-hi: #fff; --text-mid: #bbb;
-    --orange: #e32636; --gold: #e32636; --blue: #ffffff; --red: #cc0000; --green: #00cc00;
+    --orange: #e32636; /* Rosso Corsa */
+    --gold: #FFF200;   /* Giallo Modena */
+    --blue: #FFF200;   /* Accents jaunes pour le contraste */
+    --red: #cc0000; --green: #00cc00;
     --radius: 0px; --radius-sm: 0px;
     --font-heading: 'Oswald', sans-serif;
     --font-body: 'Source Sans 3', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
+    
+    /* Variables de personnalisation (Scuderia) */
+    --title-style: italic;
+    --title-spacing: 0.1em;
+    --header-bar: transparent;
   }
 
   [data-theme="anderson"] {
-    /* 7. Rêverie Onirique (Wes Anderson) */
-    --bg: #FDF6E3; --surface: #FAF3E0; --surface2: #F0E6CD; --border: #E2D6BC;
+    /* 7. Rêverie Onirique (Wes Anderson) - Vintage et structuré */
+    --bg: #FDF6E3; --surface: #FAF3E0; --surface2: #F0E6CD; --border: #D1495B; /* Bordures marquées */
     --border-hi: #D1495B; --text: #555555; --text-hi: #333333; --text-mid: #666666;
     --orange: #D1495B; --gold: #E8A825; --blue: #669999; --red: #D1495B; --green: #568259;
-    --radius: 8px; --radius-sm: 4px;
+    --radius: 0px; --radius-sm: 0px;
     --font-heading: 'Jost', sans-serif;
     --font-body: 'Jost', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
+    
+    /* Variables de personnalisation (Anderson) */
+    --box-shadow-style: 4px 4px 0px rgba(209, 73, 91, 0.2); /* Ombre dure rétro */
+    --bg-texture: repeating-linear-gradient(45deg, rgba(209, 73, 91, 0.03) 25%, transparent 25%, transparent 75%, rgba(209, 73, 91, 0.03) 75%, rgba(209, 73, 91, 0.03)), 
+                  repeating-linear-gradient(-45deg, rgba(209, 73, 91, 0.03) 25%, transparent 25%, transparent 75%, rgba(209, 73, 91, 0.03) 75%, rgba(209, 73, 91, 0.03));
+    --bg-size: 20px 20px;
+    --header-bar: transparent;
   }
 
   [data-theme="filmnoir"] {
-    /* 12. Noir & Blanc Classique (Film Noir) */
-    --bg: #E5E5E5; --surface: #F0F0F0; --surface2: #FAFAFA; --border: #000000;
-    --border-hi: #333333; --text: #333333; --text-hi: #000000; --text-mid: #1F1F1F;
-    --orange: #000000; --gold: #555555; --blue: #000000; --red: #000000; --green: #000000;
+    /* 12. Noir & Blanc Classique (Film Noir) - Clair-obscur véritable */
+    --bg: #050505; --surface: #111111; --surface2: #1a1a1a; --border: #333333;
+    --border-hi: #555555; --text: #a0a0a0; --text-hi: #e0e0e0; --text-mid: #888888;
+    --orange: #ffffff; /* Étoiles argentées/blanches */
+    --gold: #cccccc; --blue: #ffffff; --red: #555555; --green: #999999;
     --radius: 0px; --radius-sm: 0px;
     --font-heading: 'Cinzel', serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'Space Mono', monospace;
+    
+    /* Variables de personnalisation (Film Noir) */
+    --review-font: var(--font-mono); /* Machine à écrire pour la critique */
+    --review-bg: #000000;
+    --header-bar: transparent;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -64,7 +88,9 @@
 
   body {
     font-family: var(--font-body);
-    background: var(--bg);
+    background-color: var(--bg);
+    background-image: var(--bg-texture, none);
+    background-size: var(--bg-size, auto);
     color: var(--text);
     min-height: 100vh;
     padding: 24px 16px 60px;
@@ -78,14 +104,29 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    position: relative;
   }
+  
+  /* Barre tricolore Letterboxd générée dynamiquement via variable CSS */
+  .app-header::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--header-bar, transparent);
+    border-radius: 2px;
+  }
+
   .app-title {
     font-family: var(--font-heading);
     font-size: 1.4rem;
     font-weight: 700;
     color: var(--text-hi);
-    letter-spacing: 0.02em;
     text-transform: uppercase;
+    font-style: var(--title-style, normal);
+    letter-spacing: var(--title-spacing, 0.02em);
   }
   .app-title em { color: var(--orange); font-style: normal; }
   .header-actions { display: flex; gap: 8px; }
@@ -95,6 +136,7 @@
     font-size: 0.82rem; font-family: var(--font-heading); cursor: pointer;
     display: flex; align-items: center; gap: 6px;
     transition: all .15s;
+    box-shadow: var(--box-shadow-style, none);
   }
   .icon-btn:hover { transform: translateY(-1px); border-color: var(--border-hi); color: var(--text-hi); }
 
@@ -131,6 +173,7 @@
     .search-input, .date-input, input[type="number"], .watchlist-add-input, .settings-input, .settings-select { font-size: 16px !important; }
     body { padding: 16px 12px 80px 12px; }
     .app-header { margin-bottom: 16px; flex-direction: column; align-items: stretch;}
+    .app-header::after { bottom: -8px; }
     .header-actions { justify-content: center; }
     .mobile-nav {
       display: flex; position: fixed; bottom: 0; left: 0; right: 0;
@@ -157,25 +200,27 @@
   .card {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 20px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.25);
+    box-shadow: var(--box-shadow-style, 0 2px 12px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.25));
   }
   .card-title {
-    font-size: 0.7rem; font-weight: 800; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--text);
+    font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text);
     margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
     display: flex; justify-content: space-between; align-items: center;
     font-family: var(--font-heading);
+    font-style: var(--title-style, normal);
+    letter-spacing: var(--title-spacing, 0.14em);
   }
   .card-title-badge {
     font-size: 0.72rem; background: var(--surface2); border: 1px solid var(--border);
     border-radius: 20px; padding: 2px 8px; text-transform: none; letter-spacing: 0;
-    font-weight: 400; color: var(--text);
+    font-weight: 400; color: var(--text); font-style: normal;
   }
   .btn-new-review {
     background: transparent; border: 1px solid var(--border-hi);
     color: var(--text-hi); padding: 3px 8px; border-radius: 12px;
     font-size: 0.65rem; cursor: pointer; transition: all 0.2s;
     font-family: var(--font-heading); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+    font-style: normal;
   }
   .btn-new-review:hover { background: var(--surface2); color: var(--blue); border-color: var(--blue); }
 
@@ -186,8 +231,9 @@
     flex: 1; background: var(--bg); border: 1px solid var(--blue);
     border-radius: var(--radius-sm); color: var(--text-hi); padding: 10px 14px;
     font-family: var(--font-heading); font-size: 0.9rem; outline: none;
+    box-shadow: var(--box-shadow-style, none);
   }
-  .search-input:focus { box-shadow: 0 0 0 3px rgba(64,188,244,0.18); border-color: var(--blue); }
+  .search-input:focus { box-shadow: var(--box-shadow-style, 0 0 0 3px rgba(64,188,244,0.18)); border-color: var(--blue); }
   .search-input::placeholder { color: var(--text); }
 
   .date-input {
@@ -265,7 +311,7 @@
   .film-strip.visible { display: flex; border-left: 3px solid var(--orange); background: var(--surface2); }
   .film-strip-poster { width: 44px; height: 66px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
   .film-strip-info { flex: 1; min-width: 0; }
-  .film-strip-title { color: var(--text-hi); font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .film-strip-title { color: var(--text-hi); font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--font-heading); }
   .film-strip-genre { color: var(--text); font-size: 0.78rem; margin-top: 2px; line-height: 1.4; }
 
   /* ── TABS: DÉTAILLÉ / RAPIDE ── */
@@ -381,11 +427,14 @@
   .review-wrap { margin-bottom: 16px; }
   .review-wrap label { display: block; font-size: 0.72rem; color: var(--text); margin-bottom: 6px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--font-heading); }
   .review-textarea {
-    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
-    color: var(--text-hi); padding: 10px 12px; font-family: var(--font-body); font-size: 0.88rem; line-height: 1.6;
-    resize: vertical; min-height: 80px; outline: none;
+    width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border);
+    padding: 10px 12px; font-size: 0.88rem; line-height: 1.6; resize: vertical; min-height: 80px; outline: none;
+    /* Variables appliquées pour Film Noir */
+    font-family: var(--review-font, var(--font-body));
+    background: var(--review-bg, var(--bg));
+    color: var(--text-hi);
   }
-  .review-textarea:focus { border-color: var(--orange); box-shadow: 0 0 0 2px rgba(255,128,0,0.1); }
+  .review-textarea:focus { border-color: var(--orange); box-shadow: var(--box-shadow-style, 0 0 0 2px rgba(255,128,0,0.1)); }
   .review-textarea::placeholder { color: var(--text-mid); opacity: 0.5;}
 
   /* ── ACTION BUTTONS ── */
@@ -395,6 +444,7 @@
     font-size: 0.85rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
     cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1; min-width: 120px;
     transition: opacity .15s, transform .12s, background .15s;
+    box-shadow: var(--box-shadow-style, none);
   }
   .btn:hover { opacity: 1; transform: translateY(-1px); }
   .btn:active { transform: translateY(0px); }
@@ -477,9 +527,9 @@
 
   /* ── WATCHLIST ── */
   .watchlist-add-row { display: flex; gap: 8px; margin-bottom: 14px; }
-  .watchlist-add-input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-hi); padding: 8px 12px; font-family: var(--font-heading); font-size: 0.85rem; outline: none; transition: border-color .15s; }
+  .watchlist-add-input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-hi); padding: 8px 12px; font-family: var(--font-heading); font-size: 0.85rem; outline: none; transition: border-color .15s; box-shadow: var(--box-shadow-style, none); }
   .watchlist-add-input:focus { border-color: var(--blue); }
-  .watchlist-add-btn { background: var(--blue); border: none; border-radius: var(--radius-sm); color: #0d1117; padding: 8px 14px; font-family: var(--font-heading); font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: opacity .15s; white-space: nowrap; }
+  .watchlist-add-btn { background: var(--blue); border: none; border-radius: var(--radius-sm); color: #0d1117; padding: 8px 14px; font-family: var(--font-heading); font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: opacity .15s; white-space: nowrap; box-shadow: var(--box-shadow-style, none); }
   .watchlist-add-btn:hover { opacity: 0.85; }
   .watchlist-scroller { max-height: 480px; overflow-y: auto; }
 
@@ -530,7 +580,14 @@
   .theme-card:hover { transform:translateY(-2px); }
   .theme-card.selected { border-color:var(--blue); }
   .theme-card.selected::after { content:"✓"; position:absolute; top:5px; right:5px; font-size:.65rem; font-weight:900; color:#000; background:var(--blue); border-radius:50%; width:16px; height:16px; line-height:16px; text-align:center; display:block; }
-  .theme-preview { height:60px; display:flex; flex-direction:column; gap:4px; padding:8px 10px; }
+  .theme-preview { height:60px; display:flex; flex-direction:column; gap:4px; padding:8px 10px; position:relative;}
+  
+  /* Ajout du petit détail tricolore sur la preview Letterboxd */
+  [data-theme="default"] .theme-preview::before {
+    content:''; position:absolute; top:15px; left:10px; width:80%; height:1px;
+    background: linear-gradient(to right, #00e054 33%, #40bcf4 33%, #40bcf4 66%, #ff8000 66%);
+  }
+
   .theme-preview-row { display:flex; align-items:center; gap:4px; height:9px; }
   .theme-preview-bar { height:9px; border-radius:3px; }
   .theme-preview-dots { display:flex; gap:4px; margin-top:3px; align-items:center; }
@@ -583,7 +640,7 @@
     <div class="modal-title">🎨 Personnalisation</div>
     <div class="modal-body">
       <label class="settings-label">Nom de l'application</label>
-      <input type="text" id="setting-app-name" class="settings-input" placeholder="Ex: Dario's Film Journal">
+      <input type="text" id="setting-app-name" class="settings-input" placeholder="Ex: Ludex Film Journal">
 
       <label class="settings-label">Thème visuel</label>
       <div class="theme-grid" id="theme-grid">
@@ -599,28 +656,28 @@
           <div class="theme-preview" style="background:#0a0a0a">
             <div class="theme-preview-row"><div style="width:3px;background:#e32636;align-self:stretch;flex-shrink:0"></div><div class="theme-preview-bar" style="background:#0f0f0f;flex:1;margin-left:4px"></div></div>
             <div class="theme-preview-row" style="margin-top:4px"><div class="theme-preview-bar" style="background:#e32636;width:60%"></div></div>
-            <div class="theme-preview-dots"><div class="theme-preview-dot" style="background:#e32636"></div><div class="theme-preview-dot" style="background:#fff"></div><div class="theme-preview-dot" style="background:#444"></div></div>
+            <div class="theme-preview-dots"><div class="theme-preview-dot" style="background:#e32636"></div><div class="theme-preview-dot" style="background:#FFF200"></div><div class="theme-preview-dot" style="background:#444"></div></div>
           </div>
-          <div class="theme-label" style="background:#0f0f0f;color:#e32636;font-family:Oswald,sans-serif;letter-spacing:.1em">SCUDERIA</div>
+          <div class="theme-label" style="background:#0f0f0f;color:#e32636;font-family:Oswald,sans-serif;letter-spacing:.1em;font-style:italic;">SCUDERIA</div>
         </div>
         <div class="theme-card" data-theme="anderson">
-          <div class="theme-preview" style="background:#FDF6E3">
+          <div class="theme-preview" style="background:#FDF6E3; border: 2px solid #D1495B;">
             <div class="theme-preview-row"><div class="theme-preview-bar" style="background:#F5EBD0;flex:1;border:1px solid #CEBF9A"></div></div>
             <div class="theme-preview-row" style="margin-top:4px"><div class="theme-preview-bar" style="background:linear-gradient(90deg,#D1495B,#669999);width:65%"></div></div>
             <div class="theme-preview-dots"><div class="theme-preview-dot" style="background:#D1495B"></div><div class="theme-preview-dot" style="background:#669999"></div><div class="theme-preview-dot" style="background:#E8A825"></div></div>
           </div>
-          <div class="theme-label" style="background:#F5EBD0;color:#D1495B;font-family:'Playfair Display',serif;font-style:italic;border-top:2px dashed #CEBF9A">Wes Anderson</div>
+          <div class="theme-label" style="background:#F5EBD0;color:#D1495B;font-family:'Jost',sans-serif;font-style:normal;border-top:2px solid #D1495B">Wes Anderson</div>
         </div>
         <div class="theme-card" data-theme="filmnoir">
-          <div class="theme-preview" style="background:#EBEBEB">
-            <div class="theme-preview-row"><div class="theme-preview-bar" style="background:#F5F5F5;flex:1;border:2px solid #000;border-radius:0"></div></div>
-            <div class="theme-preview-row" style="margin-top:4px"><div class="theme-preview-bar" style="background:#000;width:65%;border-radius:0"></div></div>
-            <div class="theme-preview-dots"><div class="theme-preview-dot" style="background:#000;border-radius:0;width:8px;height:8px"></div><div class="theme-preview-dot" style="background:#444;border-radius:0;width:8px;height:8px"></div><div class="theme-preview-dot" style="background:#888;border-radius:0;width:8px;height:8px"></div></div>
+          <div class="theme-preview" style="background:#050505">
+            <div class="theme-preview-row"><div class="theme-preview-bar" style="background:#111;flex:1;border:1px solid #333;border-radius:0"></div></div>
+            <div class="theme-preview-row" style="margin-top:4px"><div class="theme-preview-bar" style="background:#555;width:65%;border-radius:0"></div></div>
+            <div class="theme-preview-dots"><div class="theme-preview-dot" style="background:#fff;border-radius:0;width:8px;height:8px"></div><div class="theme-preview-dot" style="background:#aaa;border-radius:0;width:8px;height:8px"></div><div class="theme-preview-dot" style="background:#555;border-radius:0;width:8px;height:8px"></div></div>
           </div>
-          <div class="theme-label" style="background:#000;color:#fff;font-family:'Cinzel',serif;letter-spacing:.08em">FILM NOIR</div>
+          <div class="theme-label" style="background:#000;color:#e0e0e0;font-family:'Cinzel',serif;letter-spacing:.08em;border-top:1px solid #333;">FILM NOIR</div>
         </div>
         <div class="theme-card" data-theme="system">
-          <div class="theme-preview" style="background:linear-gradient(135deg, #14181c 50%, #E5E5E5 50%)">
+          <div class="theme-preview" style="background:linear-gradient(135deg, #14181c 50%, #050505 50%)">
              <div style="text-align:center; margin-top: 15px; font-size: 1.2rem;">🌓</div>
           </div>
           <div class="theme-label" style="background:#1f2935;color:#fff;font-family:var(--font-heading)">Auto (Système)</div>
@@ -635,7 +692,7 @@
 </div>
 
 <header class="app-header">
-  <h1 class="app-title" id="main-app-title"><em>Letterboxd</em> Rating Companion</h1>
+  <h1 class="app-title" id="main-app-title"><em>Ludex</em> Rating Companion</h1>
   <div class="header-actions">
     <button class="icon-btn" id="settings-btn" title="Personnaliser">⚙️</button>
     <button class="icon-btn" id="export-btn" title="Sauvegarder les données">↑ Exporter</button>
@@ -655,7 +712,7 @@
 
       <div class="search-wrap">
         <div class="search-row">
-          <input type="text" class="search-input" id="movie-search" placeholder="Titre du film..." autocomplete="off">
+          <input type="text" class="search-input" id="movie-search" placeholder="Titre du film (ex: Marty Supreme, Twin Peaks...)" autocomplete="off">
           <input type="date" class="date-input" id="view-date">
           <button class="heart-btn" id="heart-btn" title="Aimer ce film">♥</button>
         </div>
@@ -986,7 +1043,7 @@ if (window.innerWidth <= 860) {
 //  THEMING & SETTINGS
 // ═══════════════════════════════════════════
 function loadSettings() {
-  const defaultSettings = { appName: "<em>Letterboxd</em> Rating Companion", theme: "default" };
+  const defaultSettings = { appName: "<em>Ludex</em> Rating Companion", theme: "default" };
   try {
     const saved = JSON.parse(localStorage.getItem('lbx_settings')) || defaultSettings;
     applySettings(saved);
@@ -996,7 +1053,7 @@ function loadSettings() {
 }
 
 function applySettings(settings) {
-  document.getElementById('main-app-title').innerHTML = settings.appName || "<em>Letterboxd</em> Rating Companion";
+  document.getElementById('main-app-title').innerHTML = settings.appName || "<em>Ludex</em> Rating Companion";
   
   let themeToApply = settings.theme || "default";
   
@@ -1048,8 +1105,10 @@ document.getElementById('theme-grid').addEventListener('click', e => {
 
 document.getElementById('settings-save').addEventListener('click', () => {
   let rawName = document.getElementById('setting-app-name').value.trim();
-  if(!rawName) rawName = "Letterboxd Rating Companion";
-  const formattedName = rawName.replace(/Letterboxd/gi, "<em>Letterboxd</em>");
+  if(!rawName) rawName = "Ludex Rating Companion";
+  // On met en em le premier mot s'il y a un espace, sinon tout le mot
+  const firstWord = rawName.split(' ')[0];
+  const formattedName = rawName.replace(firstWord, `<em>${firstWord}</em>`);
   
   const newSettings = {
     appName: formattedName,
@@ -1062,10 +1121,6 @@ document.getElementById('settings-save').addEventListener('click', () => {
 });
 
 loadSettings();
-
-function getThemeVar(varName) {
-  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
-}
 
 // ═══════════════════════════════════════════
 //  GESTION DE LA DATE LOCALE
@@ -1480,7 +1535,7 @@ document.addEventListener('click', e => {
 //  HEART & DATES & REVIEW TEXT
 // ═══════════════════════════════════════════
 document.getElementById('heart-btn').addEventListener('click', () => {
-  if (navigator.vibrate) navigator.vibrate(50); // Retour Haptique (durée augmentée)
+  if (navigator.vibrate) navigator.vibrate(50); // Retour Haptique
   isLiked = !isLiked;
   document.getElementById('heart-btn').classList.toggle('active', isLiked);
   saveDraft();
@@ -1685,7 +1740,7 @@ document.getElementById('copy-btn').addEventListener('click', () => {
 //  SAVE
 // ═══════════════════════════════════════════
 document.getElementById('save-btn').addEventListener('click', () => {
-  if (navigator.vibrate) navigator.vibrate([50, 50, 50]); // Retour Haptique accentué (double impulsion plus longue)
+  if (navigator.vibrate) navigator.vibrate([50, 50, 50]); // Retour Haptique
   
   const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim();
   if (!title) { showToast('Entrez un titre de film avant de sauvegarder.'); return; }
@@ -1773,7 +1828,6 @@ function resetForm() {
   const defaultRadio = document.getElementById('s5'); 
   if(defaultRadio) defaultRadio.checked = true;
   
-  // Correction visuelle des sliders et étoiles rapides lors du reset
   setMode('detail'); 
   updateAllSliders();
   updateQuickLabel();
@@ -1857,7 +1911,6 @@ function showToast(msg, withUndo = false) {
   t.classList.add('show');
   clearTimeout(toastTimer);
   
-  // Laisse le toast affiché plus longtemps si l'annulation est possible
   toastTimer = setTimeout(() => { 
       t.classList.remove('show');
       deletedItemCache = null; 
@@ -1878,14 +1931,14 @@ window.deleteItem = function(idx, btnEl) {
     history.splice(idx, 1);
     saveHistory(history);
     renderAll();
-    showToast(`Film supprimé.`, true); // Affiche le toast avec option "Annuler"
+    showToast(`Film supprimé.`, true);
   }, 300);
 };
 
 window.undoDelete = function() {
   if (!deletedItemCache) return;
   const history = loadHistory();
-  history.splice(deletedItemIndex, 0, deletedItemCache); // Remet l'élément à sa place initiale
+  history.splice(deletedItemIndex, 0, deletedItemCache); 
   saveHistory(history);
   renderAll();
   showToast(`Suppression annulée.`);
@@ -2245,7 +2298,7 @@ document.getElementById('export-btn').addEventListener('click', () => {
   const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
-  a.href = url; a.download = `letterboxd-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.href = url; a.download = `ludex-backup-${new Date().toISOString().slice(0,10)}.json`;
   a.click(); URL.revokeObjectURL(url);
   showToast(`${history.length} film${history.length > 1 ? 's' : ''} exporté${history.length > 1 ? 's' : ''}`);
 });
