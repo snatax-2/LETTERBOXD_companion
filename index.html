@@ -236,17 +236,41 @@
   body.quick-mode .detailed-section { display: none; }
   body.quick-mode .quick-section { display: block; }
 
-  .rating-stars { display: flex; flex-direction: row-reverse; justify-content: center; gap: 8px; padding: 8px 0; }
-  .rating-stars input { display: none; }
-  .rating-stars label { 
-      cursor: pointer; font-size: 3.5rem; width: 1em; display: inline-block; position: relative; 
-      color: transparent; line-height: 1.1; margin: 0; min-height: 44px; touch-action: manipulation;
+  /* ── HALF-STAR RATING (Letterboxd style) ── */
+  .rating-stars {
+    display: flex; flex-direction: row; justify-content: center;
+    gap: 4px; padding: 12px 0; user-select: none;
   }
-  .rating-stars label::before { 
-      content: var(--star-icon, '★'); position: absolute; top: 0; left: 0; width: 100%; text-align: center; 
-      color: var(--border-hi); transition: color 0.1s; font-family: Arial, sans-serif; 
+  .star-wrap {
+    position: relative; width: 3.2rem; height: 3.2rem; cursor: pointer;
+    font-size: 3.2rem; line-height: 1; touch-action: manipulation;
   }
-  .rating-stars label:hover::before, .rating-stars label:hover ~ label::before, .rating-stars input:checked ~ label::before { color: var(--gold); }
+  /* base star (empty) */
+  .star-wrap::before {
+    content: var(--star-icon, '★');
+    position: absolute; inset: 0; text-align: center;
+    color: var(--border-hi); font-family: Arial, sans-serif;
+    transition: color 0.08s;
+  }
+  /* full fill overlay */
+  .star-wrap .star-fill {
+    position: absolute; inset: 0; overflow: hidden;
+    color: var(--gold); font-family: Arial, sans-serif;
+    transition: width 0.08s;
+  }
+  .star-wrap .star-fill::before {
+    content: var(--star-icon, '★');
+    position: absolute; left: 0; top: 0; white-space: nowrap;
+    font-size: 3.2rem; line-height: 1;
+  }
+  /* half-star fill: clip to 60% width */
+  .star-wrap.half .star-fill { width: 55%; }
+  .star-wrap.full .star-fill { width: 100%; }
+  /* hover preview handled by JS class toggling */
+  .star-wrap.preview-half .star-fill { width: 55%; color: var(--gold); opacity: 0.7; }
+  .star-wrap.preview-full .star-fill { width: 100%; color: var(--gold); opacity: 0.7; }
+  /* clear stars to the right of selection on hover */
+  .star-wrap.preview-none .star-fill { width: 0; }
   .quick-rating-label { text-align: center; font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-mid); margin-top: 6px; min-height: 1.2em; }
   .quick-rating-label span { color: var(--gold); font-weight: 700; }
 
@@ -444,6 +468,13 @@
   .strip-votes { font-size: 0.74rem; color: var(--text); }
   .hist-tmdb { display: inline-flex; align-items: center; gap: 3px; background: #01b4e4; border-radius: 3px; padding: 1px 5px; font-size: 0.68rem; font-weight: 700; color: #fff; margin-left: 6px; vertical-align: middle; font-family: sans-serif; }
 
+
+  .star-half-zone, .star-full-zone {
+    position: absolute; top: 0; bottom: 0; width: 50%;
+    cursor: pointer;
+  }
+  .star-half-zone { left: 0; }
+  .star-full-zone { right: 0; }
 </style>
 </head>
 <body>
@@ -666,11 +697,12 @@
 
       <div class="quick-section">
         <div class="rating-stars" id="quick-stars-container">
-          <input type="radio" id="qs5" name="rating" value="5"><label for="qs5"></label>
-          <input type="radio" id="qs4" name="rating" value="4"><label for="qs4"></label>
-          <input type="radio" id="qs3" name="rating" value="3" checked><label for="qs3"></label>
-          <input type="radio" id="qs2" name="rating" value="2"><label for="qs2"></label>
-          <input type="radio" id="qs1" name="rating" value="1"><label for="qs1"></label>
+          <!-- 5 star-wraps, each split into half/full click zones -->
+          <div class="star-wrap" data-star="1"><span class="star-fill"></span><span class="star-half-zone"></span><span class="star-full-zone"></span></div>
+          <div class="star-wrap" data-star="2"><span class="star-fill"></span><span class="star-half-zone"></span><span class="star-full-zone"></span></div>
+          <div class="star-wrap" data-star="3"><span class="star-fill"></span><span class="star-half-zone"></span><span class="star-full-zone"></span></div>
+          <div class="star-wrap" data-star="4"><span class="star-fill"></span><span class="star-half-zone"></span><span class="star-full-zone"></span></div>
+          <div class="star-wrap" data-star="5"><span class="star-fill"></span><span class="star-half-zone"></span><span class="star-full-zone"></span></div>
         </div>
         <div class="quick-rating-label" id="quick-rating-label"><span>★★★</span> — 6.0/10</div>
       </div>
@@ -1061,7 +1093,7 @@ function buildStripMeta({ genre = '', runtime = '', year = '', director = '', ac
 // ═══════════════════════════════════════════
 let isLiked     = false;
 let currentMode = 'detail'; 
-let quickRating = 3; // Modifié pour 3 étoiles sur 5 (6.0/10) par défaut      
+let quickRating = 3.0; // supports .5 increments (0.5–5.0)      
 let sortOrder   = 'date';
 let activeGenre = null; 
 let weightsOpen = false;
@@ -1164,9 +1196,10 @@ function loadDraft() {
     if (draft.mode) setMode(draft.mode);
     if (draft.quickRating) {
       // Conversion sécurisée des anciennes notes rapides .5 vers des entiers
-      quickRating = Math.round(parseFloat(draft.quickRating));
-      if(isNaN(quickRating) || quickRating < 1) quickRating = 3;
-      const radioId = 'qs' + quickRating;
+      quickRating = parseFloat(draft.quickRating);
+      if(isNaN(quickRating) || quickRating < 0.5) quickRating = 3.0;
+      quickRating = Math.round(quickRating * 2) / 2; // snap to .5
+      if (window._renderQuickStars) window._renderQuickStars(quickRating);
       const radioEl = document.getElementById(radioId);
       if(radioEl) radioEl.checked = true;
     }
@@ -1407,18 +1440,80 @@ function setMode(mode) {
 // ═══════════════════════════════════════════
 //  QUICK STARS RATING
 // ═══════════════════════════════════════════
-document.getElementById('quick-stars-container').addEventListener('change', (e) => {
-    quickRating = parseInt(e.target.value, 10);
+// ── HALF-STAR INTERACTION ──
+(function() {
+  const container = document.getElementById('quick-stars-container');
+  const wraps = Array.from(container.querySelectorAll('.star-wrap'));
+
+  function starValue(star, isHalf) {
+    return isHalf ? star - 0.5 : star;
+  }
+
+  function renderStars(rating, preview) {
+    wraps.forEach(wrap => {
+      const s = parseInt(wrap.dataset.star);
+      wrap.classList.remove('half','full','preview-half','preview-full','preview-none');
+      if (preview !== undefined) {
+        // hover preview
+        const previewVal = preview;
+        if (s < Math.ceil(previewVal)) {
+          wrap.classList.add('preview-full');
+        } else if (s === Math.ceil(previewVal)) {
+          if (previewVal % 1 !== 0) wrap.classList.add('preview-half');
+          else wrap.classList.add('preview-full');
+        } else {
+          wrap.classList.add('preview-none');
+        }
+        // also keep committed stars underneath at lower opacity
+        if (s < Math.ceil(rating)) {
+          if (!wrap.classList.contains('preview-none')) wrap.classList.add('full');
+        }
+      } else {
+        // committed state
+        if (s < Math.ceil(rating)) {
+          wrap.classList.add('full');
+        } else if (s === Math.ceil(rating) && rating % 1 !== 0) {
+          wrap.classList.add('half');
+        }
+      }
+    });
+  }
+
+  function commitRating(val) {
+    quickRating = val;
+    renderStars(quickRating);
     calculateScore();
     updateQuickLabel();
     saveDraft();
-});
+  }
+
+  wraps.forEach(wrap => {
+    const s = parseInt(wrap.dataset.star);
+    const halfZone = wrap.querySelector('.star-half-zone');
+    const fullZone = wrap.querySelector('.star-full-zone');
+
+    halfZone.addEventListener('mouseenter', () => renderStars(quickRating, starValue(s, true)));
+    fullZone.addEventListener('mouseenter', () => renderStars(quickRating, starValue(s, false)));
+    halfZone.addEventListener('mouseleave', () => renderStars(quickRating));
+    fullZone.addEventListener('mouseleave', () => renderStars(quickRating));
+    halfZone.addEventListener('click', () => commitRating(starValue(s, true)));
+    fullZone.addEventListener('click', () => commitRating(starValue(s, false)));
+
+    // touch support
+    halfZone.addEventListener('touchend', (e) => { e.preventDefault(); commitRating(starValue(s, true)); });
+    fullZone.addEventListener('touchend', (e) => { e.preventDefault(); commitRating(starValue(s, false)); });
+  });
+
+  // initial render
+  renderStars(quickRating);
+  window._renderQuickStars = renderStars;
+})();
 
 function updateQuickLabel() {
   const label = document.getElementById('quick-rating-label');
   if (!label) return;
   const score = quickRating * 2;
-  const stars = getStarStr(Math.round((score / 2) * 2) / 2);
+  const stars = getStarStr(quickRating);
   label.innerHTML = `<span>${stars}</span> — ${score.toFixed(1)}/10`;
 }
 
@@ -1480,7 +1575,7 @@ function calculateScore() {
   let score;
 
   if (currentMode === 'quick') {
-    score = quickRating * 2; 
+    score = quickRating * 2;
   } else {
     const w = getWeights();
     let weightedSum = 0, totalWeight = 0;
