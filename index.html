@@ -1480,7 +1480,7 @@ document.addEventListener('click', e => {
 //  HEART & DATES & REVIEW TEXT
 // ═══════════════════════════════════════════
 document.getElementById('heart-btn').addEventListener('click', () => {
-  if (navigator.vibrate) navigator.vibrate(30); // Retour Haptique
+  if (navigator.vibrate) navigator.vibrate(50); // Retour Haptique (durée augmentée)
   isLiked = !isLiked;
   document.getElementById('heart-btn').classList.toggle('active', isLiked);
   saveDraft();
@@ -1685,7 +1685,7 @@ document.getElementById('copy-btn').addEventListener('click', () => {
 //  SAVE
 // ═══════════════════════════════════════════
 document.getElementById('save-btn').addEventListener('click', () => {
-  if (navigator.vibrate) navigator.vibrate([30, 50, 30]); // Retour Haptique (double vibration)
+  if (navigator.vibrate) navigator.vibrate([50, 50, 50]); // Retour Haptique accentué (double impulsion plus longue)
   
   const title = document.getElementById('movie-title').value.trim() || searchEl.value.trim();
   if (!title) { showToast('Entrez un titre de film avant de sauvegarder.'); return; }
@@ -1772,7 +1772,11 @@ function resetForm() {
   quickRating = 2.5;
   const defaultRadio = document.getElementById('s5'); 
   if(defaultRadio) defaultRadio.checked = true;
+  
+  // Correction visuelle des sliders et étoiles rapides lors du reset
   setMode('detail'); 
+  updateAllSliders();
+  updateQuickLabel();
 }
 
 // ═══════════════════════════════════════════
